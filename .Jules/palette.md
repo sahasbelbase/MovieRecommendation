@@ -1,0 +1,3 @@
+## 2025-03-05 - Streamlit Svelte Custom Component Accessibility & State Feedback
+**Learning:** Custom interactive elements in Streamlit components (like image carousels / galleries) often lack keyboard focusability (`tabindex="0"`), keyboard activation (`Enter`/`Space` listeners), and active visual feedback (`focus-visible` or `.selected` state), making them unusable with screen readers or keyboard navigation.
+**Action:** When building interactive Svelte components for Streamlit, ensure image elements or non-button interactive elements have explicit `role="button"`, `tabindex="0"`, keydown handlers, descriptive `aria-label`/`alt` text, and visible focus indicators.
