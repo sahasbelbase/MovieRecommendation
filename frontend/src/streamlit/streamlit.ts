@@ -17,7 +17,7 @@
 
 // Safari doesn't support the EventTarget class, so we use a shim.
 import { EventTarget } from "event-target-shim"
-import { type ArrowDataframeProto, ArrowTable } from "./ArrowTable"
+import { ArrowDataframeProto, ArrowTable } from "./ArrowTable"
 
 /** Data sent in the custom Streamlit render event. */
 export interface RenderData {
