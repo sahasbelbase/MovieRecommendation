@@ -7,16 +7,37 @@
 
   let selectedImageUrl: string;
 
-  function image_onclick(event: any) {
-    selectedImageUrl = event.srcElement.currentSrc;
+  function selectImage(url: string) {
+    selectedImageUrl = url;
     Streamlit.setComponentValue(selectedImageUrl);
+  }
+
+  function image_onclick(imageUrl: string) {
+    selectImage(imageUrl);
+  }
+
+  function image_onkeydown(event: KeyboardEvent, imageUrl: string) {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectImage(imageUrl);
+    }
   }
 </script>
 
 
 <div class="scroller">
-  {#each imageUrls as imageUrl}
-      <img src={imageUrl} id={imageUrl} alt="" style="height: {height}px;" on:click={image_onclick}>
+  {#each imageUrls as imageUrl, index}
+    <img
+      src={imageUrl}
+      id={imageUrl}
+      alt={`Movie poster ${index + 1}`}
+      role="button"
+      tabindex="0"
+      aria-label={`Select movie poster ${index + 1}`}
+      style="height: {height}px;"
+      on:click={() => image_onclick(imageUrl)}
+      on:keydown={(e) => image_onkeydown(e, imageUrl)}
+    >
   {/each}
 </div>
 
@@ -33,13 +54,16 @@
     margin: 1%; /* Updated padding to margin for spacing */
     border-radius: 10px; /* Reduced border radius */
     opacity: 0.8; /* Adjusted opacity */
-    transition: transform 0.2s, opacity 0.2s; /* Applied transitions to both transform and opacity */
+    transition: transform 0.2s, opacity 0.2s, outline 0.2s; /* Applied transitions */
   }
 
-  img:hover {
+  img:hover,
+  img:focus-visible {
     opacity: 1;
-    transform: scale(1.1); /* Increased the scale for a subtle zoom effect */
+    transform: scale(1.1); /* Subtle zoom effect */
     cursor: pointer;
+    outline: 2px solid #ff4b4b; /* Streamlit primary brand red focus ring */
+    outline-offset: 2px;
   }
 </style>
 
