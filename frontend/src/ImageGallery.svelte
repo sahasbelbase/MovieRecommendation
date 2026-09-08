@@ -7,45 +7,66 @@
 
   let selectedImageUrl: string;
 
-  function image_onclick(event: any) {
-    selectedImageUrl = event.srcElement.currentSrc;
+  function selectImage(url: string) {
+    selectedImageUrl = url;
     Streamlit.setComponentValue(selectedImageUrl);
   }
 </script>
 
-
 <div class="scroller">
-  {#each imageUrls as imageUrl}
-      <img src={imageUrl} id={imageUrl} alt="" style="height: {height}px;" on:click={image_onclick}>
+  {#each imageUrls as imageUrl, index}
+    <button
+      type="button"
+      class="image-btn"
+      class:selected={selectedImageUrl === imageUrl}
+      aria-label={`Select image ${index + 1}`}
+      aria-pressed={selectedImageUrl === imageUrl}
+      on:click={() => selectImage(imageUrl)}
+    >
+      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
+    </button>
   {/each}
 </div>
-
 
 <style>
   .scroller {
     min-height: 100px;
-    overflow-x: scroll;
+    overflow-x: auto;
     overflow-y: hidden;
     white-space: nowrap;
+    padding: 8px 4px;
   }
-  img {
+  .image-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 1%;
+    cursor: pointer;
+    border-radius: 10px;
+    opacity: 0.8;
+    transition: transform 0.2s, opacity 0.2s, box-shadow 0.2s;
+    outline: none;
     display: inline-block;
-    margin: 1%; /* Updated padding to margin for spacing */
-    border-radius: 10px; /* Reduced border radius */
-    opacity: 0.8; /* Adjusted opacity */
-    transition: transform 0.2s, opacity 0.2s; /* Applied transitions to both transform and opacity */
+    vertical-align: middle;
   }
 
-  img:hover {
+  .image-btn:hover,
+  .image-btn:focus-visible {
     opacity: 1;
-    transform: scale(1.1); /* Increased the scale for a subtle zoom effect */
-    cursor: pointer;
+    transform: scale(1.05);
+  }
+
+  .image-btn:focus-visible {
+    box-shadow: 0 0 0 3px #ff4b4b;
+  }
+
+  .image-btn.selected {
+    opacity: 1;
+    box-shadow: 0 0 0 3px #ff4b4b;
+  }
+
+  img {
+    display: block;
+    border-radius: 10px;
   }
 </style>
-
-
-
-
-
-
-
