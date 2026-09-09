@@ -13,19 +13,24 @@
   }
 </script>
 
-<div class="scroller">
-  {#each imageUrls as imageUrl, index}
-    <button
-      type="button"
-      class="image-btn"
-      class:selected={selectedImageUrl === imageUrl}
-      aria-label={`Select image ${index + 1}`}
-      aria-pressed={selectedImageUrl === imageUrl}
-      on:click={() => selectImage(imageUrl)}
-    >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
-    </button>
-  {/each}
+<div class="scroller" role="region" aria-label="Image gallery">
+  {#if imageUrls && imageUrls.length > 0}
+    {#each imageUrls as imageUrl, index}
+      <button
+        type="button"
+        class="image-btn"
+        class:selected={selectedImageUrl === imageUrl}
+        title={`Select image ${index + 1}`}
+        aria-label={`Select image ${index + 1}`}
+        aria-pressed={selectedImageUrl === imageUrl}
+        on:click={() => selectImage(imageUrl)}
+      >
+        <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
+      </button>
+    {/each}
+  {:else}
+    <p class="empty-state">No images available</p>
+  {/if}
 </div>
 
 <style>
@@ -35,6 +40,14 @@
     overflow-y: hidden;
     white-space: nowrap;
     padding: 8px 4px;
+    scroll-behavior: smooth;
+  }
+  .empty-state {
+    color: #888;
+    font-size: 14px;
+    text-align: center;
+    padding: 32px 0;
+    margin: 0;
   }
   .image-btn {
     background: none;
