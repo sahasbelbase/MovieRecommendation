@@ -2,7 +2,7 @@
   import { Streamlit, setStreamlitLifecycle } from "./streamlit";
   setStreamlitLifecycle();
 
-  export let imageUrls: Array<string>;
+  export let imageUrls: Array<string> = [];
   export let height: number;
 
   let selectedImageUrl: string;
@@ -13,18 +13,28 @@
   }
 </script>
 
-<div class="scroller">
-  {#each imageUrls as imageUrl, index}
+<div class="scroller" role="region" aria-label="Image gallery carousel" tabindex="0">
+  {#each imageUrls || [] as imageUrl, index}
     <button
       type="button"
       class="image-btn"
       class:selected={selectedImageUrl === imageUrl}
       aria-label={`Select image ${index + 1}`}
+      title={`Select image ${index + 1}`}
       aria-pressed={selectedImageUrl === imageUrl}
       on:click={() => selectImage(imageUrl)}
     >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
+      <img
+        src={imageUrl}
+        id={imageUrl}
+        alt={`Image ${index + 1}`}
+        loading="lazy"
+        decoding="async"
+        style="height: {height}px;"
+      />
     </button>
+  {:else}
+    <p class="empty-msg">No images available</p>
   {/each}
 </div>
 
@@ -35,7 +45,22 @@
     overflow-y: hidden;
     white-space: nowrap;
     padding: 8px 4px;
+    border-radius: 8px;
   }
+
+  .scroller:focus-visible {
+    outline: 2px solid #ff4b4b;
+    outline-offset: 2px;
+  }
+
+  .empty-msg {
+    color: #888;
+    font-size: 0.9rem;
+    padding: 16px;
+    text-align: center;
+    margin: 0;
+  }
+
   .image-btn {
     background: none;
     border: none;
