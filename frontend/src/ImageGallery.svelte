@@ -2,8 +2,8 @@
   import { Streamlit, setStreamlitLifecycle } from "./streamlit";
   setStreamlitLifecycle();
 
-  export let imageUrls: Array<string>;
-  export let height: number;
+  export let imageUrls: Array<string> = [];
+  export let height: number = 200;
 
   let selectedImageUrl: string;
 
@@ -13,20 +13,25 @@
   }
 </script>
 
-<div class="scroller">
-  {#each imageUrls as imageUrl, index}
-    <button
-      type="button"
-      class="image-btn"
-      class:selected={selectedImageUrl === imageUrl}
-      aria-label={`Select image ${index + 1}`}
-      aria-pressed={selectedImageUrl === imageUrl}
-      on:click={() => selectImage(imageUrl)}
-    >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
-    </button>
-  {/each}
-</div>
+{#if imageUrls && imageUrls.length > 0}
+  <div class="scroller" role="region" aria-label="Movie posters carousel">
+    {#each imageUrls as imageUrl, index}
+      <button
+        type="button"
+        class="image-btn"
+        class:selected={selectedImageUrl === imageUrl}
+        aria-label={`Select movie poster ${index + 1}`}
+        title={`Select movie poster ${index + 1}`}
+        aria-pressed={selectedImageUrl === imageUrl}
+        on:click={() => selectImage(imageUrl)}
+      >
+        <img src={imageUrl} id={imageUrl} alt={`Movie poster ${index + 1}`} style="height: {height}px;" />
+      </button>
+    {/each}
+  </div>
+{:else}
+  <div class="empty-state">No movie posters available</div>
+{/if}
 
 <style>
   .scroller {
@@ -35,6 +40,15 @@
     overflow-y: hidden;
     white-space: nowrap;
     padding: 8px 4px;
+  }
+  .empty-state {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-style: italic;
   }
   .image-btn {
     background: none;
@@ -54,6 +68,10 @@
   .image-btn:focus-visible {
     opacity: 1;
     transform: scale(1.05);
+  }
+
+  .image-btn:active {
+    transform: scale(0.95);
   }
 
   .image-btn:focus-visible {
