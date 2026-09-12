@@ -4,10 +4,12 @@
 
   export let imageUrls: Array<string>;
   export let height: number;
+  export let disabled: boolean = false;
 
   let selectedImageUrl: string;
 
   function selectImage(url: string) {
+    if (disabled) return;
     selectedImageUrl = url;
     Streamlit.setComponentValue(selectedImageUrl);
   }
@@ -19,6 +21,8 @@
       type="button"
       class="image-btn"
       class:selected={selectedImageUrl === imageUrl}
+      disabled={disabled}
+      title={disabled ? "Selection disabled while processing" : `Select image ${index + 1}`}
       aria-label={`Select image ${index + 1}`}
       aria-pressed={selectedImageUrl === imageUrl}
       on:click={() => selectImage(imageUrl)}
@@ -50,8 +54,8 @@
     vertical-align: middle;
   }
 
-  .image-btn:hover,
-  .image-btn:focus-visible {
+  .image-btn:hover:not(:disabled),
+  .image-btn:focus-visible:not(:disabled) {
     opacity: 1;
     transform: scale(1.05);
   }
@@ -63,6 +67,12 @@
   .image-btn.selected {
     opacity: 1;
     box-shadow: 0 0 0 3px #ff4b4b;
+  }
+
+  .image-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    transform: none;
   }
 
   img {
