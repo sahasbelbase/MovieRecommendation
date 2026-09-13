@@ -13,7 +13,7 @@
   }
 </script>
 
-<div class="scroller">
+<div class="scroller" role="region" aria-label="Image gallery">
   {#each imageUrls as imageUrl, index}
     <button
       type="button"
@@ -21,9 +21,15 @@
       class:selected={selectedImageUrl === imageUrl}
       aria-label={`Select image ${index + 1}`}
       aria-pressed={selectedImageUrl === imageUrl}
+      title={`Select image ${index + 1}`}
       on:click={() => selectImage(imageUrl)}
     >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
+      <img
+        src={imageUrl}
+        id={`gallery-img-${index}`}
+        alt={`Image ${index + 1}`}
+        style="height: {height}px;"
+      />
     </button>
   {/each}
 </div>
@@ -35,6 +41,7 @@
     overflow-y: hidden;
     white-space: nowrap;
     padding: 8px 4px;
+    scroll-behavior: smooth;
   }
   .image-btn {
     background: none;
@@ -57,7 +64,8 @@
   }
 
   .image-btn:focus-visible {
-    box-shadow: 0 0 0 3px #ff4b4b;
+    outline: 2px solid #ff4b4b;
+    outline-offset: 3px;
   }
 
   .image-btn.selected {
