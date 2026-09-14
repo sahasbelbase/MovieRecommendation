@@ -2,12 +2,14 @@
   import { Streamlit, setStreamlitLifecycle } from "./streamlit";
   setStreamlitLifecycle();
 
-  export let imageUrls: Array<string>;
+  export let imageUrls: Array<string> = [];
   export let height: number;
+  export let disabled: boolean = false;
 
   let selectedImageUrl: string;
 
   function selectImage(url: string) {
+    if (disabled) return;
     selectedImageUrl = url;
     Streamlit.setComponentValue(selectedImageUrl);
   }
@@ -19,11 +21,12 @@
       type="button"
       class="image-btn"
       class:selected={selectedImageUrl === imageUrl}
-      aria-label={`Select image ${index + 1}`}
+      aria-label={`Select image ${index + 1} of ${imageUrls.length}`}
       aria-pressed={selectedImageUrl === imageUrl}
+      {disabled}
       on:click={() => selectImage(imageUrl)}
     >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
+      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1} of ${imageUrls.length}`} style="height: {height}px;" />
     </button>
   {/each}
 </div>
@@ -63,6 +66,13 @@
   .image-btn.selected {
     opacity: 1;
     box-shadow: 0 0 0 3px #ff4b4b;
+  }
+
+  .image-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+    transform: none;
+    box-shadow: none;
   }
 
   img {
