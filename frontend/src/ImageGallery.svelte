@@ -2,31 +2,68 @@
   import { Streamlit, setStreamlitLifecycle } from "./streamlit";
   setStreamlitLifecycle();
 
-  export let imageUrls: Array<string>;
+  export let imageUrls: Array<string> = [];
   export let height: number;
+  export let disabled: boolean = false;
 
   let selectedImageUrl: string;
+  let buttons: HTMLButtonElement[] = [];
 
   function selectImage(url: string) {
+    if (disabled) return;
     selectedImageUrl = url;
     Streamlit.setComponentValue(selectedImageUrl);
   }
+
+  function handleKeyDown(event: KeyboardEvent, index: number) {
+    if (!imageUrls || imageUrls.length === 0) return;
+
+    let targetIndex = -1;
+    if (event.key === "ArrowRight") {
+      targetIndex = (index + 1) % imageUrls.length;
+    } else if (event.key === "ArrowLeft") {
+      targetIndex = (index - 1 + imageUrls.length) % imageUrls.length;
+    }
+
+    if (targetIndex !== -1) {
+      event.preventDefault();
+      const targetBtn = buttons[targetIndex];
+      if (targetBtn) {
+        targetBtn.focus();
+        targetBtn.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+      }
+    }
+  }
+
+  function handleFocus(buttonEl: HTMLButtonElement) {
+    if (buttonEl) {
+      buttonEl.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+    }
+  }
 </script>
 
-<div class="scroller">
-  {#each imageUrls as imageUrl, index}
-    <button
-      type="button"
-      class="image-btn"
-      class:selected={selectedImageUrl === imageUrl}
-      aria-label={`Select image ${index + 1}`}
-      aria-pressed={selectedImageUrl === imageUrl}
-      on:click={() => selectImage(imageUrl)}
-    >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
-    </button>
-  {/each}
-</div>
+{#if !imageUrls || imageUrls.length === 0}
+  <div class="empty-state">No images available</div>
+{:else}
+  <div class="scroller" role="region" aria-label="Image gallery">
+    {#each imageUrls as imageUrl, index}
+      <button
+        bind:this={buttons[index]}
+        type="button"
+        class="image-btn"
+        class:selected={selectedImageUrl === imageUrl}
+        {disabled}
+        aria-label={`Select image ${index + 1}`}
+        aria-pressed={selectedImageUrl === imageUrl}
+        on:click={() => selectImage(imageUrl)}
+        on:keydown={(e) => handleKeyDown(e, index)}
+        on:focus={(e) => handleFocus(e.currentTarget)}
+      >
+        <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
+      </button>
+    {/each}
+  </div>
+{/if}
 
 <style>
   .scroller {
@@ -35,6 +72,15 @@
     overflow-y: hidden;
     white-space: nowrap;
     padding: 8px 4px;
+  }
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    color: #666;
+    font-size: 0.9rem;
+    font-style: italic;
   }
   .image-btn {
     background: none;
@@ -50,7 +96,12 @@
     vertical-align: middle;
   }
 
-  .image-btn:hover,
+  .image-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  .image-btn:hover:not(:disabled),
   .image-btn:focus-visible {
     opacity: 1;
     transform: scale(1.05);
