@@ -2,7 +2,7 @@
   import { Streamlit, setStreamlitLifecycle } from "./streamlit";
   setStreamlitLifecycle();
 
-  export let imageUrls: Array<string>;
+  export let imageUrls: Array<string> = [];
   export let height: number;
 
   let selectedImageUrl: string;
@@ -13,19 +13,30 @@
   }
 </script>
 
-<div class="scroller">
-  {#each imageUrls as imageUrl, index}
-    <button
-      type="button"
-      class="image-btn"
-      class:selected={selectedImageUrl === imageUrl}
-      aria-label={`Select image ${index + 1}`}
-      aria-pressed={selectedImageUrl === imageUrl}
-      on:click={() => selectImage(imageUrl)}
-    >
-      <img src={imageUrl} id={imageUrl} alt={`Image ${index + 1}`} style="height: {height}px;" />
-    </button>
-  {/each}
+<div class="scroller" role="region" aria-label="Movie poster gallery">
+  {#if imageUrls && imageUrls.length > 0}
+    {#each imageUrls as imageUrl, index}
+      <button
+        type="button"
+        class="image-btn"
+        class:selected={selectedImageUrl === imageUrl}
+        aria-label={`Select image ${index + 1}`}
+        aria-pressed={selectedImageUrl === imageUrl}
+        title={`Select image ${index + 1}`}
+        on:click={() => selectImage(imageUrl)}
+      >
+        <img
+          src={imageUrl}
+          id={imageUrl}
+          alt={`Poster ${index + 1}`}
+          loading="lazy"
+          style="height: {height}px;"
+        />
+      </button>
+    {/each}
+  {:else}
+    <div class="empty-state">No images available</div>
+  {/if}
 </div>
 
 <style>
@@ -35,6 +46,17 @@
     overflow-y: hidden;
     white-space: nowrap;
     padding: 8px 4px;
+    scroll-behavior: smooth;
+    overscroll-behavior-x: contain;
+  }
+  .empty-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    color: #888;
+    font-size: 0.9rem;
+    font-family: sans-serif;
   }
   .image-btn {
     background: none;
@@ -54,6 +76,10 @@
   .image-btn:focus-visible {
     opacity: 1;
     transform: scale(1.05);
+  }
+
+  .image-btn:active {
+    transform: scale(0.98);
   }
 
   .image-btn:focus-visible {
