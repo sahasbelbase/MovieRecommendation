@@ -1,0 +1,3 @@
+# Cloudflare Pages Routing Rules
+# 1. SPA Client-Side Routing: Serves index.html for all page reloads
+/*    /index.html    200

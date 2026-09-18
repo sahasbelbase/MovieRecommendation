@@ -12,7 +12,15 @@ logger = logging.getLogger("auth")
 # Initialize Firebase Admin if credentials are provided, or use default application credentials if available
 firebase_initialized = False
 try:
-    if settings.FIREBASE_CREDENTIALS_PATH and os.path.exists(settings.FIREBASE_CREDENTIALS_PATH):
+    service_account_raw = os.environ.get("FIREBASE_SERVICE_ACCOUNT_JSON")
+    if service_account_raw:
+        import json
+        cred_dict = json.loads(service_account_raw)
+        cred = credentials.Certificate(cred_dict)
+        firebase_admin.initialize_app(cred)
+        firebase_initialized = True
+        logger.info("Firebase Admin initialized with raw JSON environment variable.")
+    elif settings.FIREBASE_CREDENTIALS_PATH and os.path.exists(settings.FIREBASE_CREDENTIALS_PATH):
         cred = credentials.Certificate(settings.FIREBASE_CREDENTIALS_PATH)
         firebase_admin.initialize_app(cred)
         firebase_initialized = True
