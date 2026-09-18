@@ -1,0 +1,52 @@
+# Environment and Virtual Envs
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.local
+.env.*.local
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+
+# Node & Frontend
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vector & Model Caches
+backend/cache/
+*.npz
+*.parquet
+similarity.pkl
+*.pkl.gz
+
+# Firebase & Secret Credentials
+*serviceAccount*.json
+*firebase-adminsdk*.json
+credentials.json
+secrets.env
+
+# System & IDE files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+.ipynb_checkpoints/
