@@ -36,10 +36,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register routers
+# Register routers under /api prefix and root for universal compatibility
 app.include_router(movies_router, prefix=settings.API_V1_PREFIX)
 app.include_router(recommendations_router, prefix=settings.API_V1_PREFIX)
 app.include_router(users_router, prefix=settings.API_V1_PREFIX)
+
+# Fallback root endpoints to prevent 404 when baseURL lacks /api
+app.include_router(movies_router)
+app.include_router(recommendations_router)
+app.include_router(users_router)
 
 @app.get("/")
 async def root():
@@ -50,6 +55,7 @@ async def root():
         "docs_url": "/docs"
     }
 
+@app.get("/health")
 @app.get("/api/health")
 async def health_check():
     return {
