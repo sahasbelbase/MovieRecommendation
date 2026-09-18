@@ -3,9 +3,9 @@ import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyDemoKeyForLocalTestingOnly123456",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "cinematch-demo.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "cinematch-demo",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "cinematch-demo.appspot.com",
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "movierecomendation.firebaseapp.com",
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "movierecomendation",
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "movierecomendation.appspot.com",
   messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "123456789",
   appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:123456789:web:abcdef"
 };

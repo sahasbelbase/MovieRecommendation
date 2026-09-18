@@ -69,12 +69,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginWithGoogle = async () => {
-    if (!auth || !googleProvider) {
-      // Demo login fallback
+    const hasRealFirebaseKey = import.meta.env.VITE_FIREBASE_API_KEY && !import.meta.env.VITE_FIREBASE_API_KEY.includes("AIzaSyDemo");
+    if (!auth || !googleProvider || !hasRealFirebaseKey) {
+      // Testing fallback: lets the user test the tailored mode immediately
       const demoUser = {
         uid: "demo_user_123",
-        email: "demo@cinematch.app",
-        displayName: "Demo Cinephile",
+        email: "sahas@movieengine.app",
+        displayName: "Sahas Belbase",
         photoURL: null
       };
       localStorage.setItem('cinematch_token', 'demo_token_xyz');

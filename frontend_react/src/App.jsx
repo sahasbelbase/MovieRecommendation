@@ -9,7 +9,7 @@ import DataModal from './components/DataModal';
 import AuthModal from './components/AuthModal';
 import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
-import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame } from 'lucide-react';
+import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
   { id: "all", label: "All Entertainment" },
@@ -256,12 +256,29 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-zinc-900 bg-zinc-950 py-8 text-center text-xs text-zinc-500 space-y-2">
-        <p>
-          Powered by <strong>TMDB</strong> & <strong>JustWatch</strong> for live Movies, TV Series & Anime streaming.
-        </p>
-        <p className="font-mono text-[11px] text-zinc-600">
-          Tip: Press <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 rounded text-zinc-400">/</kbd> to search movies, TV shows, and anime. Press <kbd className="px-1.5 py-0.5 bg-zinc-900 border border-zinc-800 rounded text-zinc-400">Esc</kbd> to close dialogs.
+      <footer className="w-full border-t border-zinc-900 bg-zinc-950 py-8 px-4 text-center text-xs text-zinc-400 space-y-4">
+        <div className="flex items-center justify-center gap-4 sm:gap-6">
+          <a
+            href="https://github.com/sahasbelbase"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors py-1.5 px-3.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800"
+          >
+            <Github className="w-4 h-4" />
+            <span className="font-medium text-xs">GitHub</span>
+          </a>
+          <a
+            href="https://www.linkedin.com/in/sahasbelbase/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-zinc-400 hover:text-sky-400 transition-colors py-1.5 px-3.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800"
+          >
+            <Linkedin className="w-4 h-4" />
+            <span className="font-medium text-xs">LinkedIn</span>
+          </a>
+        </div>
+        <p className="text-zinc-500 text-[11px]">
+          Movie Recommendation Engine &bull; Curated Cinema &amp; Streaming Discovery
         </p>
       </footer>
 

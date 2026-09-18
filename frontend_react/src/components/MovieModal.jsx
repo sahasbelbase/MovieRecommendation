@@ -5,6 +5,7 @@ import api from '../api/client';
 import MovieCard from './MovieCard';
 
 const COUNTRY_OPTIONS = [
+  { code: 'NP', label: '🇳🇵 Nepal' },
   { code: 'US', label: '🇺🇸 United States' },
   { code: 'GB', label: '🇬🇧 United Kingdom' },
   { code: 'CA', label: '🇨🇦 Canada' },
@@ -422,17 +423,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast 
               {/* Attribution */}
               <div className="flex items-center justify-between pt-2 border-t border-zinc-800/40 text-[11px] text-zinc-500">
                 <span>Streaming availability updated dynamically</span>
-                {providers?.link && (
-                  <a
-                    href={providers.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="flex items-center gap-1 text-zinc-400 hover:text-zinc-300 underline underline-offset-2"
-                  >
-                    View on JustWatch
-                    <ExternalLink className="w-3 h-3" />
-                  </a>
-                )}
+                <span className="font-mono text-zinc-600">Region: {country}</span>
               </div>
             </div>
 
