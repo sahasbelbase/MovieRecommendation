@@ -222,12 +222,13 @@ class RecommenderService:
 
         for item in watched_list:
             m_type = item.get("media_type", "movie")
-            if m_type == "kdrama":
+            item_genres = item.get("genres", [])
+            if m_type == "kdrama" or "K-Drama" in item_genres:
                 kdrama_count += 1
-            elif m_type == "anime":
+            elif m_type == "anime" or "Anime" in item_genres:
                 anime_count += 1
 
-            for g in item.get("genres", []):
+            for g in item_genres:
                 genre_frequency[g] = genre_frequency.get(g, 0) + 1
                 if g == "Action":
                     action_count += 1
@@ -394,33 +395,38 @@ class RecommenderService:
                 "movies": anchor_recs
             })
 
-        if kdrama_count > 0 or "Romance" in genre_frequency:
-            # Taste transition: Show them Anime or K-Drama that matches their romance/drama taste!
+        # 4. Format-Specific & Taste Rows:
+        # Only show K-Drama section if user has ACTUALLY watched K-Drama
+        if kdrama_count > 0:
             kdrama_recs = await self.tmdb.get_trending_kdrama()
             unwatched_kdrama = [m for m in kdrama_recs if m["id"] not in all_excluded_ids][:10]
             if unwatched_kdrama:
                 sections.append({
-                    "title": "Because You Love K-Drama & Romance",
-                    "subtitle": "Emotional storylines & character-driven dramas",
+                    "title": "Because You Watched K-Drama",
+                    "subtitle": "Emotional storylines & character-driven series from Korea",
                     "movies": unwatched_kdrama
                 })
 
-            # Transition to Anime with emotional/drama focus
-            anime_recs = await self.tmdb.get_trending_anime()
-            unwatched_anime = [m for m in anime_recs if m["id"] not in all_excluded_ids][:10]
-            if unwatched_anime:
-                sections.append({
-                    "title": "Taste Transition: Story-Rich Anime For You",
-                    "subtitle": "Intense character depth and emotional storytelling",
-                    "movies": unwatched_anime
-                })
-        else:
-            # General anime section
-            anime_recs = await self.tmdb.get_trending_anime()
-            unwatched_anime = [m for m in anime_recs if m["id"] not in all_excluded_ids][:10]
+        # Anime curation: Tailor title and subtitle based on what the user actually watches
+        anime_recs = await self.tmdb.get_trending_anime()
+        unwatched_anime = [m for m in anime_recs if m["id"] not in all_excluded_ids][:10]
+        if unwatched_anime:
+            if anime_count > 0:
+                anime_title = "Anime For You"
+                anime_sub = "Top series matching your animation viewing history"
+            elif action_count > 0:
+                anime_title = "High-Octane Anime & Animation"
+                anime_sub = "Top-tier action animation you haven't watched yet"
+            elif "Romance" in genre_frequency or "Drama" in genre_frequency:
+                anime_title = "Story-Rich & Emotional Anime"
+                anime_sub = "Character-driven storytelling and world-class animation"
+            else:
+                anime_title = "Top-Rated Anime Series"
+                anime_sub = "Critically acclaimed Japanese animation"
+
             sections.append({
-                "title": "Anime You Haven't Seen",
-                "subtitle": "Top rated Japanese animation",
+                "title": anime_title,
+                "subtitle": anime_sub,
                 "movies": unwatched_anime
             })
 

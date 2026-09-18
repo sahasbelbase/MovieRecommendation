@@ -142,4 +142,29 @@ def test_franchise_anti_clustering_and_alternates(client):
     universe_sections = [s for s in sections if "Extended Lore & Universe" in s["title"]]
     assert len(universe_sections) > 0, "Expected a dedicated lower universe section for Batman lore"
 
+def test_kdrama_recommendation_strict_guard(client):
+    """
+    Guarantees that a user who has NOT watched any K-drama is NEVER shown
+    'Because you loved K-drama' or served a K-drama row.
+    """
+    headers = {"Authorization": "Bearer test_token_no_kdrama_strict"}
+    # Watch only Western films / non-K-drama titles (some with romance tags)
+    watched_titles = [
+        {"id": 155, "title": "The Dark Knight", "genres": ["Action", "Crime"], "media_type": "movie"},
+        {"id": 152601, "title": "Her", "genres": ["Romance", "Drama", "Science Fiction"], "media_type": "movie"},
+        {"id": 597, "title": "Titanic", "genres": ["Drama", "Romance"], "media_type": "movie"},
+    ]
+    for m in watched_titles:
+        client.post("/api/users/watched", json={"movie": m, "rating": 8.5}, headers=headers)
+
+    feed_res = client.get("/api/recommendations/feed", headers=headers)
+    assert feed_res.status_code == 200
+    sections = feed_res.json()["sections"]
+    section_titles = [s["title"].lower() for s in sections]
+
+    # Must NOT have any K-drama section
+    assert not any("k-drama" in t or "kdrama" in t for t in section_titles), (
+        f"K-Drama section must not be shown to non-K-Drama viewers! Found: {section_titles}"
+    )
+
 

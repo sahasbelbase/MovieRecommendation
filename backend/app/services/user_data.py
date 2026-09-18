@@ -71,6 +71,7 @@ class UserDataService:
             "year": movie.get("year", ""),
             "vote_average": movie.get("vote_average", 0.0),
             "genres": movie.get("genres", []),
+            "media_type": movie.get("media_type", "movie"),
             "watched_at": time.time(),
             "rating": rating,
         }
@@ -110,6 +111,7 @@ class UserDataService:
             "year": movie.get("year", ""),
             "vote_average": movie.get("vote_average", 0.0),
             "genres": movie.get("genres", []),
+            "media_type": movie.get("media_type", "movie"),
             "skipped_at": time.time(),
         }
 
