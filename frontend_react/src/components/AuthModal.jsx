@@ -47,6 +47,7 @@ export default function AuthModal({ isOpen, onClose }) {
           </div>
           <button
             onClick={onClose}
+            aria-label="Close sign in modal"
             className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 transition-colors"
           >
             <X className="w-4 h-4" />
