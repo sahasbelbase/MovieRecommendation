@@ -1,31 +1,35 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { X, Check, Eye, Heart, Star, Sparkles, ArrowRight, ArrowLeft, RotateCcw } from 'lucide-react';
+import { X, Check, Star, Sparkles, ArrowRight, ArrowLeft, ChevronUp, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
+
+const SWIPE_GENRES = ["All", "Anime", "Action", "Drama", "Sci-Fi", "Comedy", "Thriller", "K-Drama"];
 
 export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration, onShowToast }) {
   const { user, toggleWatched } = useAuth();
   const [deck, setDeck] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [genreIndex, setGenreIndex] = useState(0);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [swipedCount, setSwipedCount] = useState(0);
-  const [history, setHistory] = useState([]);
 
   const cardRef = useRef(null);
   const dragStartRef = useRef({ x: 0, y: 0 });
 
-  // Load swipe deck for signed in user
+  const selectedGenre = SWIPE_GENRES[genreIndex];
+
+  // Load swipe deck for signed in user with optional genre filtering
   useEffect(() => {
     if (!isOpen || !user) return;
     setLoading(true);
     setCurrentIndex(0);
-    setSwipedCount(0);
 
     const fetchDeck = async () => {
       try {
-        const res = await api.get('/recommendations/swipe-deck?limit=25');
+        const genreParam = selectedGenre !== "All" ? `&genre=${encodeURIComponent(selectedGenre)}` : '';
+        const res = await api.get(`/recommendations/swipe-deck?limit=25${genreParam}`);
         setDeck(res.data);
       } catch (err) {
         console.error("Failed to load swipe deck:", err);
@@ -35,19 +39,31 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
     };
 
     fetchDeck();
-  }, [isOpen, user]);
+  }, [isOpen, user, selectedGenre]);
 
   const currentCard = deck[currentIndex];
 
-  // Keyboard navigation: Left Arrow (Skip), Right Arrow (Watched)
+  // Keyboard navigation:
+  // - Left Arrow: Skip
+  // - Right Arrow: Watched
+  // - Down Arrow: Next Genre
+  // - Up Arrow: Previous Genre
   useEffect(() => {
     if (!isOpen) return;
 
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowRight') {
+        e.preventDefault();
         handleSwipe('right');
       } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
         handleSwipe('left');
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setGenreIndex((prev) => (prev + 1) % SWIPE_GENRES.length);
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setGenreIndex((prev) => (prev - 1 + SWIPE_GENRES.length) % SWIPE_GENRES.length);
       } else if (e.key === 'Escape') {
         onClose();
       }
@@ -55,7 +71,7 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, currentIndex, deck]);
+  }, [isOpen, currentIndex, deck, genreIndex]);
 
   // Execute swipe logic
   const handleSwipe = async (direction, rating = null) => {
@@ -64,7 +80,6 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
     const item = currentCard;
     const isWatched = direction === 'right' || direction === 'up';
 
-    setHistory((prev) => [...prev, { item, direction, index: currentIndex }]);
     setCurrentIndex((prev) => prev + 1);
     setSwipedCount((prev) => prev + 1);
     setDragOffset({ x: 0, y: 0 });
@@ -129,28 +144,64 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
       {/* Container */}
       <div className="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl shadow-2xl p-5 flex flex-col items-center overflow-hidden">
         {/* Header */}
-        <div className="w-full flex items-center justify-between pb-3 border-b border-zinc-800/80">
+        <div className="w-full flex items-center justify-between pb-2.5 border-b border-zinc-800/80">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold text-white tracking-tight">Taste Calibration</span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800/40">
-                Tinder Mode
+                Quick Rate
               </span>
             </div>
             <p className="text-xs text-zinc-400">
-              Swipe right if you've seen it, left to skip
+              Swipe or use arrow buttons to calibrate your FYP
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white"
+            className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
+        {/* Genre Selector Bar with Up / Down indicator */}
+        <div className="w-full flex items-center justify-between gap-2 py-2 border-b border-zinc-800/60">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            <span className="text-[11px] font-mono text-zinc-500 shrink-0">Genre:</span>
+            {SWIPE_GENRES.map((g, idx) => (
+              <button
+                key={g}
+                onClick={() => setGenreIndex(idx)}
+                className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium transition-all shrink-0 ${
+                  genreIndex === idx
+                    ? 'bg-rose-600 text-white font-semibold shadow-sm'
+                    : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
+                }`}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center gap-1 shrink-0 text-[11px] font-mono text-zinc-500 hidden sm:flex">
+            <button
+              onClick={() => setGenreIndex((prev) => (prev - 1 + SWIPE_GENRES.length) % SWIPE_GENRES.length)}
+              className="p-1 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300"
+              title="Previous Genre (↑)"
+            >
+              <ChevronUp className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={() => setGenreIndex((prev) => (prev + 1) % SWIPE_GENRES.length)}
+              className="p-1 rounded bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300"
+              title="Next Genre (↓)"
+            >
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+
         {/* Progress Indicator */}
-        <div className="w-full my-3">
+        <div className="w-full my-2.5">
           <div className="flex justify-between text-[11px] font-mono text-zinc-400 mb-1">
             <span>Calibrating FYP</span>
             <span className="font-semibold text-zinc-200">{swipedCount} calibrated</span>
@@ -163,11 +214,33 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
           </div>
         </div>
 
-        {/* Card Deck Area */}
-        <div className="relative w-full aspect-[2/3] max-h-[500px] my-2 flex items-center justify-center">
+        {/* Card Deck Area with Floating Left / Right Buttons */}
+        <div className="relative w-full aspect-[2/3] max-h-[460px] my-1 flex items-center justify-center">
+          {/* Floating Left Arrow Button */}
+          {currentCard && (
+            <button
+              onClick={() => handleSwipe('left')}
+              className="absolute -left-2 sm:-left-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-zinc-950/90 border border-zinc-700 hover:border-rose-500 hover:bg-zinc-900 text-zinc-400 hover:text-rose-400 flex items-center justify-center shadow-2xl transition-all active:scale-90"
+              title="Skip / Haven't Watched (Click or press ←)"
+            >
+              <ArrowLeft className="w-5 h-5 stroke-[2.5]" />
+            </button>
+          )}
+
+          {/* Floating Right Arrow Button */}
+          {currentCard && (
+            <button
+              onClick={() => handleSwipe('right')}
+              className="absolute -right-2 sm:-right-4 top-1/2 -translate-y-1/2 z-20 w-11 h-11 rounded-full bg-zinc-950/90 border border-zinc-700 hover:border-emerald-500 hover:bg-zinc-900 text-zinc-400 hover:text-emerald-400 flex items-center justify-center shadow-2xl transition-all active:scale-90"
+              title="I Watched This (Click or press →)"
+            >
+              <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+            </button>
+          )}
+
           {loading ? (
             <div className="w-full h-full rounded-2xl bg-zinc-900 animate-pulse border border-zinc-800 flex items-center justify-center">
-              <p className="text-xs text-zinc-500 font-mono">Loading iconic titles...</p>
+              <p className="text-xs text-zinc-500 font-mono">Loading {selectedGenre} titles...</p>
             </div>
           ) : currentCard ? (
             <>
@@ -279,40 +352,49 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
               <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
                 <Sparkles className="w-6 h-6" />
               </div>
-              <h4 className="text-base font-bold text-white">Taste Calibrated!</h4>
+              <h4 className="text-base font-bold text-white">{selectedGenre} Calibrated!</h4>
               <p className="text-xs text-zinc-400 max-w-xs">
-                Your recommendations have been tailored with your latest movie and series preferences.
+                Your recommendations have been tailored with your latest movie, series, and anime preferences.
               </p>
-              <button
-                onClick={() => {
-                  onClose();
-                  if (onCompleteCalibration) onCompleteCalibration();
-                }}
-                className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-950/40"
-              >
-                Go to My For You Page
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => setGenreIndex((prev) => (prev + 1) % SWIPE_GENRES.length)}
+                  className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-medium border border-zinc-700"
+                >
+                  Try Next Genre (↓)
+                </button>
+                <button
+                  onClick={() => {
+                    onClose();
+                    if (onCompleteCalibration) onCompleteCalibration();
+                  }}
+                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-lg shadow-emerald-950/40"
+                >
+                  Go to FYP
+                </button>
+              </div>
             </div>
           )}
         </div>
 
-        {/* Action Controls */}
+        {/* Action Controls with Clickable Left and Right Arrow Buttons */}
         {currentCard && (
-          <div className="w-full flex items-center justify-center gap-6 pt-3">
+          <div className="w-full flex items-center justify-between gap-3 pt-3">
             {/* Left Button: Skip / Haven't Watched */}
             <button
               onClick={() => handleSwipe('left')}
-              className="w-14 h-14 rounded-full bg-zinc-900 border border-rose-500/40 text-rose-400 hover:bg-rose-500/10 flex items-center justify-center shadow-lg transition-transform active:scale-90"
-              title="Haven't Watched (Swipe Left / ←)"
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 hover:border-rose-500/60 text-zinc-300 hover:text-rose-400 font-medium text-xs shadow-lg transition-all active:scale-95 group"
+              title="Skip / Haven't Watched (Click or press ←)"
             >
-              <X className="w-6 h-6 stroke-[2.5]" />
+              <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span>Skip (←)</span>
             </button>
 
             {/* Middle Button: Watched & Loved It (Star) */}
             <button
               onClick={() => handleSwipe('right', 9.5)}
-              className="w-11 h-11 rounded-full bg-zinc-900 border border-amber-500/40 text-amber-400 hover:bg-amber-500/10 flex items-center justify-center shadow-lg transition-transform active:scale-90"
-              title="Watched & Loved It!"
+              className="w-12 h-12 rounded-2xl bg-zinc-900 hover:bg-zinc-800 border border-amber-500/40 text-amber-400 flex items-center justify-center shadow-lg transition-transform active:scale-95 shrink-0"
+              title="Watched & Loved It! (9.5 Rating)"
             >
               <Star className="w-5 h-5 fill-amber-400 stroke-none" />
             </button>
@@ -320,17 +402,18 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
             {/* Right Button: I Watched This */}
             <button
               onClick={() => handleSwipe('right')}
-              className="w-14 h-14 rounded-full bg-zinc-900 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10 flex items-center justify-center shadow-lg transition-transform active:scale-90"
-              title="I Watched This (Swipe Right / →)"
+              className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-2xl bg-emerald-600/20 hover:bg-emerald-600/30 border border-emerald-500/50 hover:border-emerald-400 text-emerald-300 hover:text-emerald-200 font-semibold text-xs shadow-lg transition-all active:scale-95 group"
+              title="I Watched This (Click or press →)"
             >
-              <Check className="w-6 h-6 stroke-[2.5]" />
+              <span>Watched (→)</span>
+              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         )}
 
-        {/* Bottom Tip */}
+        {/* Bottom Navigation Hints */}
         <div className="w-full flex items-center justify-between text-[11px] text-zinc-500 pt-3 mt-2 border-t border-zinc-800/60 font-mono">
-          <span>Keys: <kbd className="text-zinc-300">←</kbd> Skip • <kbd className="text-zinc-300">→</kbd> Watched</span>
+          <span>Keys: <kbd className="text-zinc-300">←</kbd> Skip • <kbd className="text-zinc-300">→</kbd> Watched • <kbd className="text-zinc-300">↑</kbd><kbd className="text-zinc-300">↓</kbd> Genre</span>
           <button
             onClick={() => {
               onClose();

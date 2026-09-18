@@ -23,7 +23,7 @@ async def get_recommendation_feed(
     or public discovery feed across Movies, TV, Anime, and Rotten Tomatoes picks for guests.
     """
     if user:
-        return await recommender_service.get_tailored_feed(user_id=user["uid"])
+        return await recommender_service.get_tailored_feed(user_id=user["uid"], media_type=media_type)
     return await recommender_service.get_guest_feed(media_type=media_type)
 
 @router.get("/similar/{movie_id}")
@@ -47,13 +47,14 @@ async def get_similar(
 @router.get("/swipe-deck")
 async def get_swipe_deck(
     limit: int = Query(20, ge=5, le=50),
+    genre: Optional[str] = Query(None),
     user: dict = Depends(get_current_user_required)
 ):
     """
     Returns curated swipe card deck for signed-in users to calibrate their FYP taste profile.
-    Strictly excludes any titles already marked as watched.
+    Strictly excludes any titles already marked as watched. Supports genre filtering.
     """
-    return await recommender_service.get_swipe_deck(user_id=user["uid"], limit=limit)
+    return await recommender_service.get_swipe_deck(user_id=user["uid"], limit=limit, genre=genre)
 
 @router.post("/swipe")
 async def handle_swipe_action(
@@ -61,8 +62,9 @@ async def handle_swipe_action(
     user: dict = Depends(get_current_user_required)
 ):
     """
-    Records a Tinder-style swipe for a signed-in user:
-    - Right swipe (watched=true): Marks as watched and saves rating if provided.
+    Records a taste calibration swipe for a signed-in user:
+    - If watched: adds to user's watched collection
+    - Adapts user FYP profile centroid
     - Left swipe (watched=false): Skips title and records negative affinity for calibration.
     """
     if payload.watched:

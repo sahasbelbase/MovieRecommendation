@@ -60,26 +60,58 @@ class RecommenderService:
                         m["imdb_rating"] = details["imdb_rating"]
         return items
 
-    async def get_swipe_deck(self, user_id: str, limit: int = 20) -> List[dict]:
+    async def get_swipe_deck(self, user_id: str, limit: int = 20, genre: Optional[str] = None) -> List[dict]:
         """
         Returns a curated deck of iconic movies, series, and anime for taste calibration.
         Strictly excludes any titles the user has already swiped or marked as watched.
+        Supports filtering by specific genre or format (Anime, Action, Sci-Fi, K-Drama, etc.).
         """
         watched_ids = set(await self.user_data.get_watched_ids(user_id))
 
-        unwatched_seeds = [s for s in ICONIC_SWIPE_SEEDS if s["id"] not in watched_ids]
-
         deck = []
-        for item in unwatched_seeds[:limit]:
+
+        if genre and genre.lower() == "anime":
+            trending_anime = await self.tmdb.get_trending_anime()
+            top_anime = await self.tmdb.get_top_rated_anime()
+            combined = trending_anime + top_anime
+            for item in combined:
+                if item["id"] not in watched_ids and not any(d["id"] == item["id"] for d in deck):
+                    deck.append(item)
+                if len(deck) >= limit:
+                    break
+            return deck
+
+        if genre and genre.lower() in ["k-drama", "kdrama"]:
+            kdramas = await self.tmdb.get_trending_kdrama()
+            for item in kdramas:
+                if item["id"] not in watched_ids and not any(d["id"] == item["id"] for d in deck):
+                    deck.append(item)
+                if len(deck) >= limit:
+                    break
+            return deck
+
+        # Standard iconic seeds
+        unwatched_seeds = [s for s in ICONIC_SWIPE_SEEDS if s["id"] not in watched_ids]
+        for item in unwatched_seeds:
             details = await self.tmdb.get_details(item["id"], media_type=item["media_type"])
             if details:
+                if genre and genre.lower() != "all":
+                    item_genres = [g.lower() for g in details.get("genres", [])]
+                    if not any(genre.lower() in g for g in item_genres):
+                        continue
                 deck.append(details)
+            if len(deck) >= limit:
+                break
 
-        # If user has already swiped most seeds, pull top trending across all formats
+        # If user has already swiped most seeds or genre filter needs more items
         if len(deck) < 8:
             trending = await self.tmdb.get_trending_all(time_window="week")
             for t in trending:
                 if t["id"] not in watched_ids and not any(d["id"] == t["id"] for d in deck):
+                    if genre and genre.lower() != "all":
+                        t_genres = [g.lower() for g in t.get("genres", [])]
+                        if not any(genre.lower() in g for g in t_genres):
+                            continue
                     deck.append(t)
                 if len(deck) >= limit:
                     break
@@ -117,7 +149,7 @@ class RecommenderService:
 
         return await self._enrich_with_tmdb_posters(results[:limit])
 
-    async def get_tailored_feed(self, user_id: str) -> Dict[str, Any]:
+    async def get_tailored_feed(self, user_id: str, media_type: Optional[str] = None) -> Dict[str, Any]:
         """
         Generates personalized FYP recommendation feed for authenticated user.
         Adaptively detects tastes (e.g. K-Drama, Anime, skipping action, Rotten Tomatoes favorites)
@@ -126,20 +158,55 @@ class RecommenderService:
         watched_list = await self.user_data.get_watched_list(user_id)
         watched_ids = [m["id"] for m in watched_list]
 
+        # If user explicitly requested Anime category
+        if media_type == "anime":
+            trending_anime = await self.tmdb.get_trending_anime()
+            top_anime = await self.tmdb.get_top_rated_anime()
+            unwatched_trending = [m for m in trending_anime if m["id"] not in set(watched_ids)]
+            unwatched_top = [m for m in top_anime if m["id"] not in set(watched_ids)]
+            return {
+                "is_cold_start": False,
+                "needs_calibration": len(watched_list) < 3,
+                "watched_count": len(watched_list),
+                "sections": [
+                    {"title": "Anime For You", "subtitle": "Curated Japanese animation based on your taste", "movies": unwatched_trending[:10]},
+                    {"title": "All-Time Masterpiece Anime", "subtitle": "Highest rated anime you haven't watched yet", "movies": unwatched_top[:10]},
+                ]
+            }
+
+        # If user explicitly requested TV category
+        if media_type == "tv":
+            trending_tv = await self.tmdb.get_trending_tv()
+            top_tv = await self.tmdb.get_top_rated(media_type="tv")
+            unwatched_tv = [m for m in trending_tv if m["id"] not in set(watched_ids)]
+            unwatched_top_tv = [m for m in top_tv if m["id"] not in set(watched_ids)]
+            return {
+                "is_cold_start": False,
+                "needs_calibration": len(watched_list) < 3,
+                "watched_count": len(watched_list),
+                "sections": [
+                    {"title": "Trending TV Series", "subtitle": "Top shows streaming this week", "movies": unwatched_tv[:10]},
+                    {"title": "Critically Acclaimed Television", "subtitle": "Highest rated TV series (IMDb & RT)", "movies": unwatched_top_tv[:10]},
+                ]
+            }
+
         if len(watched_list) < 3:
             # Under-calibrated user: Return onboarding FYP prompt + top trending
             trending = await self.tmdb.get_trending_all(time_window="day")
             anime = await self.tmdb.get_trending_anime()
             rt_picks = await self.tmdb.get_rotten_tomatoes_picks(limit=10)
+            unwatched_trending = [m for m in trending if m["id"] not in set(watched_ids)]
+            unwatched_rt = [m for m in rt_picks if m["id"] not in set(watched_ids)]
+            unwatched_anime = [m for m in anime if m["id"] not in set(watched_ids)]
             return {
                 "is_cold_start": True,
                 "needs_calibration": True,
                 "watched_count": len(watched_list),
                 "message": f"You've marked {len(watched_list)} titles. Swipe {3 - len(watched_list)} more to calibrate your personalized FYP!",
                 "sections": [
-                    {"title": "Trending Right Now", "subtitle": "Movies, Series & Anime", "movies": trending[:10]},
-                    {"title": "Rotten Tomatoes & IMDb Elite", "subtitle": "Critically acclaimed cinema (85%+ Fresh)", "movies": rt_picks},
-                    {"title": "Top Anime Series", "subtitle": "High-rated animation", "movies": anime[:10]},
+                    {"title": "Trending Right Now", "subtitle": "Movies, Series & Anime", "movies": unwatched_trending[:10]},
+                    {"title": "Rotten Tomatoes & IMDb Elite", "subtitle": "Critically acclaimed cinema (85%+ Fresh)", "movies": unwatched_rt[:10]},
+                    {"title": "Top Anime Series", "subtitle": "High-rated animation", "movies": unwatched_anime[:10]},
                 ]
             }
 
@@ -261,11 +328,12 @@ class RecommenderService:
 
         if media_type == "anime":
             anime = await self.tmdb.get_trending_anime()
+            top_anime = await self.tmdb.get_top_rated_anime()
             return {
                 "is_guest": True,
                 "sections": [
                     {"title": "Top Trending Anime", "subtitle": "Most popular Japanese animation right now", "movies": anime},
-                    {"title": "Certified Fresh Anime & Cinema", "subtitle": "Highest rated by critics and fans", "movies": rt_picks},
+                    {"title": "All-Time Masterpiece Anime", "subtitle": "Highest rated Japanese animation (IMDb & Critic Elite)", "movies": top_anime},
                 ]
             }
         elif media_type == "tv":

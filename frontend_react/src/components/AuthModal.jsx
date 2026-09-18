@@ -54,7 +54,7 @@ export default function AuthModal({ isOpen, onClose }) {
         </div>
 
         <p className="text-xs text-zinc-400 leading-relaxed">
-          Sign in seamlessly with Google SSO to unlock your Tinder swipe calibration deck, save watched titles, and receive personalized recommendations.
+          Sign in seamlessly with Google SSO to calibrate your taste profile, save watched titles, and receive personalized recommendations.
         </p>
 
         {/* Google SSO Button */}

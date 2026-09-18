@@ -33,6 +33,41 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
+  // Synchronize local guest watched titles with user's remote account upon sign in
+  const syncGuestWatchedToAccount = async () => {
+    try {
+      const savedGuest = localStorage.getItem('cinematch_guest_watched');
+      const guestItems = savedGuest ? JSON.parse(savedGuest) : [];
+
+      const res = await api.get('/users/watched');
+      const remoteItems = res.data || [];
+      const remoteIds = new Set(remoteItems.map(m => m.id));
+
+      const missingFromRemote = guestItems.filter(m => !remoteIds.has(m.id));
+
+      if (missingFromRemote.length > 0) {
+        for (const item of missingFromRemote) {
+          try {
+            await api.post('/users/watched', { movie: item, rating: item.rating || 8.0 });
+          } catch (e) {
+            console.error("Failed to sync guest title to account:", item.title, e);
+          }
+        }
+        const updatedRes = await api.get('/users/watched');
+        const unified = updatedRes.data || [...remoteItems, ...missingFromRemote];
+        setWatchedMovies(unified);
+        setWatchedIds(new Set(unified.map(m => m.id)));
+        localStorage.setItem('cinematch_guest_watched', JSON.stringify(unified));
+      } else {
+        setWatchedMovies(remoteItems);
+        setWatchedIds(new Set(remoteItems.map(m => m.id)));
+        localStorage.setItem('cinematch_guest_watched', JSON.stringify(remoteItems));
+      }
+    } catch (err) {
+      console.warn("Could not sync watched list:", err);
+    }
+  };
+
   // Listen to Firebase Auth state
   useEffect(() => {
     if (!auth) {
@@ -50,14 +85,7 @@ export const AuthProvider = ({ children }) => {
           displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || "Movie Lover",
           photoURL: firebaseUser.photoURL
         });
-        // Fetch user's watched list from backend
-        try {
-          const res = await api.get('/users/watched');
-          setWatchedMovies(res.data);
-          setWatchedIds(new Set(res.data.map(m => m.id)));
-        } catch (err) {
-          console.warn("Could not fetch remote watched list:", err);
-        }
+        await syncGuestWatchedToAccount();
       } else {
         localStorage.removeItem('cinematch_token');
         setUser(null);
@@ -80,6 +108,7 @@ export const AuthProvider = ({ children }) => {
       };
       localStorage.setItem('cinematch_token', 'demo_token_xyz');
       setUser(demoUser);
+      await syncGuestWatchedToAccount();
       return demoUser;
     }
     const result = await signInWithPopup(auth, googleProvider);
@@ -137,9 +166,8 @@ export const AuthProvider = ({ children }) => {
         } catch (e) {
           console.error("Failed to unmark watched on server:", e);
         }
-      } else {
-        localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       }
+      localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       return false;
     } else {
       // Mark as watched
@@ -166,9 +194,8 @@ export const AuthProvider = ({ children }) => {
         } catch (e) {
           console.error("Failed to mark watched on server:", e);
         }
-      } else {
-        localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       }
+      localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       return true;
     }
   };

@@ -40,9 +40,7 @@ export default function App() {
   const loadFeed = async () => {
     setLoading(true);
     try {
-      const url = user
-        ? '/recommendations/feed'
-        : `/recommendations/feed?media_type=${selectedMediaCategory}`;
+      const url = `/recommendations/feed?media_type=${selectedMediaCategory}`;
       const res = await api.get(url);
       setFeed(res.data);
     } catch (err) {
@@ -55,6 +53,18 @@ export default function App() {
   useEffect(() => {
     loadFeed();
   }, [user, selectedMediaCategory]);
+
+  // Auto-open taste calibration swipe deck when user logs in for the first time
+  useEffect(() => {
+    if (user?.uid) {
+      const onboardingKey = `has_seen_calibration_${user.uid}`;
+      const hasSeen = localStorage.getItem(onboardingKey);
+      if (!hasSeen) {
+        setIsSwipeOpen(true);
+        localStorage.setItem(onboardingKey, 'true');
+      }
+    }
+  }, [user?.uid]);
 
   // Toast helper
   const showToast = (toastObj) => {
@@ -87,7 +97,7 @@ export default function App() {
                   Calibrate Your For You Page ({watchedMovies.length}/5 titles rated)
                 </h2>
                 <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-rose-900/60 text-rose-300 border border-rose-700/50">
-                  Tinder Swipe
+                  Quick Calibration
                 </span>
               </div>
               <p className="text-xs text-zinc-300">
@@ -98,7 +108,7 @@ export default function App() {
               onClick={() => setIsSwipeOpen(true)}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/50 transition-all self-start sm:self-auto active:scale-95"
             >
-              Start Swipe Deck
+              Start Calibration Deck
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
@@ -212,10 +222,23 @@ export default function App() {
           </div>
         ) : feed?.sections && feed.sections.length > 0 ? (
           feed.sections.map((section, idx) => {
-            // Filter section items by active genre if selected
+            // Filter section items by active category and active genre
             const movies = (section.movies || []).filter((m) => {
+              // 1. Strict category filter
+              if (selectedMediaCategory !== "all") {
+                const mType = m.media_type || "movie";
+                if (selectedMediaCategory === "anime" && mType !== "anime") return false;
+                if (selectedMediaCategory === "tv" && mType !== "tv" && mType !== "kdrama") return false;
+                if (selectedMediaCategory === "movie" && mType !== "movie") return false;
+              }
+
+              // 2. Genre matching (flexible matching for Action within Action & Adventure, etc.)
               if (selectedGenre === "All") return true;
-              return m.genres && m.genres.includes(selectedGenre);
+              if (!m.genres || m.genres.length === 0) return false;
+              return m.genres.some((g) =>
+                g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
+                selectedGenre.toLowerCase().includes(g.toLowerCase())
+              );
             });
 
             if (movies.length === 0) return null;

@@ -70,22 +70,34 @@ class TMDBService:
 
         # Map common TMDB genre IDs
         genre_map = {
-            28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
-            80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family",
-            14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music",
-            9648: "Mystery", 10749: "Romance", 878: "Sci-Fi", 10770: "TV Movie",
-            53: "Thriller", 10752: "War", 37: "Western",
-            10759: "Action & Adventure", 10762: "Kids", 10763: "News",
-            10764: "Reality", 10765: "Sci-Fi & Fantasy", 10766: "Soap",
-            10767: "Talk", 10768: "War & Politics"
+            28: ["Action"], 12: ["Adventure"], 16: ["Animation"], 35: ["Comedy"],
+            80: ["Crime"], 99: ["Documentary"], 18: ["Drama"], 10751: ["Family"],
+            14: ["Fantasy"], 36: ["History"], 27: ["Horror"], 10402: ["Music"],
+            9648: ["Mystery"], 10749: ["Romance"], 878: ["Sci-Fi"], 10770: ["TV Movie"],
+            53: ["Thriller"], 10752: ["War"], 37: ["Western"],
+            10759: ["Action", "Adventure", "Action & Adventure"], 10762: ["Kids"], 10763: ["News"],
+            10764: ["Reality"], 10765: ["Sci-Fi", "Fantasy", "Sci-Fi & Fantasy"], 10766: ["Soap"],
+            10767: ["Talk"], 10768: ["War & Politics"]
         }
 
         raw_genres = item.get("genres", [])
         genres = []
         if raw_genres and isinstance(raw_genres[0], dict):
-            genres = [g.get("name") for g in raw_genres if g.get("name")]
+            for g in raw_genres:
+                g_name = g.get("name")
+                if g_name:
+                    genres.append(g_name)
+                    if "Action" in g_name and "Action" not in genres:
+                        genres.append("Action")
+                    if "Sci-Fi" in g_name and "Sci-Fi" not in genres:
+                        genres.append("Sci-Fi")
         elif "genre_ids" in item:
-            genres = [genre_map.get(gid) for gid in item.get("genre_ids", []) if gid in genre_map]
+            for gid in item.get("genre_ids", []):
+                mapped = genre_map.get(gid)
+                if mapped:
+                    for m_name in mapped:
+                        if m_name not in genres:
+                            genres.append(m_name)
 
         if media_type == "anime" and "Anime" not in genres:
             genres.insert(0, "Anime")
@@ -208,6 +220,25 @@ class TMDBService:
                 "with_origin_country": "JP",
                 "with_genres": "16",
                 "sort_by": "popularity.desc",
+            }
+        )
+        items = []
+        for m in data.get("results", []):
+            formatted = self._format_item(m, default_type="anime")
+            formatted["media_type"] = "anime"
+            items.append(formatted)
+        return items
+
+    async def get_top_rated_anime(self, page: int = 1) -> List[dict]:
+        """Stream all-time top-rated Japanese Anime"""
+        data = await self._fetch(
+            "/discover/tv",
+            {
+                "page": page,
+                "with_origin_country": "JP",
+                "with_genres": "16",
+                "sort_by": "vote_average.desc",
+                "vote_count.gte": "200",
             }
         )
         items = []
