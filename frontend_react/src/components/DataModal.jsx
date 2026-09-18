@@ -136,6 +136,7 @@ export default function DataModal({ isOpen, onClose, onShowToast }) {
           </div>
           <button
             onClick={onClose}
+            aria-label="Close data options modal"
             className="p-1.5 rounded-lg text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800"
           >
             <X className="w-4 h-4" />

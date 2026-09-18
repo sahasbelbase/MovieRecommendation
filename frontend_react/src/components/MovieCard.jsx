@@ -21,10 +21,21 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
 
   const mediaType = movie.media_type || 'movie';
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect(movie);
+    }
+  };
+
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${movie.title}`}
       onClick={() => onSelect(movie)}
-      className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.02] cursor-pointer"
+      onKeyDown={handleKeyDown}
+      className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950 cursor-pointer"
     >
       {/* Poster with 2:3 Aspect Ratio */}
       <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-zinc-800 flex items-center justify-center">
