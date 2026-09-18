@@ -26,7 +26,7 @@ class Settings(BaseSettings):
 
     # Firebase Authentication & Firestore (optional for guest mode)
     FIREBASE_CREDENTIALS_PATH: str = os.getenv("FIREBASE_CREDENTIALS_PATH", "")
-    FIREBASE_PROJECT_ID: str = os.getenv("FIREBASE_PROJECT_ID", "")
+    FIREBASE_PROJECT_ID: str = os.getenv("FIREBASE_PROJECT_ID", "movierecomandation-60b84")
 
     # Qdrant Cloud (Optional, for hosted cloud vector storage)
     QDRANT_URL: str = os.getenv("QDRANT_URL", "")
