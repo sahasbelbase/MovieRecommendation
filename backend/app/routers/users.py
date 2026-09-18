@@ -24,6 +24,18 @@ async def unmark_movie_watched(movie_id: int, user: dict = Depends(get_current_u
     success = await user_data_service.unmark_watched(user["uid"], movie_id)
     return {"status": "success" if success else "not_found"}
 
+@router.get("/unwatched")
+async def get_user_unwatched(user: dict = Depends(get_current_user_required)):
+    """Returns list of movies the user skipped or marked unwatched"""
+    return await user_data_service.get_unwatched_list(user["uid"])
+
+@router.post("/unwatched")
+async def mark_movie_unwatched(payload: dict, user: dict = Depends(get_current_user_required)):
+    """Records an unwatched/skipped movie internally to prevent repeated recommendations"""
+    movie = payload.get("movie", payload)
+    record = await user_data_service.mark_unwatched(user["uid"], movie)
+    return {"status": "success", "record": record}
+
 @router.get("/export")
 async def export_user_data(
     format: str = Query("json", pattern="^(json|csv)$"),

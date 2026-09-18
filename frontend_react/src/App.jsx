@@ -97,18 +97,18 @@ export default function App() {
                   Calibrate Your For You Page ({watchedMovies.length}/5 titles rated)
                 </h2>
                 <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-rose-900/60 text-rose-300 border border-rose-700/50">
-                  Quick Calibration
+                  Swipe Mode
                 </span>
               </div>
               <p className="text-xs text-zinc-300">
-                Swipe right on titles you've watched, or swipe left to skip. The engine adapts to your genre and anime/drama tastes!
+                Swipe right on titles you've watched, or swipe left to skip. Unwatched titles are tracked so they won't repeat!
               </p>
             </div>
             <button
               onClick={() => setIsSwipeOpen(true)}
               className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/50 transition-all self-start sm:self-auto active:scale-95"
             >
-              Start Calibration Deck
+              Open Swipe Mode
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

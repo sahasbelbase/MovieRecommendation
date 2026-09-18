@@ -71,6 +71,7 @@ async def handle_swipe_action(
         await user_data_service.mark_watched(user["uid"], payload.item, rating=payload.rating)
         return {"status": "success", "action": "watched", "title": payload.item.get("title")}
     else:
+        await user_data_service.mark_unwatched(user["uid"], payload.item)
         return {"status": "success", "action": "skipped", "title": payload.item.get("title")}
 
 @router.get("/rotten-tomatoes")

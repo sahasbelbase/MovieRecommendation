@@ -16,26 +16,35 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [watchedIds, setWatchedIds] = useState(new Set());
   const [watchedMovies, setWatchedMovies] = useState([]);
+  const [unwatchedIds, setUnwatchedIds] = useState(new Set());
+  const [unwatchedMovies, setUnwatchedMovies] = useState([]);
 
-  // Load guest watched list from localStorage on mount
+  // Load guest watched and unwatched lists from localStorage on mount
   useEffect(() => {
     if (!user) {
       try {
-        const saved = localStorage.getItem('cinematch_guest_watched');
-        if (saved) {
-          const parsed = JSON.parse(saved);
+        const savedWatched = localStorage.getItem('cinematch_guest_watched');
+        if (savedWatched) {
+          const parsed = JSON.parse(savedWatched);
           setWatchedMovies(parsed);
           setWatchedIds(new Set(parsed.map(m => m.id)));
         }
+        const savedUnwatched = localStorage.getItem('cinematch_guest_unwatched');
+        if (savedUnwatched) {
+          const parsedUnwatched = JSON.parse(savedUnwatched);
+          setUnwatchedMovies(parsedUnwatched);
+          setUnwatchedIds(new Set(parsedUnwatched.map(m => m.id)));
+        }
       } catch (e) {
-        console.error("Failed to load local watched list:", e);
+        console.error("Failed to load local watched/unwatched list:", e);
       }
     }
   }, [user]);
 
-  // Synchronize local guest watched titles with user's remote account upon sign in
+  // Synchronize local guest watched and unwatched titles with user's remote account upon sign in
   const syncGuestWatchedToAccount = async () => {
     try {
+      // 1. Sync Watched
       const savedGuest = localStorage.getItem('cinematch_guest_watched');
       const guestItems = savedGuest ? JSON.parse(savedGuest) : [];
 
@@ -63,8 +72,31 @@ export const AuthProvider = ({ children }) => {
         setWatchedIds(new Set(remoteItems.map(m => m.id)));
         localStorage.setItem('cinematch_guest_watched', JSON.stringify(remoteItems));
       }
+
+      // 2. Sync Unwatched / Skipped
+      const savedGuestUnwatched = localStorage.getItem('cinematch_guest_unwatched');
+      const guestUnwatchedItems = savedGuestUnwatched ? JSON.parse(savedGuestUnwatched) : [];
+
+      if (guestUnwatchedItems.length > 0) {
+        for (const item of guestUnwatchedItems) {
+          try {
+            await api.post('/users/unwatched', { movie: item });
+          } catch (e) {
+            console.error("Failed to sync guest unwatched title:", item.title, e);
+          }
+        }
+      }
+      try {
+        const unwatchedRes = await api.get('/users/unwatched');
+        const remoteUnwatched = unwatchedRes.data || [];
+        setUnwatchedMovies(remoteUnwatched);
+        setUnwatchedIds(new Set(remoteUnwatched.map(m => m.id)));
+        localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(remoteUnwatched));
+      } catch (err) {
+        console.warn("Could not fetch remote unwatched:", err);
+      }
     } catch (err) {
-      console.warn("Could not sync watched list:", err);
+      console.warn("Could not sync watched/unwatched list:", err);
     }
   };
 
@@ -200,6 +232,39 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Mark movie as unwatched / skipped internally
+  const markUnwatched = async (movie) => {
+    if (!movie?.id) return;
+    const movieId = movie.id;
+    const record = {
+      id: movieId,
+      title: movie.title,
+      poster_url: movie.poster_url,
+      year: movie.year,
+      vote_average: movie.vote_average,
+      genres: movie.genres,
+      skipped_at: Date.now() / 1000
+    };
+
+    const nextIds = new Set(unwatchedIds);
+    nextIds.add(movieId);
+    setUnwatchedIds(nextIds);
+    const nextList = [record, ...unwatchedMovies.filter(m => m.id !== movieId)];
+    setUnwatchedMovies(nextList);
+    localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(nextList));
+
+    if (user) {
+      try {
+        await api.post('/recommendations/swipe', {
+          item: movie,
+          watched: false
+        });
+      } catch (e) {
+        console.error("Failed to record unwatched swipe on server:", e);
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider value={{
       user,
@@ -210,12 +275,20 @@ export const AuthProvider = ({ children }) => {
       logout,
       watchedIds,
       watchedMovies,
+      unwatchedIds,
+      unwatchedMovies,
       toggleWatched,
+      markUnwatched,
       refreshWatchedList: async () => {
         if (user) {
           const res = await api.get('/users/watched');
           setWatchedMovies(res.data);
           setWatchedIds(new Set(res.data.map(m => m.id)));
+          try {
+            const unwatchedRes = await api.get('/users/unwatched');
+            setUnwatchedMovies(unwatchedRes.data);
+            setUnwatchedIds(new Set(unwatchedRes.data.map(m => m.id)));
+          } catch (e) {}
         }
       }
     }}>

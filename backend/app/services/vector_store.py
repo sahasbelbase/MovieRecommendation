@@ -154,10 +154,19 @@ class VectorStoreService:
 
         return results
 
-    def get_tailored_recommendations(self, liked_movie_ids: List[int], excluded_ids: Optional[List[int]] = None, limit: int = 15) -> List[dict]:
+    def get_tailored_recommendations(
+        self,
+        liked_movie_ids: List[int],
+        excluded_ids: Optional[List[int]] = None,
+        suppress_franchise_terms: Optional[List[str]] = None,
+        limit: int = 15
+    ) -> List[dict]:
         """
         Computes a personalized user taste centroid from liked movies,
         strictly excluding all movies in excluded_ids (e.g. all watched movies).
+        Supports suppressing over-saturated franchise tokens (e.g. 'batman', 'gotham')
+        and applies diversity re-ranking so the top row shows high-variety alternates (Iron Man, Superman, etc.)
+        rather than repeated titles from the same series.
         """
         if not self.is_ready:
             self.initialize()
@@ -168,23 +177,76 @@ class VectorStoreService:
 
         # Compute centroid vector
         centroid = self.tfidf_matrix[valid_indices].mean(axis=0)
-        centroid = np.asarray(centroid)
+        centroid = np.asarray(centroid).copy()
+
+        # Zero out saturated franchise tokens from the query centroid
+        if suppress_franchise_terms:
+            feature_names = self.vectorizer.get_feature_names_out()
+            for term in suppress_franchise_terms:
+                term_lower = term.lower()
+                matching_indices = [
+                    i for i, f in enumerate(feature_names)
+                    if term_lower in f.lower()
+                ]
+                for idx in matching_indices:
+                    centroid[0, idx] = 0.0
+
         scores = (self.tfidf_matrix * centroid.T).flatten()
 
-        # Exclude watched movies and liked movies
+        # Exclude watched movies, liked movies, and skipped movies
         all_excluded = set(excluded_ids or []) | set(liked_movie_ids)
         for ex_id in all_excluded:
             ex_idx = self.id_to_idx.get(ex_id)
             if ex_idx is not None:
                 scores[ex_idx] = -1.0
 
-        top_indices = np.argsort(scores)[::-1][:limit]
+        # Penalize candidate movies containing suppressed saturated terms (e.g. Batman)
+        if suppress_franchise_terms:
+            for idx, row in self.df.iterrows():
+                row_title = str(row.get("title", "")).lower()
+                row_overview = str(row.get("overview", "")).lower()
+                if any(term.lower() in row_title for term in suppress_franchise_terms):
+                    scores[idx] = -1.0
+                elif any(term.lower() in row_overview for term in suppress_franchise_terms):
+                    # Penalize heavy overview matches as well
+                    scores[idx] *= 0.2
+
+        # Diversity Re-Ranking (anti-echo-chamber / franchise cap)
+        sorted_indices = np.argsort(scores)[::-1]
         results = []
-        for idx in top_indices:
-            if scores[idx] > 0:
-                movie = self._format_row(self.df.iloc[idx])
-                movie["similarity_score"] = round(float(scores[idx]), 3)
-                results.append(movie)
+        seen_franchise_keys = set()
+
+        franchise_clusters = [
+            "iron man", "spider-man", "superman", "avengers", "batman", "dark knight",
+            "x-men", "thor", "captain america", "deadpool", "matrix", "star wars",
+            "star trek", "john wick", "mad max", "fast & furious", "mission: impossible",
+            "transformers", "jurassic", "harry potter", "lord of the rings", "hobbit",
+            "alien", "predator", "terminator", "gladiator", "blade runner"
+        ]
+
+        for idx in sorted_indices:
+            if scores[idx] <= 0:
+                break
+
+            movie = self._format_row(self.df.iloc[idx])
+            title_lower = movie["title"].lower()
+
+            # Enforce max 1 title per character/franchise in top diversified picks
+            is_duplicate_cluster = False
+            for fc in franchise_clusters:
+                if fc in title_lower:
+                    if fc in seen_franchise_keys:
+                        is_duplicate_cluster = True
+                        break
+                    seen_franchise_keys.add(fc)
+
+            if is_duplicate_cluster:
+                continue
+
+            movie["similarity_score"] = round(float(scores[idx]), 3)
+            results.append(movie)
+            if len(results) >= limit:
+                break
 
         return results
 

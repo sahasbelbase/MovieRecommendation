@@ -6,7 +6,7 @@ import api from '../api/client';
 const SWIPE_GENRES = ["All", "Anime", "Action", "Drama", "Sci-Fi", "Comedy", "Thriller", "K-Drama"];
 
 export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration, onShowToast }) {
-  const { user, toggleWatched } = useAuth();
+  const { user, toggleWatched, markUnwatched, watchedIds, unwatchedIds } = useAuth();
   const [deck, setDeck] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -29,8 +29,12 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
     const fetchDeck = async () => {
       try {
         const genreParam = selectedGenre !== "All" ? `&genre=${encodeURIComponent(selectedGenre)}` : '';
-        const res = await api.get(`/recommendations/swipe-deck?limit=25${genreParam}`);
-        setDeck(res.data);
+        const res = await api.get(`/recommendations/swipe-deck?limit=30${genreParam}`);
+        // Filter out any titles already watched or marked unwatched/skipped
+        const filtered = (res.data || []).filter(
+          (m) => !watchedIds?.has(m.id) && !unwatchedIds?.has(m.id)
+        );
+        setDeck(filtered);
       } catch (err) {
         console.error("Failed to load swipe deck:", err);
       } finally {
@@ -39,12 +43,12 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
     };
 
     fetchDeck();
-  }, [isOpen, user, selectedGenre]);
+  }, [isOpen, user, selectedGenre, watchedIds, unwatchedIds]);
 
   const currentCard = deck[currentIndex];
 
   // Keyboard navigation:
-  // - Left Arrow: Skip
+  // - Left Arrow: Skip (Unwatched)
   // - Right Arrow: Watched
   // - Down Arrow: Next Genre
   // - Up Arrow: Previous Genre
@@ -92,6 +96,11 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
             message: `Marked "${item.title}" as Watched!`,
             movie: item
           });
+        }
+      } else {
+        // Track unwatched / skipped internally
+        if (markUnwatched) {
+          await markUnwatched(item);
         }
       }
       // Record swipe on server
@@ -147,13 +156,13 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
         <div className="w-full flex items-center justify-between pb-2.5 border-b border-zinc-800/80">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-white tracking-tight">Taste Calibration</span>
+              <span className="text-sm font-bold text-white tracking-tight">Swipe Mode</span>
               <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-800/40">
-                Quick Rate
+                Calibrate FYP
               </span>
             </div>
             <p className="text-xs text-zinc-400">
-              Swipe or use arrow buttons to calibrate your FYP
+              Swipe or use arrow keys (← Skip, → Watched, ↑↓ Genre)
             </p>
           </div>
           <button

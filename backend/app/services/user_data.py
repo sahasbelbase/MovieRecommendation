@@ -79,16 +79,93 @@ class UserDataService:
             try:
                 doc_ref = self.db.collection("users").document(user_id).collection("watched").document(str(movie_id))
                 doc_ref.set(record)
+                # If it was previously in unwatched, delete from unwatched
+                self.db.collection("users").document(user_id).collection("unwatched").document(str(movie_id)).delete()
                 return record
             except Exception as e:
                 logger.error(f"Firestore mark_watched error: {e}")
 
         store = self._read_dev_store()
         if user_id not in store:
-            store[user_id] = {"watched": {}}
+            store[user_id] = {"watched": {}, "unwatched": {}}
+        if "watched" not in store[user_id]:
+            store[user_id]["watched"] = {}
         store[user_id]["watched"][str(movie_id)] = record
+        # Remove from unwatched if present
+        if "unwatched" in store[user_id] and str(movie_id) in store[user_id]["unwatched"]:
+            del store[user_id]["unwatched"][str(movie_id)]
         self._write_dev_store(store)
         return record
+
+    async def mark_unwatched(self, user_id: str, movie: dict) -> dict:
+        """
+        Saves a movie to the user's skipped / unwatched list internally.
+        Ensures it won't be repeatedly served in Swipe Mode or under recommendations.
+        """
+        movie_id = int(movie["id"])
+        record = {
+            "id": movie_id,
+            "title": movie.get("title", "Untitled"),
+            "poster_url": movie.get("poster_url"),
+            "year": movie.get("year", ""),
+            "vote_average": movie.get("vote_average", 0.0),
+            "genres": movie.get("genres", []),
+            "skipped_at": time.time(),
+        }
+
+        if self.db:
+            try:
+                doc_ref = self.db.collection("users").document(user_id).collection("unwatched").document(str(movie_id))
+                doc_ref.set(record)
+                return record
+            except Exception as e:
+                logger.error(f"Firestore mark_unwatched error: {e}")
+
+        store = self._read_dev_store()
+        if user_id not in store:
+            store[user_id] = {"watched": {}, "unwatched": {}}
+        if "unwatched" not in store[user_id]:
+            store[user_id]["unwatched"] = {}
+        store[user_id]["unwatched"][str(movie_id)] = record
+        self._write_dev_store(store)
+        return record
+
+    async def get_unwatched_list(self, user_id: str) -> List[dict]:
+        """Returns list of movies the user skipped or marked unwatched"""
+        if self.db:
+            try:
+                docs = self.db.collection("users").document(user_id).collection("unwatched").order_by("skipped_at", direction="DESCENDING").stream()
+                return [doc.to_dict() for doc in docs]
+            except Exception as e:
+                logger.error(f"Firestore get_unwatched_list error: {e}")
+
+        store = self._read_dev_store()
+        user_unwatched = store.get(user_id, {}).get("unwatched", {})
+        movies = list(user_unwatched.values())
+        movies.sort(key=lambda x: x.get("skipped_at", 0), reverse=True)
+        return movies
+
+    async def get_unwatched_ids(self, user_id: str) -> List[int]:
+        """Returns just the list of movie IDs the user has marked unwatched / skipped"""
+        if self.db:
+            try:
+                docs = self.db.collection("users").document(user_id).collection("unwatched").stream()
+                return [int(doc.id) for doc in docs]
+            except Exception as e:
+                logger.error(f"Firestore get_unwatched_ids error: {e}")
+
+        store = self._read_dev_store()
+        unwatched = store.get(user_id, {}).get("unwatched", {})
+        return [int(k) for k in unwatched.keys()]
+
+    async def get_all_excluded_ids(self, user_id: str) -> List[int]:
+        """
+        Returns the union of watched movie IDs and skipped/unwatched movie IDs.
+        Used to ensure titles are never repeatedly shown in Swipe Mode or recommendation cards.
+        """
+        watched = await self.get_watched_ids(user_id)
+        unwatched = await self.get_unwatched_ids(user_id)
+        return list(set(watched + unwatched))
 
     async def unmark_watched(self, user_id: str, movie_id: int) -> bool:
         """Removes a movie from the user's watched list"""

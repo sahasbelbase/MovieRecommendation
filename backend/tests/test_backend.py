@@ -81,3 +81,65 @@ def test_watch_providers_and_direct_links(client):
     assert any(q["name"] == "Netflix" for q in data["quick_search_links"])
     assert any("netflix.com/search" in q["direct_url"] for q in data["quick_search_links"])
 
+def test_unwatched_tracking_and_exclusion(client):
+    headers = {"Authorization": "Bearer test_token_unwatched_999"}
+    # Swipe left (unwatched/skipped) on Inception (ID 27205)
+    swipe_payload = {
+        "item": {
+            "id": 27205,
+            "title": "Inception",
+            "year": "2010"
+        },
+        "watched": False
+    }
+    swipe_res = client.post("/api/recommendations/swipe", json=swipe_payload, headers=headers)
+    assert swipe_res.status_code == 200
+    assert swipe_res.json()["action"] == "skipped"
+
+    # Verify movie appears in unwatched list
+    unwatched_res = client.get("/api/users/unwatched", headers=headers)
+    assert unwatched_res.status_code == 200
+    unwatched_items = unwatched_res.json()
+    assert any(m["id"] == 27205 for m in unwatched_items)
+
+    # Verify that Inception is excluded from swipe deck
+    deck_res = client.get("/api/recommendations/swipe-deck?limit=15", headers=headers)
+    assert deck_res.status_code == 200
+    deck_items = deck_res.json()
+    assert all(m["id"] != 27205 for m in deck_items), "Skipped/unwatched movie must be excluded from swipe deck!"
+
+def test_franchise_anti_clustering_and_alternates(client):
+    headers = {"Authorization": "Bearer test_token_batman_fan_1"}
+    # Simulate marking multiple Batman movies as watched
+    batman_titles = [
+        {"id": 272, "title": "Batman Begins", "year": "2005"},
+        {"id": 155, "title": "The Dark Knight", "year": "2008"},
+        {"id": 49026, "title": "The Dark Knight Rises", "year": "2012"},
+        {"id": 268, "title": "Batman", "year": "1989"},
+    ]
+    for b in batman_titles:
+        client.post("/api/users/watched", json={"movie": b, "rating": 9.0}, headers=headers)
+
+    # Fetch personalized recommendations
+    feed_res = client.get("/api/recommendations/feed", headers=headers)
+    assert feed_res.status_code == 200
+    feed_data = feed_res.json()
+    sections = feed_data["sections"]
+
+    # Top section must be alternates, not an echo-chamber of Batman
+    top_section = sections[0]
+    assert "Alternates" in top_section["title"] or "FYP" in top_section["title"]
+
+    top_titles = [m["title"] for m in top_section["movies"]]
+    # Must contain alternate heroes (e.g. Iron Man, Superman, Spider-Man, Logan, etc.)
+    has_alternate = any(
+        any(hero in t for hero in ["Iron Man", "Superman", "Spider-Man", "Logan", "Avengers", "John Wick", "Mad Max"])
+        for t in top_titles
+    )
+    assert has_alternate, f"Top section must recommend alternate heroes! Got: {top_titles}"
+
+    # Verify dedicated franchise universe row exists lower down
+    universe_sections = [s for s in sections if "Extended Lore & Universe" in s["title"]]
+    assert len(universe_sections) > 0, "Expected a dedicated lower universe section for Batman lore"
+
+

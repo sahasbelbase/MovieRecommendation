@@ -158,15 +158,15 @@ export default function Navbar({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
-          {/* Swipe Taste Calibration Button (Signed-In Only) */}
+          {/* Swipe Mode Button (Signed-In Only) */}
           {user && (
             <button
               onClick={onOpenSwipe}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 border border-rose-500/40 text-xs font-semibold text-rose-300 hover:from-rose-600/30 hover:to-orange-600/30 transition-all shadow-sm active:scale-95"
-              title="Taste Calibration & Swipe FYP"
+              title="Swipe Mode: Calibrate your FYP"
             >
               <span className="text-sm">🔥</span>
-              <span className="hidden sm:inline">Swipe FYP</span>
+              <span className="hidden sm:inline">Swipe Mode</span>
             </button>
           )}
 
