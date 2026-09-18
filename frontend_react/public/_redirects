@@ -1,3 +1,6 @@
-# Cloudflare Pages Routing Rules
-# 1. SPA Client-Side Routing: Serves index.html for all page reloads
-/*    /index.html    200
+# Cloudflare Pages Routing & Edge Reverse Proxy
+# 1. Edge Proxy: Forward /api requests to Render backend without CORS
+/api/*  https://movierecommendation-t8yr.onrender.com/api/:splat  200
+
+# 2. SPA Client-Side Routing: Fallback to index.html for direct loads
+/*      /index.html                                               200

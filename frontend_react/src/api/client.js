@@ -1,7 +1,14 @@
 import axios from 'axios';
 
+let rawBaseUrl = import.meta.env.VITE_API_URL || '/api';
+
+// If a remote URL is provided without the /api path, automatically append /api
+if (rawBaseUrl && rawBaseUrl.startsWith('http') && !rawBaseUrl.replace(/\/+$/, '').endsWith('/api')) {
+  rawBaseUrl = `${rawBaseUrl.replace(/\/+$/, '')}/api`;
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: rawBaseUrl,
   headers: {
     'Content-Type': 'application/json',
   },
