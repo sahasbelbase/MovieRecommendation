@@ -66,12 +66,12 @@ export const AuthProvider = ({ children }) => {
         const unified = updatedRes.data || [...remoteItems, ...missingFromRemote];
         setWatchedMovies(unified);
         setWatchedIds(new Set(unified.map(m => m.id)));
-        localStorage.setItem('cinematch_guest_watched', JSON.stringify(unified));
       } else {
         setWatchedMovies(remoteItems);
         setWatchedIds(new Set(remoteItems.map(m => m.id)));
-        localStorage.setItem('cinematch_guest_watched', JSON.stringify(remoteItems));
       }
+      // Once synced, wipe guest cache so it doesn't leak to other accounts or sessions
+      localStorage.removeItem('cinematch_guest_watched');
 
       // 2. Sync Unwatched / Skipped
       const savedGuestUnwatched = localStorage.getItem('cinematch_guest_unwatched');
@@ -91,12 +91,13 @@ export const AuthProvider = ({ children }) => {
         const remoteUnwatched = unwatchedRes.data || [];
         setUnwatchedMovies(remoteUnwatched);
         setUnwatchedIds(new Set(remoteUnwatched.map(m => m.id)));
-        localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(remoteUnwatched));
       } catch (err) {
         console.warn("Could not fetch remote unwatched:", err);
       }
+      // Wipe guest unwatched cache
+      localStorage.removeItem('cinematch_guest_unwatched');
     } catch (err) {
-      console.warn("Could not sync watched/unwatched list:", err);
+      console.error("Failed to sync guest watched titles:", err);
     }
   };
 
@@ -121,6 +122,10 @@ export const AuthProvider = ({ children }) => {
       } else {
         localStorage.removeItem('cinematch_token');
         setUser(null);
+        setWatchedMovies([]);
+        setWatchedIds(new Set());
+        setUnwatchedMovies([]);
+        setUnwatchedIds(new Set());
       }
       setLoading(false);
     });
@@ -132,14 +137,15 @@ export const AuthProvider = ({ children }) => {
     const effectiveKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY || "";
     const hasRealFirebaseKey = Boolean(effectiveKey && !effectiveKey.includes("AIzaSyDemo"));
     if (!auth || !googleProvider || !hasRealFirebaseKey) {
-      // Testing fallback: lets the user test the tailored mode immediately
+      // Testing fallback with unique random ID so sessions never collide
+      const randomSuffix = Math.random().toString(36).substring(2, 10);
       const demoUser = {
-        uid: "demo_user_123",
-        email: "sahas@movieengine.app",
-        displayName: "Sahas Belbase",
+        uid: `demo_user_${randomSuffix}`,
+        email: `guest_${randomSuffix}@movieengine.app`,
+        displayName: "Guest User",
         photoURL: null
       };
-      localStorage.setItem('cinematch_token', 'demo_token_xyz');
+      localStorage.setItem('cinematch_token', `demo_token_${randomSuffix}`);
       setUser(demoUser);
       await syncGuestWatchedToAccount();
       return demoUser;
@@ -174,10 +180,20 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     if (auth) {
-      await firebaseSignOut(auth);
+      try {
+        await firebaseSignOut(auth);
+      } catch (e) {
+        console.error("Sign-out error:", e);
+      }
     }
     localStorage.removeItem('cinematch_token');
+    localStorage.removeItem('cinematch_guest_watched');
+    localStorage.removeItem('cinematch_guest_unwatched');
     setUser(null);
+    setWatchedMovies([]);
+    setWatchedIds(new Set());
+    setUnwatchedMovies([]);
+    setUnwatchedIds(new Set());
   };
 
   // Toggle Watched status with optimistic UI updates
@@ -199,8 +215,9 @@ export const AuthProvider = ({ children }) => {
         } catch (e) {
           console.error("Failed to unmark watched on server:", e);
         }
+      } else {
+        localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       }
-      localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       return false;
     } else {
       // Mark as watched
@@ -227,8 +244,9 @@ export const AuthProvider = ({ children }) => {
         } catch (e) {
           console.error("Failed to mark watched on server:", e);
         }
+      } else {
+        localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       }
-      localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
       return true;
     }
   };
@@ -252,7 +270,6 @@ export const AuthProvider = ({ children }) => {
     setUnwatchedIds(nextIds);
     const nextList = [record, ...unwatchedMovies.filter(m => m.id !== movieId)];
     setUnwatchedMovies(nextList);
-    localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(nextList));
 
     if (user) {
       try {
@@ -263,6 +280,8 @@ export const AuthProvider = ({ children }) => {
       } catch (e) {
         console.error("Failed to record unwatched swipe on server:", e);
       }
+    } else {
+      localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(nextList));
     }
   };
 
