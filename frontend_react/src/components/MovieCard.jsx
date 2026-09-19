@@ -19,12 +19,23 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onSelect(movie);
+    }
+  };
+
   const mediaType = movie.media_type || 'movie';
 
   return (
     <div
+      role="button"
+      tabIndex={0}
+      aria-label={`View details for ${movie.title}`}
       onClick={() => onSelect(movie)}
-      className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.02] cursor-pointer"
+      onKeyDown={handleKeyDown}
+      className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.02] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/80"
     >
       {/* Poster with 2:3 Aspect Ratio */}
       <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-zinc-800 flex items-center justify-center">
@@ -45,8 +56,13 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
         {/* Quick Action: Mark as Watched Toggle Button */}
         <button
           onClick={handleWatchedClick}
-          aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
-          className={`absolute top-2 right-2 rounded-full p-2 transition-all active:scale-90 ${
+          onKeyDown={(e) => e.stopPropagation()}
+          aria-label={
+            isWatched
+              ? `Remove ${movie.title} from watched`
+              : `Mark ${movie.title} as watched`
+          }
+          className={`absolute top-2 right-2 rounded-full p-2 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
             isWatched
               ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
               : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
