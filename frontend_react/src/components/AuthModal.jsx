@@ -13,16 +13,21 @@ export default function AuthModal({ isOpen, onClose }) {
     setError('');
     setSubmitting(true);
     try {
-      await loginWithGoogle();
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error("Sign-in timed out. Please check if your browser blocked the Google popup window.")), 25000)
+      );
+      await Promise.race([loginWithGoogle(), timeoutPromise]);
       onClose();
     } catch (err) {
       console.error("Google Auth error:", err);
       if (err.code === 'auth/operation-not-allowed') {
-        setError("Google Sign-In needs to be enabled in Firebase Console. Go to Authentication > Sign-in method > Google > Enable.");
+        setError("Google Sign-In is not enabled in Firebase Console. In Firebase Console, go to Authentication > Sign-in method > Google and click 'Enable'.");
       } else if (err.code === 'auth/unauthorized-domain') {
-        setError("Domain not authorized. In Firebase Console, go to Authentication > Settings > Authorized domains and add localhost / 127.0.0.1.");
+        setError("Domain not authorized in Firebase. In Firebase Console, go to Authentication > Settings > Authorized domains and add 'movierecommendation.pages.dev'.");
+      } else if (err.code === 'auth/popup-blocked') {
+        setError("Popup was blocked by your browser. Please allow popups for movierecommendation.pages.dev and try again.");
       } else if (err.code === 'auth/popup-closed-by-user') {
-        setError("Sign-in window was closed before finishing.");
+        setError("Sign-in popup was closed before completing.");
       } else {
         setError(err.message || "Google sign-in could not be completed.");
       }

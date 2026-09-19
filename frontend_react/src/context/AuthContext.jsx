@@ -129,7 +129,8 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginWithGoogle = async () => {
-    const hasRealFirebaseKey = import.meta.env.VITE_FIREBASE_API_KEY && !import.meta.env.VITE_FIREBASE_API_KEY.includes("AIzaSyDemo");
+    const effectiveKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY || "";
+    const hasRealFirebaseKey = Boolean(effectiveKey && !effectiveKey.includes("AIzaSyDemo"));
     if (!auth || !googleProvider || !hasRealFirebaseKey) {
       // Testing fallback: lets the user test the tailored mode immediately
       const demoUser = {
