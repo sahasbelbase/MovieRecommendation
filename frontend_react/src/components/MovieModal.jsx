@@ -60,7 +60,7 @@ const EMBED_SERVERS = [
   },
 ];
 
-export default function MovieModal({ isVip, onActivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
+export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
  const {
   user,
   watchedIds,
@@ -417,6 +417,9 @@ export default function MovieModal({ isVip, onActivateVip, movie, onClose, onSel
               if (code === '9999') {
                if (onActivateVip) onActivateVip();
                if (onShowToast) onShowToast({ message: 'VIP Stream Access Unlocked 🤫' });
+              } else if (code === '0000') {
+               if (onDeactivateVip) onDeactivateVip();
+               if (onShowToast) onShowToast({ message: 'VIP Access Deactivated 🔒' });
               } else {
                alert('Incorrect passcode');
               }
@@ -1282,13 +1285,20 @@ export default function MovieModal({ isVip, onActivateVip, movie, onClose, onSel
       <form
        onSubmit={(e) => {
         e.preventDefault();
-        if (vipPasscode.trim() === '9999') {
+        const trimmed = vipPasscode.trim();
+        if (trimmed === '9999') {
          if (onActivateVip) onActivateVip();
          setShowVipUnlockPrompt(false);
          setPasscodeError(false);
          setVipPasscode('');
          if (onShowToast) onShowToast({ message: 'VIP Access Unlocked 🤫' });
          setShowStreamPlayer(true);
+        } else if (trimmed === '0000') {
+         if (onDeactivateVip) onDeactivateVip();
+         setShowVipUnlockPrompt(false);
+         setPasscodeError(false);
+         setVipPasscode('');
+         if (onShowToast) onShowToast({ message: 'VIP Access Deactivated 🔒' });
         } else {
          setPasscodeError(true);
         }

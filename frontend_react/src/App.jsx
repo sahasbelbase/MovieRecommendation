@@ -53,6 +53,11 @@ export default function App() {
   setIsVip(true);
  };
 
+ const handleDeactivateVip = () => {
+  localStorage.removeItem('vip_activated');
+  setIsVip(false);
+ };
+
  const [initialRoomCode, setInitialRoomCode] = useState(() => {
   if (typeof window === 'undefined') return '';
   return (new URLSearchParams(window.location.search).get('room') || '').toUpperCase();
@@ -209,6 +214,7 @@ export default function App() {
    <Navbar
     isVip={isVip}
     onVipActivated={handleActivateVip}
+    onVipDeactivated={handleDeactivateVip}
     onSelectMovie={(m) => setSelectedMovie(m)}
     onSelectActor={(a) => setSelectedActor(a)}
     onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
@@ -526,6 +532,7 @@ export default function App() {
     <MovieModal
      isVip={isVip}
      onActivateVip={handleActivateVip}
+     onDeactivateVip={handleDeactivateVip}
      movie={selectedMovie}
      onClose={() => setSelectedMovie(null)}
      onSelectMovie={(m) => setSelectedMovie(m)}
@@ -593,6 +600,7 @@ export default function App() {
    <WatchPartyModal
     isVip={isVip}
     onActivateVip={handleActivateVip}
+    onDeactivateVip={handleDeactivateVip}
     isOpen={watchPartyData.isOpen}
     onClose={() => {
      setWatchPartyData((prev) => ({...prev, isOpen: false }));

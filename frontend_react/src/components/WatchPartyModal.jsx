@@ -22,6 +22,7 @@ const RTC_CONFIG = {
 export default function WatchPartyModal({
  isVip,
  onActivateVip,
+ onDeactivateVip,
  isOpen,
  onClose,
  roomCode: propRoomCode,
@@ -1688,6 +1689,9 @@ export default function WatchPartyModal({
                if (code === '9999') {
                 if (onActivateVip) onActivateVip();
                 if (onShowToast) onShowToast({ message: 'VIP Stream Access Unlocked 🤫' });
+               } else if (code === '0000') {
+                if (onDeactivateVip) onDeactivateVip();
+                if (onShowToast) onShowToast({ message: 'VIP Access Deactivated 🔒' });
                } else {
                 alert('Incorrect passcode');
                }

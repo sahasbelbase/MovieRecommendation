@@ -6,6 +6,7 @@ import api from '../api/client';
 export default function Navbar({
   isVip,
   onVipActivated,
+  onVipDeactivated,
   onSelectMovie,
   onSelectActor,
   onOpenWatched,
@@ -483,7 +484,12 @@ export default function Navbar({
               if (trimmed === '9999') {
                 localStorage.setItem('vip_activated', 'true');
                 if (onVipActivated) onVipActivated();
-                alert('You are activated 🤫');
+                alert('VIP Access Activated 🤫');
+                e.target.reset();
+              } else if (trimmed === '0000') {
+                localStorage.removeItem('vip_activated');
+                if (onVipDeactivated) onVipDeactivated();
+                alert('VIP Access Deactivated 🔒');
                 e.target.reset();
               } else if (trimmed.length === 4) {
                 window.location.href = `/?party=${trimmed.toUpperCase()}`;
@@ -692,7 +698,13 @@ export default function Navbar({
                 if (trimmed === '9999') {
                   localStorage.setItem('vip_activated', 'true');
                   if (onVipActivated) onVipActivated();
-                  alert('You are activated 🤫');
+                  alert('VIP Access Activated 🤫');
+                  e.target.reset();
+                  setIsProfileMenuOpen(false);
+                } else if (trimmed === '0000') {
+                  localStorage.removeItem('vip_activated');
+                  if (onVipDeactivated) onVipDeactivated();
+                  alert('VIP Access Deactivated 🔒');
                   e.target.reset();
                   setIsProfileMenuOpen(false);
                 } else if (trimmed.length === 4) {
