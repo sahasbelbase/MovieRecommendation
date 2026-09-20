@@ -12,6 +12,7 @@ export default function Navbar({
   onOpenSwipe,
   onToggleWatchlistShelf,
   onOpenTop250,
+  onOpenMovieNight,
 }) {
   const { user, logout, watchedMovies, watchlistMovies } = useAuth();
   const [query, setQuery] = useState('');
@@ -385,6 +386,16 @@ export default function Navbar({
               <span className="hidden sm:inline">Swipe Mode</span>
             </button>
           )}
+
+          {/* Movie Night (Group Match Mode) */}
+          <button
+            onClick={onOpenMovieNight}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/20 via-orange-600/20 to-amber-500/20 border border-rose-500/40 text-xs font-semibold text-rose-300 hover:border-rose-500/60 hover:from-rose-600/30 hover:to-amber-500/30 transition-all shadow-sm active:scale-95"
+            title="Movie Night: Group match mode for couples and friends"
+          >
+            <span className="text-sm">🍿</span>
+            <span className="hidden sm:inline">Movie Night</span>
+          </button>
 
           {/* Watchlist Button */}
           <button

@@ -12,7 +12,8 @@ import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
 import Top250Modal from './components/Top250Modal';
-import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark } from 'lucide-react';
+import MovieNightModal from './components/MovieNightModal';
+import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
   { id: "all", label: "All Entertainment" },
@@ -40,6 +41,8 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const [isTop250Open, setIsTop250Open] = useState(false);
+  const [isMovieNightOpen, setIsMovieNightOpen] = useState(false);
+  const [initialRoomCode, setInitialRoomCode] = useState('');
   const [toast, setToast] = useState(null);
   const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("All");
@@ -102,6 +105,16 @@ export default function App() {
     }
   }, [user?.uid]);
 
+  // Handle direct share link: ?room=CODE
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const roomParam = params.get('room');
+    if (roomParam) {
+      setInitialRoomCode(roomParam.toUpperCase());
+      setIsMovieNightOpen(true);
+    }
+  }, []);
+
   // Toast helper
   const showToast = (toastObj) => {
     setToast(toastObj);
@@ -122,6 +135,7 @@ export default function App() {
         onOpenSwipe={() => setIsSwipeOpen(true)}
         onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev => !prev)}
         onOpenTop250={() => setIsTop250Open(true)}
+        onOpenMovieNight={() => setIsMovieNightOpen(true)}
       />
 
       {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
@@ -179,7 +193,13 @@ export default function App() {
                 <strong className="text-zinc-200">{watchedMovies.length} watched titles</strong>.
               </p>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => setIsMovieNightOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
+              >
+                <span>🍿 Movie Night</span>
+              </button>
               <button
                 onClick={() => setIsSwipeOpen(true)}
                 className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 hover:from-rose-600/30 hover:to-orange-600/30 text-xs font-semibold text-rose-300 border border-rose-500/40 transition-all active:scale-95"
@@ -208,13 +228,21 @@ export default function App() {
                 Sign in to save your watched history permanently and unlock a tailored taste profile across all media.
               </p>
             </div>
-            <button
-              onClick={() => setIsAuthOpen(true)}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/40 transition-all self-start sm:self-auto active:scale-95"
-            >
-              Sign In / Register
-              <ChevronRight className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => setIsMovieNightOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
+              >
+                <span>🍿 Movie Night</span>
+              </button>
+              <button
+                onClick={() => setIsAuthOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/40 transition-all self-start sm:self-auto active:scale-95"
+              >
+                Sign In / Register
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         )}
 
@@ -477,6 +505,14 @@ export default function App() {
         onClose={() => setIsTop250Open(false)}
         onSelectMovie={(m) => setSelectedMovie(m)}
         onShowToast={showToast}
+      />
+
+      <MovieNightModal
+        isOpen={isMovieNightOpen}
+        onClose={() => setIsMovieNightOpen(false)}
+        initialRoomCode={initialRoomCode}
+        onShowToast={showToast}
+        onSelectMovie={(m) => setSelectedMovie(m)}
       />
 
       <Toast
