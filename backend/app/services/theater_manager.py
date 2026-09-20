@@ -288,7 +288,7 @@ class TheaterManager:
                 user_name = session["participants"].get(user_id, {}).get("name", "Guest")
                 video_time = get_time(0.0)
                 msg = {
-                    "id": f"msg_{int(now * 1000)}",
+                    "id": payload.get("id") or f"msg_{int(now * 1000)}",
                     "user_id": user_id,
                     "user_name": user_name,
                     "text": text[:500],

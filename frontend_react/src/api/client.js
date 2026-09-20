@@ -1,6 +1,18 @@
 import axios from 'axios';
 
-let rawBaseUrl = import.meta.env.VITE_API_URL || '/api';
+// The production backend hosted on Render
+const PROD_API_URL = 'https://movierecommendation-t8yr.onrender.com/api';
+
+let rawBaseUrl = import.meta.env.VITE_API_URL;
+
+if (!rawBaseUrl) {
+  // If running in production (e.g. on Cloudflare Pages or external domain), connect directly to Render backend
+  if (typeof window !== 'undefined' && !window.location.hostname.includes('localhost') && !window.location.hostname.includes('127.0.0.1')) {
+    rawBaseUrl = PROD_API_URL;
+  } else {
+    rawBaseUrl = '/api';
+  }
+}
 
 // If a remote URL is provided without the /api path, automatically append /api
 if (rawBaseUrl && rawBaseUrl.startsWith('http') && !rawBaseUrl.replace(/\/+$/, '').endsWith('/api')) {

@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import {
   X, Play, Pause, RotateCcw, Volume2, VolumeX, Maximize2, Minimize2,
   Users, MessageSquare, Send, Sparkles, Share2, Copy, Check,
-  Monitor, ExternalLink, RefreshCw, Crown, Film, Radio, Tv, Lock
+  Monitor, ExternalLink, RefreshCw, Crown, Film, Radio, Tv, Lock,
+  AppWindow
 } from 'lucide-react';
 import api, { getWsUrl } from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -92,6 +94,8 @@ export default function WatchPartyModal({
   // Fullscreen theater state and container ref
   const [isFullscreen, setIsFullscreen] = useState(false);
   const modalContainerRef = useRef(null);
+  const [isLoadingTheater, setIsLoadingTheater] = useState(true);
+  const [pipContainer, setPipContainer] = useState(null);
 
   const toggleFullscreen = useCallback(async () => {
     try {
@@ -147,34 +151,106 @@ export default function WatchPartyModal({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, user, toggleFullscreen]);
 
+  // Open Always-on-Top Floating Chat PiP / Companion Window
+  const openPopoutChat = useCallback(async () => {
+    // 1. Modern Chromium Document Picture-in-Picture API (System Always-on-Top)
+    if (typeof window !== 'undefined' && 'documentPictureInPicture' in window) {
+      try {
+        const pipWindow = await window.documentPictureInPicture.requestWindow({
+          width: 360,
+          height: 560,
+        });
+
+        // Copy active stylesheets so styles render properly inside the PiP body
+        [...document.styleSheets].forEach((styleSheet) => {
+          try {
+            const cssRules = [...styleSheet.cssRules].map((rule) => rule.cssText).join('');
+            const style = document.createElement('style');
+            style.textContent = cssRules;
+            pipWindow.document.head.appendChild(style);
+          } catch (e) {
+            const link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.type = styleSheet.type;
+            link.media = styleSheet.media;
+            link.href = styleSheet.href;
+            pipWindow.document.head.appendChild(link);
+          }
+        });
+
+        pipWindow.document.body.className = 'bg-zinc-950 text-white m-0 p-0 overflow-hidden font-sans';
+        setPipContainer(pipWindow.document.body);
+
+        pipWindow.addEventListener('pagehide', () => {
+          setPipContainer(null);
+        });
+        return;
+      } catch (err) {
+        console.warn('Document PiP request error, falling back to popup window:', err);
+      }
+    }
+
+    // 2. Safari / Firefox Fallback: Floating Companion Window
+    const w = 380;
+    const h = 580;
+    const left = window.screen.width - w - 20;
+    const top = 80;
+    const popoutUrl = `${window.location.origin}/?party=${roomCode}&view=chat`;
+    const popup = window.open(
+      popoutUrl,
+      `CinematchParty_${roomCode}`,
+      `width=${w},height=${h},top=${top},left=${left},resizable=yes,scrollbars=no,status=no`
+    );
+    if (popup) popup.focus();
+  }, [roomCode]);
+
   // 1. Initialize or join Theater session
   const initTheater = useCallback(async () => {
     if (!roomCode) return;
+    setIsLoadingTheater(true);
     try {
-      const res = await api.post(`/rooms/${roomCode}/theater/start`, {
-        host_id: myUserId,
-        host_name: myUserName,
-        movie: movie || undefined,
-        video_source: videoSource || undefined,
-      });
+      // 1. First attempt to fetch existing theater state (ideal for joining friends)
+      let th = null;
+      try {
+        const stateRes = await api.get(`/rooms/${roomCode}/theater/state`);
+        if (stateRes.data?.theater) {
+          th = stateRes.data.theater;
+        }
+      } catch (err) {
+        // 404: Session not created yet, proceed to start below
+      }
 
-      const th = res.data.theater;
-      setHostId(th.host_id);
-      setHostName(th.host_name);
-      if (th.movie && (!movie || !movie.title)) {
-        setMovie(th.movie);
+      // 2. If no existing session found, initialize it with host credentials
+      if (!th) {
+        const res = await api.post(`/rooms/${roomCode}/theater/start`, {
+          host_id: myUserId,
+          host_name: myUserName,
+          movie: propMovie || undefined,
+          video_source: initialVideoSource || undefined,
+        });
+        th = res.data.theater;
       }
-      if (th.video_source) {
-        setVideoSource(th.video_source);
+
+      if (th) {
+        setHostId(th.host_id);
+        setHostName(th.host_name);
+        if (th.movie && (!movie || !movie.title)) {
+          setMovie(th.movie);
+        }
+        if (th.video_source) {
+          setVideoSource(th.video_source);
+        }
+        setParticipants(th.participants || []);
+        setChatMessages(th.chat_history || []);
+        setIsPlaying(th.playback?.is_playing || false);
+        setCurrentTime(th.playback?.current_time || 0);
       }
-      setParticipants(th.participants || []);
-      setChatMessages(th.chat_history || []);
-      setIsPlaying(th.playback?.is_playing || false);
-      setCurrentTime(th.playback?.current_time || 0);
     } catch (err) {
-      console.error('Failed to start theater session:', err);
+      console.error('Failed to initialize theater session:', err);
+    } finally {
+      setIsLoadingTheater(false);
     }
-  }, [roomCode, myUserId, myUserName, movie, videoSource]);
+  }, [roomCode, myUserId, myUserName, propMovie, initialVideoSource]);
 
   // 2. Connect WebSocket for real-time synchronization
   useEffect(() => {
@@ -214,19 +290,22 @@ export default function WatchPartyModal({
       Object.values(peerConnectionsRef.current).forEach((pc) => pc.close());
       peerConnectionsRef.current = {};
     };
-  }, [isOpen, roomCode, user, initTheater]);
+  }, [isOpen, roomCode, user?.uid, myUserId, myUserName]);
 
   // 3. Handle incoming WebSocket events
   const handleServerEvent = async (data) => {
     switch (data.type) {
       case 'INITIAL_SYNC': {
         const st = data.state;
-        setHostId(st.host_id);
-        setHostName(st.host_name);
+        if (st.host_id) setHostId(st.host_id);
+        if (st.host_name) setHostName(st.host_name);
         if (st.movie) setMovie(st.movie);
-        if (st.video_source) setVideoSource(st.video_source);
-        setParticipants(st.participants || []);
-        setChatMessages(st.chat_history || []);
+        if (st.video_source) {
+          setVideoSource(st.video_source);
+          setIsLoadingTheater(false);
+        }
+        if (st.participants) setParticipants(st.participants);
+        if (st.chat_history) setChatMessages(st.chat_history);
         setIsPlaying(st.playback?.is_playing || false);
         setCurrentTime(st.playback?.current_time || 0);
 
@@ -312,14 +391,19 @@ export default function WatchPartyModal({
 
       case 'CHAT': {
         const newMsg = data.message || {
-          id: `msg_${Date.now()}`,
+          id: data.id || `msg_${Date.now()}`,
           user_id: data.user_id,
           user_name: data.sender_name,
           text: data.text,
           timestamp: Date.now() / 1000,
           video_time: currentTime,
         };
-        setChatMessages((prev) => [...prev, newMsg]);
+        setChatMessages((prev) => {
+          if (prev.some((m) => m.id === newMsg.id)) {
+            return prev;
+          }
+          return [...prev, newMsg];
+        });
         if (!isChatOpen) {
           setUnreadChatCount((prev) => prev + 1);
         }
@@ -328,7 +412,7 @@ export default function WatchPartyModal({
           if (chatScrollRef.current) {
             chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
           }
-        }, 100);
+        }, 80);
         break;
       }
 
@@ -416,6 +500,9 @@ export default function WatchPartyModal({
       const stream = await navigator.mediaDevices.getDisplayMedia({
         video: { cursor: 'always', frameRate: { ideal: 30, max: 60 } },
         audio: true,
+        selfBrowserSurface: 'exclude',
+        surfaceSwitching: 'include',
+        systemAudio: 'include',
       });
 
       localScreenStreamRef.current = stream;
@@ -436,6 +523,11 @@ export default function WatchPartyModal({
       stream.getVideoTracks()[0].onended = () => {
         stopScreenShare();
       };
+
+      // Prompt or offer popout chat for convenient multi-tab chatting
+      if (typeof window !== 'undefined' && 'documentPictureInPicture' in window) {
+        openPopoutChat().catch(() => {});
+      }
 
       // Create WebRTC offers for all other participants in the room
       participants.forEach(async (p) => {
@@ -503,11 +595,19 @@ export default function WatchPartyModal({
     if (activeTab !== 'watch' || !videoSource?.src) return;
 
     let playerInstance = null;
+    let pollInterval = null;
+    let isCleanedUp = false;
 
-    const onYouTubeIframeAPIReady = () => {
-      if (!ytContainerRef.current) return;
+    const createPlayer = () => {
+      if (isCleanedUp || !ytContainerRef.current || !window.YT || !window.YT.Player) return false;
 
-      playerInstance = new window.YT.Player(ytContainerRef.current, {
+      // Clear container children before creating iframe to prevent duplicates
+      ytContainerRef.current.innerHTML = '';
+      const playerDiv = document.createElement('div');
+      playerDiv.className = 'w-full h-full';
+      ytContainerRef.current.appendChild(playerDiv);
+
+      playerInstance = new window.YT.Player(playerDiv, {
         videoId: videoSource.src,
         playerVars: {
           autoplay: 0,
@@ -520,6 +620,7 @@ export default function WatchPartyModal({
         },
         events: {
           onReady: (event) => {
+            if (isCleanedUp) return;
             ytPlayerRef.current = event.target;
             const dur = event.target.getDuration();
             if (dur) setDuration(dur);
@@ -531,6 +632,7 @@ export default function WatchPartyModal({
             }
           },
           onStateChange: (event) => {
+            if (isCleanedUp) return;
             // YT.PlayerState.ENDED = 0, PLAYING = 1, PAUSED = 2
             if (event.data === 1) {
               setIsPlaying(true);
@@ -540,19 +642,27 @@ export default function WatchPartyModal({
           },
         },
       });
+      return true;
     };
 
-    if (window.YT && window.YT.Player) {
-      onYouTubeIframeAPIReady();
-    } else {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+    if (!createPlayer()) {
+      if (!document.querySelector('script[src="https://www.youtube.com/iframe_api"]')) {
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      }
+
+      pollInterval = setInterval(() => {
+        if (createPlayer()) {
+          clearInterval(pollInterval);
+        }
+      }, 150);
     }
 
     return () => {
+      isCleanedUp = true;
+      if (pollInterval) clearInterval(pollInterval);
       if (playerInstance && typeof playerInstance.destroy === 'function') {
         try {
           playerInstance.destroy();
@@ -663,8 +773,9 @@ export default function WatchPartyModal({
     const text = chatInput.trim();
     if (!text) return;
 
+    const msgId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     const newMsg = {
-      id: `msg_${Date.now()}`,
+      id: msgId,
       user_id: myUserId,
       user_name: myUserName,
       text,
@@ -679,7 +790,7 @@ export default function WatchPartyModal({
       wsRef.current.send(
         JSON.stringify({
           type: 'CHAT',
-          payload: { text, videoTime: currentTime },
+          payload: { id: msgId, text, videoTime: currentTime },
         })
       );
     }
@@ -937,6 +1048,18 @@ export default function WatchPartyModal({
                   >
                     <div ref={ytContainerRef} className="w-full h-full" />
                   </div>
+                ) : isLoadingTheater ? (
+                  <div className="flex flex-col items-center justify-center p-8 text-center space-y-4">
+                    <div className="w-12 h-12 rounded-2xl bg-rose-600/20 border border-rose-500/40 flex items-center justify-center animate-spin">
+                      <RefreshCw className="w-6 h-6 text-rose-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-white">Connecting to Watch Party...</h3>
+                      <p className="text-xs text-zinc-400 mt-1 max-w-sm">
+                        Synchronizing synchronized stream and room settings with {hostName || 'host'}...
+                      </p>
+                    </div>
+                  </div>
                 ) : (
                   <div className="flex flex-col items-center justify-center p-8 text-center space-y-3">
                     <Film className="w-12 h-12 text-zinc-700 animate-pulse" />
@@ -975,6 +1098,17 @@ export default function WatchPartyModal({
                       <span className="w-2 h-2 rounded-full bg-purple-400 animate-ping" />
                       <span>You are sharing your screen</span>
                     </div>
+
+                    <div className="absolute top-4 right-4 flex items-center gap-2">
+                      <button
+                        onClick={openPopoutChat}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-900/90 hover:bg-zinc-800 border border-purple-500/50 text-purple-300 text-xs font-bold shadow-lg backdrop-blur transition-all active:scale-95"
+                        title="Pop out floating chat window so you can watch other tabs while chatting"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>Pop-out Floating Chat 🪟</span>
+                      </button>
+                    </div>
                   </div>
                 ) : remoteStream ? (
                   <div
@@ -1007,6 +1141,9 @@ export default function WatchPartyModal({
                       <p className="text-xs text-zinc-400 mt-1">
                         Host can stream any browser tab, video player, or file with system audio directly to everyone in this room!
                       </p>
+                      <p className="text-[11px] text-purple-400/90 mt-2 flex items-center justify-center gap-1">
+                        <span>💡 Tip: Pop out the floating chat window to chat while watching your shared tab!</span>
+                      </p>
                     </div>
                     {isHost ? (
                       <button
@@ -1024,14 +1161,23 @@ export default function WatchPartyModal({
                   </div>
                 )}
 
-                {/* Host stop screen share button */}
+                {/* Host screen share control actions */}
                 {isScreenSharing && (
-                  <button
-                    onClick={stopScreenShare}
-                    className="mt-4 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all"
-                  >
-                    Stop Sharing Screen
-                  </button>
+                  <div className="mt-4 flex items-center gap-3">
+                    <button
+                      onClick={openPopoutChat}
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-lg transition-all active:scale-95"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5" />
+                      <span>Pop-out Chat Window 🪟</span>
+                    </button>
+                    <button
+                      onClick={stopScreenShare}
+                      className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all active:scale-95"
+                    >
+                      Stop Sharing Screen
+                    </button>
+                  </div>
                 )}
               </div>
             )}
@@ -1250,17 +1396,28 @@ export default function WatchPartyModal({
                   </span>
                 </div>
 
-                {/* Participant Avatars */}
-                <div className="flex -space-x-1.5 overflow-hidden">
-                  {participants.slice(0, 4).map((p) => (
-                    <div
-                      key={p.id}
-                      className="w-5 h-5 rounded-full bg-zinc-700 border border-zinc-900 flex items-center justify-center text-[10px] font-bold text-white uppercase"
-                      title={p.name}
-                    >
-                      {p.name.charAt(0)}
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={openPopoutChat}
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-[11px] font-semibold transition-all active:scale-95"
+                    title="Pop out floating chat window to stay on top while watching other tabs"
+                  >
+                    <ExternalLink className="w-3 h-3" />
+                    <span className="hidden sm:inline">Pop out</span>
+                  </button>
+
+                  {/* Participant Avatars */}
+                  <div className="flex -space-x-1.5 overflow-hidden">
+                    {participants.slice(0, 4).map((p) => (
+                      <div
+                        key={p.id}
+                        className="w-5 h-5 rounded-full bg-zinc-700 border border-zinc-900 flex items-center justify-center text-[10px] font-bold text-white uppercase"
+                        title={p.name}
+                      >
+                        {p.name.charAt(0)}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
@@ -1325,6 +1482,307 @@ export default function WatchPartyModal({
           )}
         </div>
       </div>
+      {/* Picture-in-Picture Floating Companion Portal */}
+      {pipContainer &&
+        createPortal(
+          <ChatCompanionContent
+            roomCode={roomCode}
+            participants={participants}
+            isHost={isHost}
+            isPlaying={isPlaying}
+            togglePlayPause={togglePlayPause}
+            handleSkip={handleSkip}
+            reactions={reactions}
+            sendReaction={sendReaction}
+            chatMessages={chatMessages}
+            chatInput={chatInput}
+            setChatInput={setChatInput}
+            sendChatMessage={sendChatMessage}
+            chatScrollRef={chatScrollRef}
+            myUserId={myUserId}
+            onClosePip={() => setPipContainer(null)}
+          />,
+          pipContainer
+        )}
     </div>
+  );
+}
+
+// Standalone Chat Companion for Picture-in-Picture & Floating Companion Mode
+export function ChatCompanionContent({
+  roomCode,
+  participants = [],
+  isHost = false,
+  isPlaying = false,
+  togglePlayPause,
+  handleSkip,
+  reactions = [],
+  sendReaction,
+  chatMessages = [],
+  chatInput = '',
+  setChatInput,
+  sendChatMessage,
+  chatScrollRef,
+  myUserId = '',
+  onClosePip,
+}) {
+  return (
+    <div className="w-full h-full min-h-screen flex flex-col bg-zinc-950 text-white font-sans select-none overflow-hidden">
+      {/* Top Header */}
+      <div className="px-3.5 py-2.5 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+          <span className="text-xs font-bold text-white tracking-wider font-mono">ROOM #{roomCode}</span>
+          <span className="px-1.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 text-[10px] font-mono">
+            👥 {participants.length}
+          </span>
+        </div>
+        {onClosePip && (
+          <button
+            onClick={onClosePip}
+            className="text-[11px] text-zinc-400 hover:text-white px-2 py-0.5 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 transition-colors"
+          >
+            Close Floating
+          </button>
+        )}
+      </div>
+
+      {/* Host Controls Bar */}
+      {isHost && (
+        <div className="px-3 py-2 bg-zinc-900/70 border-b border-zinc-800/80 flex items-center justify-between shrink-0">
+          <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">Host Controls</span>
+          <div className="flex items-center gap-1.5">
+            <button
+              onClick={togglePlayPause}
+              className="px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow transition-all active:scale-95"
+            >
+              {isPlaying ? '⏸ Pause' : '▶ Play'}
+            </button>
+            <button
+              onClick={() => handleSkip?.(-10)}
+              className="px-2 py-1 rounded-lg bg-zinc-800 text-zinc-300 hover:text-white text-xs transition-all active:scale-95"
+            >
+              -10s
+            </button>
+            <button
+              onClick={() => handleSkip?.(10)}
+              className="px-2 py-1 rounded-lg bg-zinc-800 text-zinc-300 hover:text-white text-xs transition-all active:scale-95"
+            >
+              +10s
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Reaction Cannon */}
+      <div className="px-2 py-1.5 bg-zinc-900/50 border-b border-zinc-800/60 flex items-center justify-around shrink-0">
+        {REACTION_EMOJIS.map((emoji) => (
+          <button
+            key={emoji}
+            onClick={() => sendReaction?.(emoji)}
+            className="hover:scale-125 transition-transform text-base select-none p-1"
+            title={`Send ${emoji}`}
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+
+      {/* Message List */}
+      <div ref={chatScrollRef} className="flex-1 p-3 overflow-y-auto space-y-2.5 text-xs">
+        {chatMessages.length === 0 ? (
+          <div className="h-full flex flex-col items-center justify-center text-center p-4 text-zinc-500">
+            <MessageSquare className="w-6 h-6 mb-1 opacity-40" />
+            <p className="text-xs">No messages yet.</p>
+            <p className="text-[10px] text-zinc-600">Chat with party while watching your tab!</p>
+          </div>
+        ) : (
+          chatMessages.map((msg) => {
+            const isMe = msg.user_id === myUserId;
+            return (
+              <div key={msg.id} className={`flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                <div className="flex items-center gap-1.5 text-[10px] text-zinc-400 mb-0.5 font-mono">
+                  <span className={`font-bold ${isMe ? 'text-rose-400' : 'text-zinc-300'}`}>
+                    {isMe ? 'You' : msg.user_name}
+                  </span>
+                  {msg.video_time > 0 && (
+                    <span className="text-zinc-500">
+                      [{Math.floor(msg.video_time / 60)}:{Math.floor(msg.video_time % 60) < 10 ? '0' : ''}{Math.floor(msg.video_time % 60)}]
+                    </span>
+                  )}
+                </div>
+                <div
+                  className={`px-3 py-1.5 rounded-2xl max-w-[88%] break-words leading-relaxed ${
+                    isMe
+                      ? 'bg-rose-600 text-white rounded-tr-sm shadow-md shadow-rose-950/40'
+                      : 'bg-zinc-800/90 text-zinc-200 rounded-tl-sm border border-zinc-700/50'
+                  }`}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Chat Input Form */}
+      <form onSubmit={sendChatMessage} className="p-2.5 bg-zinc-900 border-t border-zinc-800 flex gap-2 shrink-0">
+        <input
+          type="text"
+          value={chatInput}
+          onChange={(e) => setChatInput?.(e.target.value)}
+          placeholder="Chat with party..."
+          className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500 transition-colors"
+        />
+        <button
+          type="submit"
+          disabled={!chatInput?.trim()}
+          className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-40 text-white font-bold text-xs shadow transition-all active:scale-95"
+        >
+          Send
+        </button>
+      </form>
+    </div>
+  );
+}
+
+// Standalone Popup Window for Browsers without Document PiP (Safari/Firefox)
+export function StandaloneChatCompanion({ roomCode }) {
+  const { user } = useAuth();
+  const myUserId = user?.uid || `companion_${Math.random().toString(36).substring(2, 6)}`;
+  const myUserName = user?.displayName || user?.email?.split('@')[0] || 'Friend';
+
+  const [participants, setParticipants] = useState([]);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState('');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isHost, setIsHost] = useState(false);
+  const wsRef = useRef(null);
+  const chatScrollRef = useRef(null);
+
+  useEffect(() => {
+    if (!roomCode) return;
+    const fetchState = async () => {
+      try {
+        const res = await api.get(`/rooms/${roomCode}/theater/state`);
+        if (res.data?.theater) {
+          const th = res.data.theater;
+          setParticipants(th.participants || []);
+          setChatMessages(th.chat_history || []);
+          setIsPlaying(th.playback?.is_playing || false);
+          if (th.host_id === myUserId) setIsHost(true);
+        }
+      } catch (e) {
+        console.warn('Companion fetch error:', e);
+      }
+    };
+    fetchState();
+
+    const wsUrl = getWsUrl(`/rooms/${roomCode}/theater/ws?user_id=${encodeURIComponent(myUserId)}&user_name=${encodeURIComponent(myUserName)}`);
+    const ws = new WebSocket(wsUrl);
+    wsRef.current = ws;
+
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'INITIAL_SYNC') {
+          setParticipants(data.state?.participants || []);
+          setChatMessages(data.state?.chat_history || []);
+          setIsPlaying(data.state?.playback?.is_playing || false);
+          if (data.state?.host_id === myUserId) setIsHost(true);
+        } else if (data.type === 'CHAT') {
+          const newMsg = data.message || {
+            id: data.id || `msg_${Date.now()}`,
+            user_id: data.user_id,
+            user_name: data.sender_name,
+            text: data.text,
+            timestamp: Date.now() / 1000,
+            video_time: 0,
+          };
+          setChatMessages((prev) => (prev.some((m) => m.id === newMsg.id) ? prev : [...prev, newMsg]));
+          setTimeout(() => {
+            if (chatScrollRef.current) {
+              chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+            }
+          }, 80);
+        } else if (data.type === 'PLAY') {
+          setIsPlaying(true);
+        } else if (data.type === 'PAUSE') {
+          setIsPlaying(false);
+        }
+      } catch (err) {
+        console.warn('WS message error:', err);
+      }
+    };
+
+    return () => {
+      if (ws.readyState === WebSocket.OPEN) ws.close();
+    };
+  }, [roomCode, myUserId, myUserName]);
+
+  const sendChatMessage = (e) => {
+    e?.preventDefault();
+    const text = chatInput.trim();
+    if (!text) return;
+    const msgId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    const newMsg = {
+      id: msgId,
+      user_id: myUserId,
+      user_name: myUserName,
+      text,
+      timestamp: Date.now() / 1000,
+      video_time: 0,
+    };
+    setChatMessages((prev) => [...prev, newMsg]);
+    setChatInput('');
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'CHAT', payload: { id: msgId, text, videoTime: 0 } }));
+    }
+    setTimeout(() => {
+      if (chatScrollRef.current) {
+        chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+      }
+    }, 50);
+  };
+
+  const togglePlayPause = () => {
+    const nextPlaying = !isPlaying;
+    setIsPlaying(nextPlaying);
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: nextPlaying ? 'PLAY' : 'PAUSE', payload: { currentTime: 0 } }));
+    }
+  };
+
+  const handleSkip = (delta) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'SEEK', payload: { currentTime: delta > 0 ? 10 : 0 } }));
+    }
+  };
+
+  const sendReaction = (emoji) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify({ type: 'REACTION', payload: { emoji } }));
+    }
+  };
+
+  return (
+    <ChatCompanionContent
+      roomCode={roomCode}
+      participants={participants}
+      isHost={isHost}
+      isPlaying={isPlaying}
+      togglePlayPause={togglePlayPause}
+      handleSkip={handleSkip}
+      reactions={[]}
+      sendReaction={sendReaction}
+      chatMessages={chatMessages}
+      chatInput={chatInput}
+      setChatInput={setChatInput}
+      sendChatMessage={sendChatMessage}
+      chatScrollRef={chatScrollRef}
+      myUserId={myUserId}
+      onClosePip={() => window.close()}
+    />
   );
 }

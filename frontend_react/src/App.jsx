@@ -13,7 +13,7 @@ import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
 import Top250Modal from './components/Top250Modal';
 import MovieNightModal from './components/MovieNightModal';
-import WatchPartyModal from './components/WatchPartyModal';
+import WatchPartyModal, { StandaloneChatCompanion } from './components/WatchPartyModal';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
@@ -129,9 +129,14 @@ export default function App() {
     loadFeed();
   }, [user, selectedMediaCategory, selectedGenre]);
 
-  // Auto-open taste calibration swipe deck when user logs in for the first time
+  // Auto-open taste calibration swipe deck when user logs in for the first time (skip if joining party/room)
   useEffect(() => {
     if (user?.uid) {
+      const params = new URLSearchParams(window.location.search);
+      const isDirectInvite = params.get('party') || params.get('theater') || params.get('room');
+      if (isDirectInvite || pendingPartyCode || watchPartyData.isOpen || isMovieNightOpen) {
+        return;
+      }
       const onboardingKey = `has_seen_calibration_${user.uid}`;
       const hasSeen = localStorage.getItem(onboardingKey);
       if (!hasSeen) {
@@ -139,7 +144,7 @@ export default function App() {
         localStorage.setItem(onboardingKey, 'true');
       }
     }
-  }, [user?.uid]);
+  }, [user?.uid, pendingPartyCode, watchPartyData.isOpen, isMovieNightOpen]);
 
   // Handle direct share link: ?room=CODE or ?party=CODE
   useEffect(() => {
@@ -149,12 +154,11 @@ export default function App() {
     const partyParam = params.get('party') || params.get('theater');
     if (partyParam) {
       const code = partyParam.toUpperCase();
-      setWatchPartyData({
+      setWatchPartyData((prev) => ({
+        ...prev,
         isOpen: true,
         roomCode: code,
-        movie: null,
-        videoSource: null,
-      });
+      }));
       if (!user) {
         setPendingPartyCode({ code, movie: null });
         showToast({ message: 'Please sign in to join the Watch Party! 🍿' });
@@ -172,6 +176,13 @@ export default function App() {
       setToast(null);
     }, 4000);
   };
+
+  const isCompanionView = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'chat';
+  const companionRoom = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).get('party') || new URLSearchParams(window.location.search).get('theater'));
+
+  if (isCompanionView && companionRoom) {
+    return <StandaloneChatCompanion roomCode={companionRoom.toUpperCase()} />;
+  }
 
   return (
     <div className="min-h-screen bg-canvas text-zinc-100 flex flex-col font-sans">
@@ -571,7 +582,16 @@ export default function App() {
 
       <WatchPartyModal
         isOpen={watchPartyData.isOpen}
-        onClose={() => setWatchPartyData((prev) => ({ ...prev, isOpen: false }))}
+        onClose={() => {
+          setWatchPartyData((prev) => ({ ...prev, isOpen: false }));
+          setPendingPartyCode(null);
+          const url = new URL(window.location);
+          if (url.searchParams.has('party') || url.searchParams.has('theater')) {
+            url.searchParams.delete('party');
+            url.searchParams.delete('theater');
+            window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
+          }
+        }}
         roomCode={watchPartyData.roomCode}
         movie={watchPartyData.movie}
         initialVideoSource={watchPartyData.videoSource}
