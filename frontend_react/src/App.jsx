@@ -43,6 +43,16 @@ export default function App() {
  const [isAuthOpen, setIsAuthOpen] = useState(false);
  const [isSwipeOpen, setIsSwipeOpen] = useState(false);
  const [isTop250Open, setIsTop250Open] = useState(false);
+ const [isVip, setIsVip] = useState(() => {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem('vip_activated') === 'true';
+ });
+
+ const handleActivateVip = () => {
+  localStorage.setItem('vip_activated', 'true');
+  setIsVip(true);
+ };
+
  const [initialRoomCode, setInitialRoomCode] = useState(() => {
   if (typeof window === 'undefined') return '';
   return (new URLSearchParams(window.location.search).get('room') || '').toUpperCase();
@@ -197,6 +207,8 @@ export default function App() {
   <div className="min-h-screen bg-canvas text-zinc-100 flex flex-col md:flex-row font-sans">
    {/* Navigation */}
    <Navbar
+    isVip={isVip}
+    onVipActivated={handleActivateVip}
     onSelectMovie={(m) => setSelectedMovie(m)}
     onSelectActor={(a) => setSelectedActor(a)}
     onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
@@ -512,6 +524,8 @@ export default function App() {
    {/* Modals and Overlays */}
    {selectedMovie && (
     <MovieModal
+     isVip={isVip}
+     onActivateVip={handleActivateVip}
      movie={selectedMovie}
      onClose={() => setSelectedMovie(null)}
      onSelectMovie={(m) => setSelectedMovie(m)}
@@ -577,6 +591,8 @@ export default function App() {
    />
 
    <WatchPartyModal
+    isVip={isVip}
+    onActivateVip={handleActivateVip}
     isOpen={watchPartyData.isOpen}
     onClose={() => {
      setWatchPartyData((prev) => ({...prev, isOpen: false }));

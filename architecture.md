@@ -362,7 +362,6 @@ A dedicated Hall of Fame browsing engine for curated, all-time prestige media:
 2. **Bearer Token Authentication**: All user-specific backend endpoints require a valid Firebase ID token in the `Authorization: Bearer <token>` header.
 3. **Internal Unwatched & Not Interested Security**: Skipped and suppressed titles are never shared publicly or displayed in the user's visible library.
 4. **CORS Hardening**: Strict origin whitelisting (`movierecommendation.pages.dev`, `localhost:5173`).
-5. **No Media Piracy**: The system does not stream or host copyrighted media files; it acts purely as a discovery, scoring, and deep-linking platform.
 
 ---
 

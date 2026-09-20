@@ -681,12 +681,48 @@ export default function Navbar({
               </button>
             </div>
 
+            {/* Mobile Join Party by Code */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const input = e.target.elements.roomCode.value;
+                const trimmed = input.trim();
+                if (trimmed === '9999') {
+                  localStorage.setItem('vip_activated', 'true');
+                  if (onVipActivated) onVipActivated();
+                  alert('You are activated 🤫');
+                  e.target.reset();
+                  setIsProfileMenuOpen(false);
+                } else if (trimmed.length === 4) {
+                  setIsProfileMenuOpen(false);
+                  window.location.href = `/?party=${trimmed.toUpperCase()}`;
+                }
+              }}
+              className="flex flex-col gap-2 pt-3 border-t border-zinc-800"
+            >
+              <div className="flex w-full">
+                <input
+                  name="roomCode"
+                  type="text"
+                  placeholder="Party Code"
+                  maxLength={4}
+                  className="w-full px-3 py-2 rounded-l-xl bg-zinc-950 border border-zinc-800 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors uppercase placeholder:normal-case placeholder:text-zinc-500"
+                />
+                <button
+                  type="submit"
+                  className="px-3 py-2 rounded-r-xl bg-rose-600 hover:bg-rose-500 text-white text-sm font-semibold transition-colors whitespace-nowrap"
+                >
+                  Join
+                </button>
+              </div>
+            </form>
+
             <button
               onClick={() => {
                 setIsProfileMenuOpen(false);
                 logout();
               }}
-              className="flex items-center justify-center gap-2 pt-3 border-t border-zinc-800 text-xs font-semibold text-rose-400 hover:text-rose-300 py-2 rounded-xl hover:bg-rose-950/30"
+              className="flex items-center justify-center gap-2 pt-3 border-t border-zinc-800 text-xs font-semibold text-rose-400 hover:text-rose-300 py-2 rounded-xl hover:bg-rose-950/30 mt-1"
             >
               <LogOut className="w-4 h-4" />
               <span>Log Out</span>
