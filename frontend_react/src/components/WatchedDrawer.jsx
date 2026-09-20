@@ -9,7 +9,7 @@ export default function WatchedDrawer({
   onOpenDataModal,
   initialTab = 'watched',
 }) {
-  const { watchedMovies, toggleWatched, watchlistMovies, toggleWatchlist } = useAuth();
+  const { user, watchedMovies, toggleWatched, watchlistMovies, toggleWatchlist } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Sync active tab whenever drawer is opened with a specific initialTab
@@ -236,6 +236,19 @@ export default function WatchedDrawer({
               )}
             </div>
           )}
+
+          {/* Library Status Footer */}
+          <div className="p-3 bg-zinc-950 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${user ? 'bg-emerald-400' : 'bg-amber-400/80'}`} />
+              <span className="text-[11px]">
+                {user ? 'Synced with your Google Account & Drive' : 'Stored locally on this browser'}
+              </span>
+            </div>
+            {!user && (
+              <span className="text-[10px] text-zinc-500 font-medium">Sign in to sync</span>
+            )}
+          </div>
         </div>
       </div>
     </div>

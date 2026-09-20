@@ -58,9 +58,17 @@ export default function AuthModal({ isOpen, onClose }) {
           </button>
         </div>
 
-        <p className="text-xs text-zinc-400 leading-relaxed">
-          Sign in seamlessly with Google SSO to unlock Swipe Mode, save watched titles, and receive personalized recommendations.
-        </p>
+        <div className="space-y-2.5">
+          <p className="text-xs text-zinc-300 leading-relaxed">
+            Sign in with Google to automatically sync your watched titles and watchlist across all your devices, and unlock Swipe Mode.
+          </p>
+          <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-400 leading-relaxed">
+            <span className="text-sm shrink-0">🔒</span>
+            <span>
+              <strong className="text-zinc-300 font-medium">Private Google Drive Storage:</strong> Your library stays 100% yours. When signing in, Google will request permission to store your library data securely.
+            </span>
+          </div>
+        </div>
 
         {/* Google SSO Button */}
         <button
@@ -85,7 +93,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
         <div className="pt-2 border-t border-zinc-900 text-center">
           <p className="text-[11px] text-zinc-500">
-            Fast, secure authentication. No passwords needed.
+            Fast, secure authentication. Saved directly to your personal Google storage.
           </p>
         </div>
       </div>

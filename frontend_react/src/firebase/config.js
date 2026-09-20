@@ -23,6 +23,11 @@ try {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   auth = getAuth(app);
   googleProvider = new GoogleAuthProvider();
+  googleProvider.addScope('https://www.googleapis.com/auth/drive.appdata');
+  googleProvider.addScope('https://www.googleapis.com/auth/drive.file');
+  googleProvider.setCustomParameters({
+    prompt: 'select_account'
+  });
   db = getFirestore(app);
 
   // Initialize analytics if supported in current browser environment

@@ -4,7 +4,8 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  GoogleAuthProvider
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config';
 import api from '../api/client';
@@ -14,6 +15,12 @@ import {
   saveLibraryToCloud,
   loadLibraryFromCloud
 } from '../services/cloudLibrary';
+import {
+  saveToGoogleDrive,
+  loadFromGoogleDrive,
+  setStoredDriveToken,
+  getStoredDriveToken
+} from '../services/googleDrive';
 
 const AuthContext = createContext({});
 
@@ -107,17 +114,33 @@ export const AuthProvider = ({ children }) => {
   }, [user]);
 
   // Synchronize local guest watched and unwatched titles with user's remote account upon sign in
-  const syncGuestWatchedToAccount = async (firebaseUid) => {
+  const syncGuestWatchedToAccount = async (firebaseUid, customDriveToken = null) => {
     try {
       const activeLibId = firebaseUid || user?.uid || getOrCreateLibraryId();
+      const driveToken = customDriveToken || getStoredDriveToken();
 
-      // Check Firestore cloud data for this user first
+      // 1. Try loading from personal Google Drive if authorized
+      let driveData = null;
+      if (driveToken) {
+        try {
+          driveData = await loadFromGoogleDrive(driveToken);
+        } catch (e) {
+          console.warn("Drive sync load notice:", e);
+        }
+      }
+
+      // 2. Check Firestore cloud data
       const cloudData = await loadLibraryFromCloud(activeLibId);
+
+      const driveWatched = driveData?.watched || [];
+      const driveWatchlist = driveData?.watchlist || [];
+      const driveUnwatched = driveData?.unwatched || [];
+
       const cloudWatched = cloudData?.watched || [];
       const cloudWatchlist = cloudData?.watchlist || [];
       const cloudUnwatched = cloudData?.unwatched || [];
 
-      // Also read any guest items
+      // 3. Read any guest items
       const savedGuest = localStorage.getItem('cinematch_guest_watched');
       const guestItems = savedGuest ? JSON.parse(savedGuest) : [];
 
@@ -127,18 +150,21 @@ export const AuthProvider = ({ children }) => {
       const savedGuestUnwatched = localStorage.getItem('cinematch_guest_unwatched');
       const guestUnwatchedItems = savedGuestUnwatched ? JSON.parse(savedGuestUnwatched) : [];
 
-      // Combine unique watched
+      // Combine unique watched from all sources (Drive + Firestore + Guest)
       const watchedMap = new Map();
+      driveWatched.forEach(m => watchedMap.set(m.id, m));
       cloudWatched.forEach(m => watchedMap.set(m.id, m));
       guestItems.forEach(m => watchedMap.set(m.id, m));
 
       // Combine unique watchlist
       const watchlistMap = new Map();
+      driveWatchlist.forEach(m => watchlistMap.set(m.id, m));
       cloudWatchlist.forEach(m => watchlistMap.set(m.id, m));
       guestWlItems.forEach(m => watchlistMap.set(m.id, m));
 
       // Combine unique unwatched
       const unwatchedMap = new Map();
+      driveUnwatched.forEach(m => unwatchedMap.set(m.id, m));
       cloudUnwatched.forEach(m => unwatchedMap.set(m.id, m));
       guestUnwatchedItems.forEach(m => unwatchedMap.set(m.id, m));
 
@@ -154,14 +180,23 @@ export const AuthProvider = ({ children }) => {
       setUnwatchedIds(new Set(mergedUnwatched.map(m => m.id)));
       setIsCloudSynced(true);
 
-      // Save merged library permanently to Cloud Firestore
+      // Save directly to user's Google Drive if authorized
+      if (driveToken) {
+        saveToGoogleDrive(driveToken, {
+          watched: mergedWatched,
+          watchlist: mergedWatchlist,
+          unwatched: mergedUnwatched
+        }).catch(() => {});
+      }
+
+      // Also save to Firestore cloud storage
       await saveLibraryToCloud(activeLibId, {
         watched: mergedWatched,
         watchlist: mergedWatchlist,
         unwatched: mergedUnwatched
       });
 
-      // Also forward any guest items to backend API if reachable
+      // Forward to backend API if available
       try {
         for (const item of guestItems) {
           api.post('/users/watched', { movie: item, rating: item.rating || 8.0 }).catch(() => {});
@@ -175,7 +210,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.removeItem('cinematch_guest_watchlist');
       localStorage.removeItem('cinematch_guest_unwatched');
     } catch (err) {
-      console.error("Failed to sync guest titles to account:", err);
+      console.error("Failed to sync titles to account:", err);
     }
   };
 
@@ -228,6 +263,11 @@ export const AuthProvider = ({ children }) => {
       return demoUser;
     }
     const result = await signInWithPopup(auth, googleProvider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) {
+      setStoredDriveToken(credential.accessToken);
+      await syncGuestWatchedToAccount(result.user.uid, credential.accessToken);
+    }
     return result.user;
   };
 
@@ -264,7 +304,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
     localStorage.removeItem('cinematch_token');
-    // Note: Cloud Firestore library data is preserved forever!
+    setStoredDriveToken(null);
     setUser(null);
     const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     const freshGuestId = `USER-${randomCode}`;
@@ -325,6 +365,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Seamlessly persist to both Google Cloud Firestore and User's Google Drive (if authorized)
+  const persistLibrary = (libId, { watched, watchlist, unwatched }) => {
+    saveLibraryToCloud(libId, { watched, watchlist, unwatched });
+    const driveToken = getStoredDriveToken();
+    if (driveToken) {
+      saveToGoogleDrive(driveToken, { watched, watchlist, unwatched }).catch(e => {
+        console.warn("Notice saving to Google Drive:", e);
+      });
+    }
+  };
+
   // Toggle Watched status with optimistic UI updates & Firestore cloud persistence
   const toggleWatched = async (movie, rating = null) => {
     const movieId = movie.id;
@@ -339,8 +390,8 @@ export const AuthProvider = ({ children }) => {
       const nextMovies = watchedMovies.filter(m => m.id !== movieId);
       setWatchedMovies(nextMovies);
 
-      // Save to Cloud Firestore
-      saveLibraryToCloud(activeLibId, {
+      // Save to Cloud Firestore & Google Drive
+      persistLibrary(activeLibId, {
         watched: nextMovies,
         watchlist: watchlistMovies,
         unwatched: unwatchedMovies
@@ -388,8 +439,8 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      // Save to Cloud Firestore
-      saveLibraryToCloud(activeLibId, {
+      // Save to Cloud Firestore & Google Drive
+      persistLibrary(activeLibId, {
         watched: nextMovies,
         watchlist: nextWlMovies,
         unwatched: unwatchedMovies
@@ -423,8 +474,8 @@ export const AuthProvider = ({ children }) => {
       const nextMovies = watchlistMovies.filter(m => m.id !== movieId);
       setWatchlistMovies(nextMovies);
 
-      // Save to Cloud Firestore
-      saveLibraryToCloud(activeLibId, {
+      // Save to Cloud Firestore & Google Drive
+      persistLibrary(activeLibId, {
         watched: watchedMovies,
         watchlist: nextMovies,
         unwatched: unwatchedMovies
@@ -462,8 +513,8 @@ export const AuthProvider = ({ children }) => {
       const nextMovies = [record, ...watchlistMovies.filter(m => m.id !== movieId)];
       setWatchlistMovies(nextMovies);
 
-      // Save to Cloud Firestore
-      saveLibraryToCloud(activeLibId, {
+      // Save to Cloud Firestore & Google Drive
+      persistLibrary(activeLibId, {
         watched: watchedMovies,
         watchlist: nextMovies,
         unwatched: unwatchedMovies
@@ -503,8 +554,8 @@ export const AuthProvider = ({ children }) => {
     const nextList = [record, ...unwatchedMovies.filter(m => m.id !== movieId)];
     setUnwatchedMovies(nextList);
 
-    // Save to Cloud Firestore
-    saveLibraryToCloud(activeLibId, {
+    // Save to Cloud Firestore & Google Drive
+    persistLibrary(activeLibId, {
       watched: watchedMovies,
       watchlist: watchlistMovies,
       unwatched: nextList
