@@ -1528,25 +1528,28 @@ export default function WatchPartyModal({
          } bg-black flex items-center justify-center cursor-pointer overflow-hidden`}
          title="Double-click to toggle fullscreen (F)"
         >
-         <iframe
-          src={
-           videoSource?.src ||
-           (movie?.id
-            ? movie.media_type === 'tv'
-              ? `https://vidsrc.sbs/embed/tv/${movie.id}/1/1`
-              : `https://vidsrc.sbs/embed/movie/${movie.id}`
-            : '')
-          }
-          title={videoSource?.title || movie?.title || 'Full Movie Stream'}
-          allow="autoplay; encrypted-media; picture-in-picture"
-          allowFullScreen
-          sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
-          className="w-full h-full border-0"
-         />
-         <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-950/90 border border-indigo-500/50 text-indigo-300 text-[11px] font-semibold backdrop-blur">
-          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
-          <span>Ad-Shielded Stream 🍿</span>
-         </div>
+          {(() => {
+           const activeSrc = videoSource?.src || (movie?.id
+            ? ['tv', 'anime', 'kdrama'].includes(movie?.media_type)
+              ? `https://vidlink.pro/tv/${movie.id}/1/1?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+              : `https://vidlink.pro/movie/${movie.id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+            : '');
+           const isVidLink = activeSrc.includes('vidlink.pro');
+           return (
+            <iframe
+             src={activeSrc}
+             title={videoSource?.title || movie?.title || 'Full Movie Stream'}
+             allow="autoplay; encrypted-media; picture-in-picture"
+             allowFullScreen
+             {...(isVidLink ? {} : { sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms' })}
+             className="w-full h-full border-0"
+            />
+           );
+          })()}
+          <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-950/90 border border-indigo-500/50 text-indigo-300 text-[11px] font-semibold backdrop-blur">
+           <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+           <span>Live Stream</span>
+          </div>
         </div>
        </div>
       )}

@@ -21,6 +21,7 @@ const EMBED_SERVERS = [
   {
     id: 'vidlink_pro',
     name: 'Server 1 (VidLink HD ⭐)',
+    sandbox: null, // VidLink requires non-sandboxed frame to render player without error
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
       : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
@@ -28,21 +29,25 @@ const EMBED_SERVERS = [
   {
     id: 'vidsrc_sbs',
     name: 'Server 2 (VidSrc)',
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}` : `https://vidsrc.sbs/embed/movie/${id}`
   },
   {
     id: 'vidsrc_pro',
     name: 'Server 3 (Pro)',
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` : `https://vidsrc.pro/embed/movie/${id}`
   },
   {
     id: 'vidsrc_cc',
     name: 'Server 4 (HD)',
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}`
   },
   {
     id: 'vidsrc_me',
     name: 'Server 5 (Fast)',
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`
   },
 ];
@@ -305,7 +310,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
           </button>
          </div>
 
-         {/* Ad-Shielded Sandboxed Player */}
+         {/* Stream Player */}
          <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
           <iframe
            key={`${EMBED_SERVERS[streamServerIndex].id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
@@ -313,7 +318,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
            title={`${movie.title} Stream`}
            allow="autoplay; encrypted-media; picture-in-picture"
            allowFullScreen
-           sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+           {...(EMBED_SERVERS[streamServerIndex].sandbox ? { sandbox: EMBED_SERVERS[streamServerIndex].sandbox } : {})}
            className="w-full h-full border-0"
           />
          </div>
