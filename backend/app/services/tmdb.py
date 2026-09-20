@@ -288,6 +288,12 @@ class TMDBService:
             items.append(formatted)
         return items
 
+    async def get_top_rated(self, media_type: str = "movie", page: int = 1) -> List[dict]:
+        """Fetch top-rated movies or TV series"""
+        clean_type = "movie" if media_type == "movie" else "tv"
+        data = await self._fetch(f"/{clean_type}/top_rated", {"page": page})
+        return [self._format_item(m, default_type=clean_type) for m in data.get("results", [])]
+
     async def get_rotten_tomatoes_picks(self, limit: int = 10) -> List[dict]:
         """Curates Certified Fresh / Critically Acclaimed titles (IMDb >= 8.2 & RT >= 90%)"""
         data = await self._fetch("/movie/top_rated", {"page": 1})

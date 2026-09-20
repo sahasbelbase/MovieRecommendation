@@ -41,6 +41,20 @@ def test_guest_recommendations_feed(client):
     assert "sections" in data
     assert len(data["sections"]) > 0
 
+    # Test media_type=tv specifically (ensures get_top_rated and get_trending_tv succeed)
+    res_tv = client.get("/api/recommendations/feed?media_type=tv")
+    assert res_tv.status_code == 200
+    data_tv = res_tv.json()
+    assert "sections" in data_tv
+    assert len(data_tv["sections"]) > 0
+
+    # Test media_type=movie specifically
+    res_movie = client.get("/api/recommendations/feed?media_type=movie")
+    assert res_movie.status_code == 200
+    data_movie = res_movie.json()
+    assert "sections" in data_movie
+    assert len(data_movie["sections"]) > 0
+
 def test_user_watched_and_export(client):
     # Test adding movie to watched list with auth header
     headers = {"Authorization": "Bearer test_token_12345"}
@@ -341,6 +355,84 @@ def test_top_250_rankings(client):
     assert data_anime["category"] == "anime"
     assert len(data_anime["items"]) > 0
     assert data_anime["items"][0]["rank"] == 1
+
+
+def test_movie_night_group_match_flow(client):
+    """
+    Tests end-to-end Movie Night Group Match Mode:
+    1. Host creates room and gets 4-letter code.
+    2. Friend joins using room code.
+    3. Both participants swipe on candidate titles.
+    4. Mutual like triggers 'It's a Match!' and appears in matches list.
+    """
+    # 1. Host creates room
+    create_res = client.post("/api/rooms/create", json={
+        "host_name": "Sahas",
+        "host_id": "user_host_123",
+        "media_type": "movie",
+        "genre": "All",
+        "room_name": "Friday Watch Party"
+    })
+    assert create_res.status_code == 200
+    room_data = create_res.json()["room"]
+    room_code = room_data["code"]
+    assert len(room_code) == 4
+    assert room_data["host_name"] == "Sahas"
+    assert len(room_data["unswiped_deck"]) > 0
+
+    first_movie = room_data["unswiped_deck"][0]
+    first_movie_id = first_movie["id"]
+
+    # 2. Friend joins
+    join_res = client.post(f"/api/rooms/{room_code}/join", json={
+        "user_name": "Alex",
+        "user_id": "user_friend_456"
+    })
+    assert join_res.status_code == 200
+    join_data = join_res.json()["room"]
+    participant_names = [p["name"] for p in join_data["participants"]]
+    assert "Sahas" in participant_names
+    assert "Alex" in participant_names
+
+    # 3. Friend swipes right (liked = True) on first movie
+    swipe_friend = client.post(f"/api/rooms/{room_code}/swipe", json={
+        "user_id": "user_friend_456",
+        "movie_id": first_movie_id,
+        "liked": True
+    })
+    assert swipe_friend.status_code == 200
+    res_f = swipe_friend.json()["result"]
+    assert res_f["liked"] is True
+    # Not yet a match because host has not swiped
+    assert res_f["is_match"] is False
+
+    # 4. Host also swipes right (liked = True) on the SAME movie
+    swipe_host = client.post(f"/api/rooms/{room_code}/swipe", json={
+        "user_id": "user_host_123",
+        "movie_id": first_movie_id,
+        "liked": True
+    })
+    assert swipe_host.status_code == 200
+    res_h = swipe_host.json()["result"]
+    # Unanimous match between all participants!
+    assert res_h["is_match"] is True
+    assert res_h["matched_movie"]["id"] == first_movie_id
+    assert "Sahas" in res_h["liked_by"]
+    assert "Alex" in res_h["liked_by"]
+
+    # 5. Check matches endpoint
+    matches_res = client.get(f"/api/rooms/{room_code}/matches")
+    assert matches_res.status_code == 200
+    matches_data = matches_res.json()
+    assert matches_data["total_matches"] == 1
+    assert matches_data["matches"][0]["movie"]["id"] == first_movie_id
+
+    # 6. Leave room
+    leave_res = client.post(f"/api/rooms/{room_code}/leave", json={
+        "user_id": "user_friend_456"
+    })
+    assert leave_res.status_code == 200
+
 
 
 

@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .core.config import settings
 from .services.vector_store import vector_store
-from .routers import movies_router, recommendations_router, users_router
+from .routers import movies_router, recommendations_router, users_router, rooms_router
 
 logging.basicConfig(
     level=logging.INFO,
@@ -40,11 +40,13 @@ app.add_middleware(
 app.include_router(movies_router, prefix=settings.API_V1_PREFIX)
 app.include_router(recommendations_router, prefix=settings.API_V1_PREFIX)
 app.include_router(users_router, prefix=settings.API_V1_PREFIX)
+app.include_router(rooms_router, prefix=settings.API_V1_PREFIX)
 
 # Fallback root endpoints to prevent 404 when baseURL lacks /api
 app.include_router(movies_router)
 app.include_router(recommendations_router)
 app.include_router(users_router)
+app.include_router(rooms_router)
 
 @app.get("/")
 async def root():
