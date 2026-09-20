@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users } from 'lucide-react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
@@ -80,6 +80,11 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
  const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
 
+ // Episode sorting, range chunking & search jump for long-running series / anime
+ const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
+ const [selectedChunkIndex, setSelectedChunkIndex] = useState(0);
+ const [episodeSearchQuery, setEpisodeSearchQuery] = useState('');
+
  const watchedRecord = watchedMovies.find(m => m.id === movie.id);
  const isWatched = watchedIds.has(movie.id);
  const isWatchlist = watchlistIds.has(movie.id);
@@ -159,6 +164,8 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
   setShowStreamPlayer(false);
   setSelectedSeason(1);
   setSelectedEpisode(1);
+  setSelectedChunkIndex(0);
+  setEpisodeSearchQuery('');
 
   const fetchData = async () => {
    try {
@@ -216,6 +223,8 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
   if (!movie?.id || !['tv', 'anime', 'kdrama'].includes(mediaType)) return;
   let isMounted = true;
   setEpisodesLoading(true);
+  setSelectedChunkIndex(0);
+  setEpisodeSearchQuery('');
 
   const fetchSeasonEpisodes = async () => {
    try {
@@ -250,13 +259,60 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
 
  const handleWatchlistToggle = async () => {
   const nowInWatchlist = await toggleWatchlist(movie);
-  if (onShowToast) {
-   onShowToast({
-    message: nowInWatchlist ? `Added "${movie.title}" to Watchlist` : `Removed "${movie.title}" from Watchlist`,
-    movie
+   if (onShowToast) {
+    onShowToast({
+     message: nowInWatchlist ? `Added "${movie.title}" to Watchlist` : `Removed "${movie.title}" from Watchlist`,
+     movie
+    });
+   }
+  };
+
+  // Episode sorting, range chunking & search filtering for long-running series / anime
+ const rawEpisodes = seasonData?.episodes || [];
+
+ const sortedEpisodes = [...rawEpisodes].sort((a, b) => {
+  const epA = a.episode_number || 0;
+  const epB = b.episode_number || 0;
+  return sortOrder === 'desc' ? epB - epA : epA - epB;
+ });
+
+ const filteredEpisodes = episodeSearchQuery.trim()
+  ? sortedEpisodes.filter(ep => {
+      const q = episodeSearchQuery.trim().toLowerCase();
+      return (
+       ep.episode_number?.toString() === q ||
+       ep.episode_number?.toString().includes(q) ||
+       ep.name?.toLowerCase().includes(q)
+      );
+    })
+  : sortedEpisodes;
+
+ const CHUNK_SIZE = 50;
+ const shouldChunk = sortedEpisodes.length > 30 && !episodeSearchQuery.trim();
+ const episodeChunks = [];
+
+ if (shouldChunk) {
+  for (let i = 0; i < sortedEpisodes.length; i += CHUNK_SIZE) {
+   const chunkEps = sortedEpisodes.slice(i, i + CHUNK_SIZE);
+   const minEp = Math.min(...chunkEps.map(e => e.episode_number || 0));
+   const maxEp = Math.max(...chunkEps.map(e => e.episode_number || 0));
+   const label = sortOrder === 'desc'
+    ? `Ep ${maxEp}–${minEp}`
+    : `Ep ${minEp}–${maxEp}`;
+   episodeChunks.push({
+    label: i === 0 && sortOrder === 'desc' ? `${label} (Latest)` : label,
+    episodes: chunkEps
    });
   }
- };
+ }
+
+ const displayedEpisodes = shouldChunk
+  ? (episodeChunks[selectedChunkIndex]?.episodes || sortedEpisodes)
+  : filteredEpisodes;
+
+ const latestEpisodeNumber = rawEpisodes.length > 0
+  ? Math.max(...rawEpisodes.map(e => e.episode_number || 0))
+  : 1;
 
  return (
   <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
@@ -649,55 +705,135 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
        </p>
       </div>
 
-      {/* Netflix-Style TV Series & Anime Season & Episode Selector */}
+      {/* TV Series, Anime & K-Drama Episodes Browser with Fast Sort, Range Chunks & Jump Search */}
       {['tv', 'anime', 'kdrama'].includes(mediaType) && (
        <div className="space-y-4 pt-4 pb-2 border-t border-b border-zinc-800/80">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
-           <Layers className="w-4 h-4" />
+        {/* Header & Quick Controls Bar */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-zinc-900/60 p-3 rounded-2xl border border-zinc-800/80">
+         {/* Season Selector & Play Latest Button */}
+         <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 mr-1">
+           <div className="p-1.5 rounded-lg bg-purple-500/10 border border-purple-500/20 text-purple-400">
+            <Layers className="w-4 h-4" />
+           </div>
+           <span className="text-xs font-bold text-white uppercase tracking-wider hidden sm:inline">Episodes</span>
           </div>
-          <div>
-           <h3 className="text-sm font-bold text-white tracking-wide flex items-center gap-2">
-            Episodes
-            {episodesLoading && (
-             <span className="text-[11px] font-normal text-purple-400 animate-pulse font-mono">
-              Loading season...
-             </span>
-            )}
-           </h3>
-           <p className="text-[11px] text-zinc-400 font-sans">
-            Select a season & episode to start streaming directly
-           </p>
+
+          <div className="relative">
+           <select
+            value={selectedSeason}
+            onChange={(e) => {
+             setSelectedSeason(Number(e.target.value));
+             setSelectedEpisode(1);
+             setSelectedChunkIndex(0);
+             setEpisodeSearchQuery('');
+            }}
+            className="appearance-none bg-zinc-950 border border-zinc-700 hover:border-purple-500/60 text-white text-xs sm:text-sm font-bold rounded-xl pl-3.5 pr-9 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer shadow-md transition-all"
+           >
+            {(details?.seasons?.length > 0
+             ? details.seasons
+             : Array.from({ length: details?.seasons_count || 1 }, (_, i) => ({
+                season_number: i + 1,
+                name: `Season ${i + 1}`,
+                episode_count: 0
+               }))
+            ).map((s) => (
+             <option key={s.season_number} value={s.season_number}>
+              {s.name || `Season ${s.season_number}`} {s.episode_count ? `(${s.episode_count} eps)` : ''}
+             </option>
+            ))}
+           </select>
+           <ChevronDown className="w-4 h-4 text-purple-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
           </div>
+
+          {/* Quick Play Latest Episode */}
+          {rawEpisodes.length > 0 && (
+           <button
+            onClick={() => {
+             if (!user) {
+              if (onRequireAuth) onRequireAuth();
+              if (onShowToast) onShowToast({ message: 'Please sign in to stream' });
+              return;
+             }
+             setSelectedEpisode(latestEpisodeNumber);
+             setShowTrailerPlayer(false);
+             setShowStreamPlayer(true);
+             const container = document.querySelector('.overflow-y-auto');
+             if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 text-purple-300 border border-purple-500/30 text-xs font-bold transition-all active:scale-95 shadow-sm"
+            title={`Play latest episode (${latestEpisodeNumber})`}
+           >
+            <Zap className="w-3.5 h-3.5 text-purple-400 fill-purple-400" />
+            <span>Play Latest (Ep {latestEpisodeNumber})</span>
+           </button>
+          )}
          </div>
 
-         {/* Season Selector Dropdown */}
-         <div className="relative self-start sm:self-auto">
-          <select
-           value={selectedSeason}
-           onChange={(e) => {
-            setSelectedSeason(Number(e.target.value));
-            setSelectedEpisode(1);
+         {/* Sort Toggle & Episode Jump Search Input */}
+         <div className="flex items-center gap-2 self-stretch md:self-auto">
+          {/* Sort Order Toggle */}
+          <button
+           onClick={() => {
+            setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc');
+            setSelectedChunkIndex(0);
            }}
-           className="appearance-none bg-zinc-900 border border-zinc-700 hover:border-purple-500/60 text-white text-xs sm:text-sm font-bold rounded-xl pl-3.5 pr-9 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer shadow-lg transition-all"
+           className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-950 border border-zinc-700 hover:border-purple-500/50 text-zinc-300 hover:text-white text-xs font-medium transition-all shrink-0"
+           title={sortOrder === 'desc' ? "Showing newest episodes first" : "Showing oldest episodes first"}
           >
-           {(details?.seasons?.length > 0
-            ? details.seasons
-            : Array.from({ length: details?.seasons_count || 1 }, (_, i) => ({
-               season_number: i + 1,
-               name: `Season ${i + 1}`,
-               episode_count: 0
-              }))
-           ).map((s) => (
-            <option key={s.season_number} value={s.season_number}>
-             {s.name || `Season ${s.season_number}`} {s.episode_count ? `(${s.episode_count} eps)` : ''}
-            </option>
-           ))}
-          </select>
-          <ChevronDown className="w-4 h-4 text-purple-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+           <ArrowUpDown className="w-3.5 h-3.5 text-purple-400" />
+           <span className="font-mono text-[11px]">{sortOrder === 'desc' ? 'Newest First' : 'Oldest First'}</span>
+          </button>
+
+          {/* Jump to Episode Search */}
+          <div className="relative flex-1 sm:w-44">
+           <Search className="w-3.5 h-3.5 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+           <input
+            type="text"
+            placeholder="Jump to Ep #..."
+            value={episodeSearchQuery}
+            onChange={(e) => {
+             setEpisodeSearchQuery(e.target.value);
+             setSelectedChunkIndex(0);
+            }}
+            className="w-full bg-zinc-950 border border-zinc-700 text-white text-xs rounded-xl pl-8 pr-7 py-2 focus:outline-none focus:border-purple-500/60 placeholder-zinc-500 font-mono transition-all"
+           />
+           {episodeSearchQuery && (
+            <button
+             onClick={() => setEpisodeSearchQuery('')}
+             className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white text-xs"
+            >
+             ✕
+            </button>
+           )}
+          </div>
          </div>
         </div>
+
+        {/* Episode Range Chunks / Tabs (Shown when season has > 30 episodes and no search filter) */}
+        {shouldChunk && episodeChunks.length > 1 && (
+         <div className="space-y-1.5">
+          <div className="flex items-center justify-between text-[11px] font-mono text-zinc-400 px-1">
+           <span>Select Episode Range ({rawEpisodes.length} total):</span>
+           <span>Batch {selectedChunkIndex + 1} of {episodeChunks.length}</span>
+          </div>
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-thin scrollbar-thumb-zinc-800">
+           {episodeChunks.map((chunk, idx) => (
+            <button
+             key={chunk.label}
+             onClick={() => setSelectedChunkIndex(idx)}
+             className={`px-3 py-1.5 rounded-xl text-xs font-mono font-semibold whitespace-nowrap transition-all ${
+              selectedChunkIndex === idx
+               ? 'bg-purple-600 text-white shadow-md shadow-purple-950/50 border border-purple-400/30'
+               : 'bg-zinc-900 text-zinc-400 hover:text-white hover:bg-zinc-800 border border-zinc-800'
+             }`}
+            >
+             {chunk.label}
+            </button>
+           ))}
+          </div>
+         </div>
+        )}
 
         {/* Episode Cards List */}
         {episodesLoading ? (
@@ -712,9 +848,9 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
            </div>
           ))}
          </div>
-        ) : seasonData?.episodes?.length > 0 ? (
-         <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800 hover:scrollbar-thumb-purple-600">
-          {seasonData.episodes.map((ep) => {
+        ) : displayedEpisodes.length > 0 ? (
+         <div className="space-y-2.5 max-h-[420px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800 hover:scrollbar-thumb-purple-600">
+          {displayedEpisodes.map((ep) => {
            const isSelected = selectedSeason === ep.season_number && selectedEpisode === ep.episode_number;
            return (
             <div
@@ -810,7 +946,9 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
          </div>
         ) : (
          <div className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800 text-center space-y-2">
-          <p className="text-xs text-zinc-400 font-mono">Season {selectedSeason} details ready for streaming.</p>
+          <p className="text-xs text-zinc-400 font-mono">
+           {episodeSearchQuery ? `No episodes found matching "${episodeSearchQuery}"` : `Season ${selectedSeason} details ready for streaming.`}
+          </p>
           <button
            onClick={() => {
             if (!user) {
