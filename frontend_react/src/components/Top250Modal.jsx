@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { X, Trophy, Star, Check, Bookmark, EyeOff, Search, Film, Tv, Sparkles, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { X, Trophy, Star, Check, Bookmark, EyeOff, Search, Film, Tv, Sparkles, ChevronLeft, ChevronRight, ArrowUp } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
@@ -17,6 +17,43 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
   const [page, setPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterMode, setFilterMode] = useState('all'); // 'all' | 'unwatched' | 'watched'
+  const [showScrollToTop, setShowScrollToTop] = useState(false);
+
+  const scrollContainerRef = useRef(null);
+  const modalOverlayRef = useRef(null);
+
+  // Scroll back to the top of the list and modal container
+  const scrollToTop = (smooth = false) => {
+    if (scrollContainerRef.current) {
+      if (smooth) {
+        scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+    }
+    if (modalOverlayRef.current) {
+      if (smooth) {
+        modalOverlayRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        modalOverlayRef.current.scrollTop = 0;
+      }
+    }
+    window.scrollTo({ top: 0, behavior: smooth ? 'smooth' : 'auto' });
+  };
+
+  const handlePageChange = (newPage) => {
+    const targetPage = Math.max(1, Math.min(totalPages, newPage));
+    setPage(targetPage);
+    scrollToTop(false);
+  };
+
+  const handleScroll = (e) => {
+    if (e.target.scrollTop > 350) {
+      setShowScrollToTop(true);
+    } else {
+      setShowScrollToTop(false);
+    }
+  };
 
   // Keyboard shortcut: Escape to close
   useEffect(() => {
@@ -48,6 +85,11 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
 
     fetchTop250();
   }, [isOpen, activeCategory]);
+
+  // Automatically scroll back to top whenever page, category, or filter mode changes
+  useEffect(() => {
+    scrollToTop(false);
+  }, [page, activeCategory, filterMode]);
 
   // Filter items by search query and watch status
   const filteredItems = useMemo(() => {
@@ -88,7 +130,7 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
+    <div ref={modalOverlayRef} className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 md:p-6 overflow-y-auto bg-black/85 backdrop-blur-md animate-in fade-in duration-150">
       {/* Click outside to close */}
       <div className="fixed inset-0" onClick={onClose} />
 
@@ -205,7 +247,7 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
         </div>
 
         {/* Media Grid / List Body */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
+        <div ref={scrollContainerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 relative">
           {loading ? (
             <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
               {Array.from({ length: 15 }).map((_, i) => (
@@ -383,6 +425,18 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
               })}
             </div>
           )}
+
+          {/* Floating Back to Top Button */}
+          {showScrollToTop && (
+            <button
+              onClick={() => scrollToTop(true)}
+              className="sticky bottom-4 float-right z-30 flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-amber-500 text-black font-bold text-xs shadow-2xl shadow-black hover:bg-amber-400 transition-all active:scale-95 animate-in fade-in zoom-in duration-150"
+              title="Back to top"
+            >
+              <ArrowUp className="w-4 h-4 stroke-[2.5]" />
+              <span>Back to Top</span>
+            </button>
+          )}
         </div>
 
         {/* Footer Pagination Bar */}
@@ -396,20 +450,34 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
           <div className="flex items-center gap-2 self-end sm:self-auto">
             <button
               disabled={page <= 1}
-              onClick={() => setPage(p => Math.max(1, p - 1))}
+              onClick={() => handlePageChange(page - 1)}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 disabled:opacity-40 disabled:pointer-events-none transition-colors"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
               Previous
             </button>
 
-            <span className="font-mono px-2 py-1 text-zinc-300">
-              Page {page} of {totalPages}
-            </span>
+            {totalPages > 1 && (
+              <div className="flex items-center gap-1">
+                {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((p) => (
+                  <button
+                    key={p}
+                    onClick={() => handlePageChange(p)}
+                    className={`min-w-[28px] h-7 px-2 rounded-lg text-xs font-mono font-semibold transition-all ${
+                      page === p
+                        ? 'bg-amber-500 text-black shadow-md font-bold'
+                        : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800'
+                    }`}
+                  >
+                    {p}
+                  </button>
+                ))}
+              </div>
+            )}
 
             <button
               disabled={page >= totalPages}
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => handlePageChange(page + 1)}
               className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 text-zinc-300 disabled:opacity-40 disabled:pointer-events-none transition-colors"
             >
               Next
