@@ -33,7 +33,7 @@ export default function WatchPartyModal({
   // Guest identity & Join status
   const [guestName, setGuestName] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('cinematch_guest_name') || '';
+      return localStorage.getItem('cinematch_guest_name') || localStorage.getItem('movienight_name') || '';
     }
     return '';
   });
@@ -54,7 +54,7 @@ export default function WatchPartyModal({
   });
 
   const myUserId = user?.uid || myGuestId;
-  const myUserName = user?.displayName || user?.email?.split('@')[0] || guestName || 'Friend';
+  const myUserName = user?.displayName || user?.email?.split('@')[0] || guestName || localStorage.getItem('movienight_name') || 'Friend';
 
   useEffect(() => {
     if (user) {
@@ -150,6 +150,7 @@ export default function WatchPartyModal({
   const ytPlayerRef = useRef(null);
   const ytContainerRef = useRef(null);
   const localScreenStreamRef = useRef(null);
+  const lastMediaVideoSourceRef = useRef(null);
   const peerConnectionsRef = useRef({}); // userId -> RTCPeerConnection
   const pendingIceCandidatesRef = useRef({}); // userId -> Array of ICE candidates
   const handleServerEventRef = useRef(null);
@@ -157,6 +158,13 @@ export default function WatchPartyModal({
   const isHost = myUserId === hostId;
   const lastSyncTimeRef = useRef(0);
   const isSeekingRef = useRef(false);
+
+  // Preserve last valid non-WebRTC video source so we can restore it when screen sharing ends
+  useEffect(() => {
+    if (videoSource && videoSource.type !== 'webrtc' && videoSource.src) {
+      lastMediaVideoSourceRef.current = videoSource;
+    }
+  }, [videoSource]);
 
   // Fullscreen theater state and container ref
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -590,6 +598,9 @@ export default function WatchPartyModal({
       if (onShowToast) onShowToast({ message: `${data.sender_name || 'Host'} started screen sharing 🖥️` });
     } else if (stream_action === 'stop_screen') {
       setRemoteStream(null);
+      if (remoteVideoRef.current) {
+        remoteVideoRef.current.srcObject = null;
+      }
       setActiveTab('watch');
       if (onShowToast) onShowToast({ message: 'Screen sharing ended' });
       return;
@@ -778,24 +789,49 @@ export default function WatchPartyModal({
     }
   };
 
-  const stopScreenShare = () => {
+  const stopScreenShare = async () => {
     if (localScreenStreamRef.current) {
       localScreenStreamRef.current.getTracks().forEach((t) => t.stop());
       localScreenStreamRef.current = null;
     }
+    if (localVideoRef.current) {
+      localVideoRef.current.srcObject = null;
+    }
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null;
+    }
+    setRemoteStream(null);
     setIsScreenSharing(false);
     setActiveTab('watch');
+
+    let restoreSource = lastMediaVideoSourceRef.current;
+    if (!restoreSource?.src && movie?.id) {
+      try {
+        const res = await api.get(`/movies/${movie.id}/trailers?media_type=${movie.media_type || 'movie'}`);
+        if (res.data && res.data.length > 0) {
+          restoreSource = {
+            type: 'youtube',
+            src: res.data[0].key,
+            title: `${movie.title || movie.name || 'Movie'} - Trailer`,
+          };
+        }
+      } catch (e) {
+        console.warn('Failed to fetch trailer on stop screen share:', e);
+      }
+    }
+
+    const finalSource = restoreSource || {
+      type: 'youtube',
+      src: '',
+      title: movie?.title || 'Cinema Stream',
+    };
 
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(
         JSON.stringify({
           type: 'CHANGE_SOURCE',
           payload: {
-            source: {
-              type: 'youtube',
-              src: movie?.trailer_key || '',
-              title: movie?.title || 'Cinema Stream',
-            },
+            source: finalSource,
           },
         })
       );
@@ -1136,7 +1172,10 @@ export default function WatchPartyModal({
                   if (e.key === 'Enter') {
                     const name = guestName.trim() || 'Cinephile';
                     setGuestName(name);
-                    if (typeof window !== 'undefined') localStorage.setItem('cinematch_guest_name', name);
+                    if (typeof window !== 'undefined') {
+                      localStorage.setItem('cinematch_guest_name', name);
+                      localStorage.setItem('movienight_name', name);
+                    }
                     setHasJoined(true);
                   }
                 }}
@@ -1148,7 +1187,10 @@ export default function WatchPartyModal({
               onClick={() => {
                 const name = guestName.trim() || 'Cinephile';
                 setGuestName(name);
-                if (typeof window !== 'undefined') localStorage.setItem('cinematch_guest_name', name);
+                if (typeof window !== 'undefined') {
+                  localStorage.setItem('cinematch_guest_name', name);
+                  localStorage.setItem('movienight_name', name);
+                }
                 setHasJoined(true);
               }}
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-rose-950/60 transition-all active:scale-95 flex items-center justify-center gap-2"

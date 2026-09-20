@@ -423,6 +423,33 @@ export default function Navbar({
             <Download className="w-4 h-4" />
           </button>
 
+          {/* Join Party by Code (Desktop) */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const input = e.target.elements.roomCode.value;
+              if (input.trim().length === 4) {
+                 window.location.href = `/?party=${input.trim().toUpperCase()}`;
+              }
+            }}
+            className="hidden lg:flex items-center mx-1"
+          >
+            <input
+              name="roomCode"
+              type="text"
+              placeholder="Code"
+              maxLength={4}
+              className="w-16 px-2 py-1.5 rounded-l-xl bg-zinc-900 border border-zinc-800 text-xs text-white text-center uppercase focus:outline-none focus:border-rose-500 transition-colors placeholder:normal-case"
+              title="Enter 4-letter Party Code"
+            />
+            <button
+              type="submit"
+              className="px-2.5 py-1.5 rounded-r-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold shadow-md transition-colors"
+            >
+              Join
+            </button>
+          </form>
+
           {/* User Auth & Profile Menu */}
           {user ? (
             <div className="relative flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-zinc-800">
