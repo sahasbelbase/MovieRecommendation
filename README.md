@@ -2,12 +2,28 @@
 
 An intelligent, production-grade media discovery and recommendation platform supporting **Movies, TV Series, Japanese Anime, and Korean Dramas (K-Dramas)**.
 
-Powered by a **FastAPI** backend with vector similarity & franchise anti-clustering, and a **React 18 + Vite** cinema-calibrated interface with interactive **Swipe Mode**, verified Rotten Tomatoes 🍅 & IMDb ⭐ ratings, and a direct-launch **"Where to Stream & Watch Now"** hub covering multiple countries including **Nepal (🇳🇵)**.
+🌐 **Live Production Application**: [movierecommendation.pages.dev](https://movierecommendation.pages.dev/)
+
+Powered by a **FastAPI** backend with vector similarity & franchise anti-clustering, and a **React 18 + Vite** cinema-calibrated interface featuring interactive **Swipe Mode**, dedicated **Watchlist Shelf**, **Actor Filmography Search**, verified **Rotten Tomatoes 🍅 & IMDb ⭐ ratings**, personal **Google Drive Cloud Storage**, and a direct-launch **"Where to Stream & Watch Now"** hub covering multiple countries including **Nepal (🇳🇵)**.
 
 ---
 
 ## ✨ Key Features
 
+* **Sub-Navigation Watchlist Shelf ("Want to Watch" / "Watch Later")**:
+  * Persistent shelf docked directly below navigation with smooth scrolling.
+  * Quick one-click toggle from any card or movie detail modal.
+  * **Auto-Move to Watched**: Marking a queued title as watched automatically removes it from the Watchlist.
+  * **Strict Feed Exclusion**: Titles in your Watchlist or Watched list are automatically excluded from recommendation feeds and Swipe decks so you are never recommended what you've already saved.
+* **🎭 Universal Actor & Director Filmography Search**:
+  * Universal typeahead search matches movies, TV shows, anime, actors, and directors.
+  * Clicking an actor displays their headshot, biography, and interactive filmography drawer showing all movies and TV shows they appeared in with release years and ratings.
+  * One-click from the actor's credits launches the complete streaming and detail modal.
+* **🔒 Private Google Drive Library Storage & Transparent OAuth Consent**:
+  * **100% User Data Ownership**: Your personal movie library (Watched list and Watchlist) is saved directly into your personal Google Drive (`cinematch_movie_library.json` inside private AppData storage).
+  * **Seamless Google Consent**: Google OAuth prompts for app storage permissions directly during standard 1-click Google sign-in.
+  * **Zero Developer Jargon**: Completely eliminates raw database UIDs, manual copy-paste sync codes, or technical clutter for a clean, consumer-grade experience (like Netflix or Spotify).
+  * **Dual-Layer Resilience**: Backed by Google Cloud Firestore and local storage caches so your library recovers instantaneously across new tabs, devices, or incognito sessions.
 * **Multi-Format Media Discovery**: Full support for Movies, TV Shows, Anime, and K-Dramas with distinct badges, seasons/episodes count, runtime, and directors/creators.
 * **🔥 Swipe Mode (FYP Calibration)**:
   * Interactive card deck with mouse/trackpad drag-and-swipe.
@@ -19,7 +35,7 @@ Powered by a **FastAPI** backend with vector similarity & franchise anti-cluster
     * <kbd>Esc</kbd>: Close modal
   * Auto-triggers on first-time login for seamless onboarding.
 * **🛡️ Internal Unwatched / Skipped Tracking**:
-  * Skipped titles are tracked internally (`mark_unwatched` in Firestore / local storage) without cluttering the user's visible watched library.
+  * Skipped titles are tracked internally without cluttering the user's visible library.
   * Permanently eliminates repeating cards from Swipe Mode and recommendations.
 * **🦸 Franchise Anti-Clustering & Alternate Hero Recommender**:
   * Prevents echo-chambers (e.g. watching 8 Batman movies won't fill your top recommendations with only Batman).
@@ -34,10 +50,6 @@ Powered by a **FastAPI** backend with vector similarity & franchise anti-cluster
 * **🍅 Rotten Tomatoes & IMDb Scores**:
   * Verified Tomatometer percentage and IMDb ratings displayed on every card and detail modal.
   * Curated **Rotten Tomatoes & IMDb Elite** row (85%+ Fresh masterpieces).
-* **🌓 Dual-Tier Experience & Auto-Sync**:
-  * **Guest Mode**: Clean discovery with local temporary watch & skip tracking in `localStorage`.
-  * **Google SSO**: 1-Click login via Firebase Auth.
-  * **Automatic Synchronization**: Guest watched and skipped history automatically syncs and merges into the remote account on login.
 * **📁 Data Portability**:
   * Export watch history to JSON or Letterboxd/IMDb CSV format.
   * Import watch records from JSON or CSV.
@@ -50,10 +62,11 @@ Powered by a **FastAPI** backend with vector similarity & franchise anti-cluster
 |---|---|
 | **Frontend** | React 18, Vite, Tailwind CSS, Lucide React, Axios, Firebase Client SDK |
 | **Backend** | FastAPI, Python 3.11, Uvicorn, Scikit-Learn (TF-IDF), NumPy, Pandas, Pydantic v2, HTTPX |
-| **Authentication** | Firebase Auth (Google SSO), Firebase Admin SDK |
-| **Persistence** | Cloud Firestore (Production), Local JSON Dev Store (Offline Fallback), Browser LocalStorage |
-| **External APIs** | The Movie Database (TMDB v3), OMDb API (Rotten Tomatoes & IMDb) |
-| **Testing** | Pytest, FastAPI TestClient, AnyIO (9/9 automated tests passing) |
+| **Authentication** | Firebase Auth (Google SSO), OAuth2 Drive Scopes (`drive.appdata`, `drive.file`) |
+| **Cloud Storage** | Google Drive v3 REST API (User AppData), Cloud Firestore (Cloud Sync), LocalStorage |
+| **Hosting & CDN** | Cloudflare Pages (Frontend SPA), Render (FastAPI Backend) |
+| **External APIs** | The Movie Database (TMDB v3), OMDb API (Rotten Tomatoes & IMDb), Google Drive API |
+| **Testing** | Pytest, FastAPI TestClient, AnyIO (12/12 automated tests passing) |
 
 ---
 
@@ -101,13 +114,13 @@ npm run dev
 
 ## 🧪 Running Automated Tests
 
-Run the complete test suite verifying vector similarity, watched/skipped exclusion, franchise anti-clustering, and K-Drama guards:
+Run the complete test suite verifying vector similarity, watched/skipped exclusion, watchlist auto-move, actor filmography, franchise anti-clustering, and K-Drama guards:
 
 ```bash
 PYTHONPATH=. .venv/bin/pytest backend/tests/ -v
 ```
 
-**9/9 tests pass:**
+**12/12 test suites pass:**
 * `test_health_check` ✅
 * `test_vector_store_similarity` ✅
 * `test_watched_movie_exclusion` ✅
@@ -117,6 +130,9 @@ PYTHONPATH=. .venv/bin/pytest backend/tests/ -v
 * `test_unwatched_tracking_and_exclusion` ✅
 * `test_franchise_anti_clustering_and_alternates` ✅
 * `test_kdrama_recommendation_strict_guard` ✅
+* `test_user_watchlist_and_auto_move_to_watched` ✅
+* `test_actor_search_and_filmography` ✅
+* `test_watchlist_exclusion_from_feed_and_recommendations` ✅
 
 ---
 
@@ -124,7 +140,7 @@ PYTHONPATH=. .venv/bin/pytest backend/tests/ -v
 
 | Key | Action |
 |---|---|
-| <kbd>/</kbd> | Focus global multi-search input |
+| <kbd>/</kbd> | Focus global multi-search input (search movies, series, anime, actors) |
 | <kbd>→</kbd> | In Swipe Mode: Mark current title as **Watched** |
 | <kbd>←</kbd> | In Swipe Mode: **Skip** current title (tracked internally as unwatched) |
 | <kbd>↓</kbd> | In Swipe Mode: Switch to **Next Genre** |
@@ -148,29 +164,33 @@ MovieRecommendation/
 │   │   │   ├── config.py           # Configuration & API credentials
 │   │   │   └── auth.py             # Dual-mode Firebase token validation
 │   │   ├── services/
-│   │   │   ├── tmdb.py             # TMDB live metadata & streaming providers
+│   │   │   ├── tmdb.py             # TMDB metadata, actor credits & streaming providers
 │   │   │   ├── vector_store.py     # TF-IDF vector store & diversity re-ranking
-│   │   │   ├── user_data.py        # Watched & unwatched persistence (Firestore/dev)
-│   │   │   └── recommender.py      # Franchise anti-clustering & FYP engine
+│   │   │   ├── user_data.py        # Watched, unwatched & watchlist persistence
+│   │   │   └── recommender.py      # Franchise anti-clustering, FYP & watchlist filters
 │   │   └── routers/
-│   │       ├── movies.py           # Discovery & streaming endpoints
+│   │       ├── movies.py           # Discovery, streaming & actor filmography endpoints
 │   │       ├── recommendations.py  # Public & tailored feeds, swipe recording
-│   │       └── users.py            # Watched/unwatched management & export
+│   │       └── users.py            # Watched, watchlist, unwatched management & export
 │   └── tests/
-│       └── test_backend.py         # Automated Pytest suite (9 tests)
+│       └── test_backend.py         # Automated Pytest suite (12 tests)
 └── frontend_react/
     ├── src/
-    │   ├── App.jsx                 # Layout, format filters, Swipe Mode banner
-    │   ├── firebase/config.js      # Firebase SDK initialization
-    │   ├── context/AuthContext.jsx # Auth state, guest storage & auto-sync
+    │   ├── App.jsx                 # Layout, format filters, Watchlist shelf integration
+    │   ├── firebase/config.js      # Firebase SDK & Google Drive OAuth scopes
+    │   ├── context/AuthContext.jsx # Auth state, Drive sync & dual-layer persistence
     │   ├── api/client.js           # Axios client with auto Bearer tokens
+    │   ├── services/
+    │   │   ├── googleDrive.js      # Google Drive REST API integration (AppData folder)
+    │   │   └── cloudLibrary.js     # Cloud Firestore real-time library synchronization
     │   └── components/
-    │       ├── Navbar.jsx          # Search bar (/), format tabs, Swipe Mode button
-    │       ├── MovieCard.jsx       # Posters, format tags, RT 🍅 & IMDb ⭐ badges
-    │       ├── MovieModal.jsx      # Where to Stream hub, trailer, cast
+    │       ├── Navbar.jsx          # Multi-search (/), format tabs, actor filmography
+    │       ├── WatchlistShelf.jsx  # Docked sub-navigation Watchlist shelf with scroll
+    │       ├── MovieCard.jsx       # Posters, format tags, RT 🍅, IMDb ⭐ & watchlist button
+    │       ├── MovieModal.jsx      # Where to Stream hub, trailer, cast & watchlist toggle
     │       ├── SwipeDeckModal.jsx  # Swipe Mode deck with arrows & genre cycling
-    │       ├── AuthModal.jsx       # 1-Click Google SSO modal
-    │       └── WatchedDrawer.jsx   # Watched list, ratings, JSON/CSV export
+    │       ├── AuthModal.jsx       # Google SSO modal with clear Drive storage consent
+    │       └── WatchedDrawer.jsx   # Watched & Watchlist drawer with sync status footer
     └── package.json
 ```
 
@@ -178,7 +198,7 @@ MovieRecommendation/
 
 ## 🌐 End-to-End Architecture
 
-For deep-dive diagrams, data models, recommendation formulas, and sequence flows, refer to [`architecture.md`](file:///Users/sahas/Documents/Projects/MovieRecommendation/architecture.md).
+For comprehensive system diagrams, Google Drive OAuth synchronization workflows, recommendation centroid formulations, and sequence flows, refer to [`architecture.md`](./architecture.md).
 
 ---
 
