@@ -204,5 +204,34 @@ def test_user_watchlist_and_auto_move_to_watched(client):
     assert watched_list_res.status_code == 200
     assert any(m["id"] == 157336 for m in watched_list_res.json())
 
+def test_actor_search_and_filmography(client):
+    # 1. Search for an actor
+    res = client.get("/api/movies/search?query=Brad%20Pitt")
+    assert res.status_code == 200
+    items = res.json()
+    assert len(items) > 0
+
+    # Ensure a person result is returned
+    persons = [item for item in items if item.get("media_type") == "person"]
+    assert len(persons) > 0, "Actor search must return person type items"
+    actor = persons[0]
+    assert "Brad Pitt" in actor["name"]
+
+    # 2. Fetch the actor's filmography credits
+    actor_id = actor["id"]
+    credits_res = client.get(f"/api/movies/person/{actor_id}/credits")
+    assert credits_res.status_code == 200
+    credits_data = credits_res.json()
+
+    assert "person" in credits_data
+    assert credits_data["person"]["id"] == actor_id
+    assert "movies" in credits_data
+    assert len(credits_data["movies"]) > 0
+
+    titles = [m["title"] for m in credits_data["movies"]]
+    # Verify classic Brad Pitt movies are present
+    assert any(title in titles for title in ["Fight Club", "Inglourious Basterds", "Se7en", "Moneyball"])
+
+
 
 

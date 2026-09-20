@@ -4,6 +4,7 @@ import api from './api/client';
 import Navbar from './components/Navbar';
 import MovieCard from './components/MovieCard';
 import MovieModal from './components/MovieModal';
+import ActorModal from './components/ActorModal';
 import WatchedDrawer from './components/WatchedDrawer';
 import DataModal from './components/DataModal';
 import AuthModal from './components/AuthModal';
@@ -29,6 +30,7 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [slowNotice, setSlowNotice] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selectedActor, setSelectedActor] = useState(null);
   const [isWatchedOpen, setIsWatchedOpen] = useState(false);
   const [libraryTab, setLibraryTab] = useState('watched');
   const [isDataOpen, setIsDataOpen] = useState(false);
@@ -99,6 +101,7 @@ export default function App() {
       {/* Navigation */}
       <Navbar
         onSelectMovie={(m) => setSelectedMovie(m)}
+        onSelectActor={(a) => setSelectedActor(a)}
         onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
         onOpenDataModal={() => setIsDataOpen(true)}
         onOpenAuthModal={() => setIsAuthOpen(true)}
@@ -340,6 +343,16 @@ export default function App() {
         <MovieModal
           movie={selectedMovie}
           onClose={() => setSelectedMovie(null)}
+          onSelectMovie={(m) => setSelectedMovie(m)}
+          onSelectActor={(a) => setSelectedActor(a)}
+          onShowToast={showToast}
+        />
+      )}
+
+      {selectedActor && (
+        <ActorModal
+          person={selectedActor}
+          onClose={() => setSelectedActor(null)}
           onSelectMovie={(m) => setSelectedMovie(m)}
           onShowToast={showToast}
         />

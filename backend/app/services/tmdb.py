@@ -1,3 +1,4 @@
+import asyncio
 import httpx
 import logging
 import time
@@ -34,11 +35,22 @@ class TMDBService:
     @property
     def client(self) -> httpx.AsyncClient:
         """Returns persistent, pooled HTTP client with HTTP keep-alive for sub-50ms query latency"""
-        if self._client is None or self._client.is_closed:
+        current_loop = None
+        try:
+            current_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            pass
+
+        if (
+            self._client is None
+            or self._client.is_closed
+            or getattr(self, "_client_loop", None) != current_loop
+        ):
             self._client = httpx.AsyncClient(
                 timeout=httpx.Timeout(10.0, connect=5.0),
                 limits=httpx.Limits(max_keepalive_connections=30, max_connections=100)
             )
+            self._client_loop = current_loop
         return self._client
 
     def _detect_media_type(self, item: dict, default_type: Optional[str] = None) -> str:
@@ -323,10 +335,130 @@ class TMDBService:
         results = []
         for m in data.get("results", []):
             if m.get("media_type") == "person":
-                continue
-            item = self._format_item(m)
-            results.append(item)
+                profile_path = m.get("profile_path")
+                known_for_raw = m.get("known_for", [])
+                known_for_titles = [
+                    (k.get("title") or k.get("name"))
+                    for k in known_for_raw
+                    if (k.get("title") or k.get("name"))
+                ]
+                formatted_person = {
+                    "id": m.get("id"),
+                    "title": m.get("name"),
+                    "name": m.get("name"),
+                    "media_type": "person",
+                    "known_for_department": m.get("known_for_department", "Acting"),
+                    "profile_url": f"{self.image_base}{profile_path}" if profile_path else None,
+                    "poster_url": f"{self.image_base}{profile_path}" if profile_path else None,
+                    "known_for": [
+                        self._format_item(k) for k in known_for_raw
+                        if k.get("title") or k.get("name")
+                    ],
+                    "known_for_text": ", ".join(known_for_titles[:3]) if known_for_titles else "",
+                    "popularity": m.get("popularity", 0)
+                }
+                results.append(formatted_person)
+            else:
+                item = self._format_item(m)
+                results.append(item)
         return results
+
+    async def get_person_credits(self, person_id: int) -> dict:
+        """Fetch person biography, details, and all career movies/series credits sorted by prominence"""
+        cache_key = f"person_{person_id}"
+        cached = _get_from_cache(cache_key)
+        if cached:
+            return cached
+
+        try:
+            person_data, credits_data = await asyncio.gather(
+                self._fetch(f"/person/{person_id}"),
+                self._fetch(f"/person/{person_id}/combined_credits")
+            )
+            if not person_data:
+                return {}
+
+            profile_path = person_data.get("profile_path")
+            department = person_data.get("known_for_department", "Acting")
+
+            person_info = {
+                "id": person_data.get("id"),
+                "name": person_data.get("name"),
+                "biography": person_data.get("biography", ""),
+                "known_for_department": department,
+                "profile_url": f"{self.image_base}{profile_path}" if profile_path else None,
+                "poster_url": f"{self.image_base}{profile_path}" if profile_path else None,
+                "birthday": person_data.get("birthday"),
+                "place_of_birth": person_data.get("place_of_birth"),
+                "popularity": person_data.get("popularity", 0),
+            }
+
+            cast_credits = credits_data.get("cast", []) if credits_data else []
+            crew_credits = credits_data.get("crew", []) if credits_data else []
+
+            seen_ids = set()
+            movies = []
+
+            # Prioritize directing if department is Directing
+            if department == "Directing":
+                for c in crew_credits:
+                    if c.get("job") == "Director":
+                        mid = c.get("id")
+                        if not mid or mid in seen_ids:
+                            continue
+                        if not c.get("poster_path") or not (c.get("title") or c.get("name")):
+                            continue
+                        seen_ids.add(mid)
+                        item = self._format_item(c)
+                        item["character"] = "Director"
+                        item["job"] = "Director"
+                        item["vote_count"] = c.get("vote_count", 0)
+                        movies.append(item)
+
+            # Acting credits
+            for c in cast_credits:
+                mid = c.get("id")
+                if not mid or mid in seen_ids:
+                    continue
+                if not c.get("poster_path") or not (c.get("title") or c.get("name")):
+                    continue
+                seen_ids.add(mid)
+                item = self._format_item(c)
+                item["character"] = c.get("character", "")
+                item["vote_count"] = c.get("vote_count", 0)
+                movies.append(item)
+
+            # Additional directing credits if they directed anything
+            if department != "Directing":
+                for c in crew_credits:
+                    if c.get("job") == "Director":
+                        mid = c.get("id")
+                        if not mid or mid in seen_ids:
+                            continue
+                        if not c.get("poster_path") or not (c.get("title") or c.get("name")):
+                            continue
+                        seen_ids.add(mid)
+                        item = self._format_item(c)
+                        item["character"] = "Director"
+                        item["job"] = "Director"
+                        item["vote_count"] = c.get("vote_count", 0)
+                        movies.append(item)
+
+            # Sort by vote count & rating descending
+            movies.sort(
+                key=lambda x: (x.get("vote_count", 0), x.get("vote_average", 0)),
+                reverse=True
+            )
+
+            result = {
+                "person": person_info,
+                "movies": movies
+            }
+            _set_cache(cache_key, result)
+            return result
+        except Exception as e:
+            logger.error(f"Error fetching person credits for {person_id}: {e}")
+            return {}
 
     async def get_details(self, item_id: int, media_type: str = "movie") -> dict:
         """Fetch rich details including OMDb Rotten Tomatoes & IMDb scores"""

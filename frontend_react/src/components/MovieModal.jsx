@@ -17,7 +17,7 @@ const COUNTRY_OPTIONS = [
   { code: 'FR', label: '🇫🇷 France' },
 ];
 
-export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast }) {
+export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor }) {
   const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist } = useAuth();
   const [details, setDetails] = useState(null);
   const [credits, setCredits] = useState(null);
@@ -456,10 +456,22 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast 
             {/* Top Cast */}
             {credits?.cast?.length > 0 && (
               <div className="space-y-3">
-                <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Top Cast</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Top Cast</h4>
+                  {onSelectActor && (
+                    <span className="text-[11px] text-zinc-500 font-mono">Click actor for filmography</span>
+                  )}
+                </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {credits.cast.map((actor) => (
-                    <div key={actor.id} className="flex items-center gap-2.5 p-2 rounded-lg bg-zinc-900/40 border border-zinc-800/50">
+                    <div
+                      key={actor.id}
+                      onClick={() => onSelectActor && onSelectActor(actor)}
+                      className={`flex items-center gap-2.5 p-2 rounded-lg bg-zinc-900/40 border border-zinc-800/50 ${
+                        onSelectActor ? 'cursor-pointer hover:border-amber-500/50 hover:bg-zinc-900 transition-all group' : ''
+                      }`}
+                      title={onSelectActor ? `View filmography for ${actor.name}` : actor.name}
+                    >
                       {actor.profile_url ? (
                         <img src={actor.profile_url} alt={actor.name} className="w-9 h-9 rounded-full object-cover" />
                       ) : (
@@ -468,7 +480,9 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast 
                         </div>
                       )}
                       <div className="min-w-0">
-                        <p className="text-xs font-medium text-zinc-200 truncate">{actor.name}</p>
+                        <p className="text-xs font-medium text-zinc-200 group-hover:text-amber-400 transition-colors truncate">
+                          {actor.name}
+                        </p>
                         <p className="text-[11px] text-zinc-500 truncate">{actor.character}</p>
                       </div>
                     </div>

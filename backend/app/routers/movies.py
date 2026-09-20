@@ -46,6 +46,13 @@ async def search_media(
 ):
     return await tmdb_service.search_multi(query=query, page=page, media_type=media_type)
 
+@router.get("/person/{person_id}/credits")
+async def get_person_credits(person_id: int):
+    data = await tmdb_service.get_person_credits(person_id)
+    if not data or not data.get("person"):
+        raise HTTPException(status_code=404, detail="Person not found")
+    return data
+
 @router.get("/{movie_id}/details")
 async def get_details(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime)$")):
     details = await tmdb_service.get_details(movie_id, media_type=media_type)
