@@ -161,6 +161,7 @@ export default function App() {
       }));
       if (!user) {
         setPendingPartyCode({ code, movie: null });
+        setIsAuthOpen(true);
         showToast({ message: 'Please sign in to join the Watch Party! 🍿' });
       }
     } else if (roomParam) {
@@ -209,7 +210,7 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 pb-24 md:pb-8 space-y-6 sm:space-y-8">
         {/* Onboarding Taste Calibration Banner for Signed-In Users */}
         {user && watchedMovies.length < 5 && (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-950/60 via-zinc-900 to-zinc-900 border border-rose-800/40 gap-3.5 sm:gap-4 shadow-xl">
@@ -491,7 +492,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full border-t border-zinc-900 bg-zinc-950 py-8 px-4 text-center text-xs text-zinc-400 space-y-4">
+      <footer className="w-full border-t border-zinc-900 bg-zinc-950 py-8 pb-24 md:pb-8 px-4 text-center text-xs text-zinc-400 space-y-4">
         <div className="flex items-center justify-center gap-4 sm:gap-6">
           <a
             href="https://github.com/sahasbelbase"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy } from 'lucide-react';
+import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy, Flame, Popcorn, Compass } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
@@ -22,6 +22,7 @@ export default function Navbar({
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [personCredits, setPersonCredits] = useState(null);
   const [loadingPersonCredits, setLoadingPersonCredits] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const searchInputRef = useRef(null);
 
   // Global keyboard shortcut: Pressing '/' focuses search
@@ -89,28 +90,29 @@ export default function Navbar({
   };
 
   return (
-    <nav className="sticky top-0 z-40 w-full bg-zinc-950/90 border-b border-zinc-800/80 backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        {/* Logo & Project Title */}
-        <div className="flex items-center gap-2 sm:gap-3 cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-950/50">
-            <Film className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold text-sm sm:hidden tracking-tight text-white leading-tight">
-              Cinematch
-            </span>
-            <span className="hidden sm:inline text-sm sm:text-base font-bold tracking-tight text-white leading-tight">
-              Movie Recommendation Engine
-            </span>
-            <div className="flex items-center gap-1.5 mt-0.5">
-              <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`} />
-              <span className="text-[10px] font-mono text-zinc-400">
-                {user ? 'Tailored' : 'Guest'}
+    <>
+      <nav className="sticky top-0 z-40 w-full bg-zinc-950/90 border-b border-zinc-800/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Logo & Project Title */}
+          <div className="flex items-center gap-2 sm:gap-3 cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-950/50">
+              <Film className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm sm:hidden tracking-tight text-white leading-tight">
+                Cinematch
               </span>
+              <span className="hidden sm:inline text-sm sm:text-base font-bold tracking-tight text-white leading-tight">
+                Movie Recommendation Engine
+              </span>
+              <div className="flex items-center gap-1.5 mt-0.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`} />
+                <span className="text-[10px] font-mono text-zinc-400">
+                  {user ? 'Tailored' : 'Guest'}
+                </span>
+              </div>
             </div>
           </div>
-        </div>
 
         {/* Global Multi-Search Input (Movies, Series, Anime, Actors) */}
         <div className="relative flex-1 max-w-lg min-w-0">
@@ -368,51 +370,51 @@ export default function Navbar({
 
         {/* Right Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
-          {/* Top 250 Hall of Fame Button */}
+          {/* Top 250 Hall of Fame Button (Desktop Only) */}
           <button
             onClick={onOpenTop250}
-            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all shadow-sm active:scale-95"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all shadow-sm active:scale-95"
             title="Explore Top 250 Movies, TV Series & Anime of All Time"
           >
             <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span className="hidden sm:inline">Top 250</span>
+            <span>Top 250</span>
           </button>
 
-          {/* Swipe Mode Button (Signed-In Only) */}
+          {/* Swipe Mode Button (Desktop Only, Signed-In) */}
           {user && (
             <button
               onClick={onOpenSwipe}
-              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 border border-rose-500/40 text-xs font-semibold text-rose-300 hover:from-rose-600/30 hover:to-orange-600/30 transition-all shadow-sm active:scale-95"
+              className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 border border-rose-500/40 text-xs font-semibold text-rose-300 hover:from-rose-600/30 hover:to-orange-600/30 transition-all shadow-sm active:scale-95"
               title="Swipe Mode: Calibrate your FYP"
             >
-              <span className="text-sm">🔥</span>
-              <span className="hidden sm:inline">Swipe</span>
+              <Flame className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+              <span>Swipe</span>
             </button>
           )}
 
-          {/* Watchlist Button */}
+          {/* Watchlist Button (Desktop Only) */}
           <button
             onClick={onToggleWatchlistShelf || (() => onOpenWatched('watchlist'))}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
             title="Toggle Watchlist shelf below navigation"
           >
             <Bookmark className={`w-3.5 h-3.5 shrink-0 ${watchlistMovies.length > 0 ? 'text-amber-400 fill-amber-400' : 'text-zinc-400'}`} />
-            <span className="hidden sm:inline">Watchlist:</span>
-            <span className="font-mono text-white font-semibold text-[11px] sm:text-xs">{watchlistMovies.length}</span>
+            <span>Watchlist:</span>
+            <span className="font-mono text-white font-semibold text-xs">{watchlistMovies.length}</span>
           </button>
 
-          {/* Watched Button */}
+          {/* Watched Button (Desktop Only) */}
           <button
             onClick={() => onOpenWatched('watched')}
-            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
+            className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
             title="View watched movies & series"
           >
             <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5] shrink-0" />
-            <span className="hidden sm:inline">Watched:</span>
-            <span className="font-mono text-white font-semibold text-[11px] sm:text-xs">{watchedMovies.length}</span>
+            <span>Watched:</span>
+            <span className="font-mono text-white font-semibold text-xs">{watchedMovies.length}</span>
           </button>
 
-          {/* Import / Export Button (Visible on tablet/desktop, accessible via drawer on mobile) */}
+          {/* Import / Export Button (Desktop Only) */}
           <button
             onClick={onOpenDataModal}
             className="hidden md:flex p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all"
@@ -421,33 +423,113 @@ export default function Navbar({
             <Download className="w-4 h-4" />
           </button>
 
-          {/* User Auth */}
+          {/* User Auth & Profile Menu */}
           {user ? (
-            <div className="flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2 border-l border-zinc-800">
-              <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="relative flex items-center gap-1 sm:gap-2 pl-1 sm:pl-2 border-l border-zinc-800">
+              <button
+                onClick={() => setIsProfileMenuOpen(prev => !prev)}
+                className="flex items-center gap-1.5 sm:gap-2 p-0.5 rounded-full hover:ring-2 hover:ring-rose-500/50 transition-all"
+                title="Account Menu"
+              >
                 {user.photoURL ? (
                   <img src={user.photoURL} alt={user.displayName} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-zinc-700 shrink-0" />
                 ) : (
                   <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-xs font-medium text-rose-300 shrink-0">
-                    {user.displayName[0]?.toUpperCase()}
+                    {user.displayName?.[0]?.toUpperCase() || 'U'}
                   </div>
                 )}
                 <span className="hidden lg:inline text-xs font-medium text-zinc-300 truncate max-w-[120px]">
                   {user.displayName}
                 </span>
-              </div>
+              </button>
+
+              {/* Desktop quick logout */}
               <button
                 onClick={logout}
-                className="p-1 sm:p-1.5 text-zinc-500 hover:text-rose-400 transition-colors"
+                className="hidden sm:flex p-1 sm:p-1.5 text-zinc-500 hover:text-rose-400 transition-colors"
                 title="Log out"
               >
                 <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
+
+              {/* Profile Dropdown Menu (Accessible on mobile & desktop by tapping avatar) */}
+              {isProfileMenuOpen && (
+                <>
+                  <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsProfileMenuOpen(false)} />
+                  <div className="absolute right-0 top-full mt-2 w-64 p-3 bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl z-50 animate-in fade-in zoom-in-95 duration-150 flex flex-col gap-2.5">
+                    <div className="flex items-center gap-2.5 pb-2.5 border-b border-zinc-800">
+                      {user.photoURL ? (
+                        <img src={user.photoURL} alt={user.displayName} className="w-9 h-9 rounded-full border border-zinc-700 shrink-0" />
+                      ) : (
+                        <div className="w-9 h-9 rounded-full bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-sm font-semibold text-rose-300 shrink-0">
+                          {user.displayName?.[0]?.toUpperCase() || 'U'}
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-bold text-white truncate">{user.displayName}</p>
+                        <p className="text-[10px] sm:text-[11px] text-zinc-400 truncate">{user.email}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1 text-xs">
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          onOpenWatched('watched');
+                        }}
+                        className="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/80 text-zinc-200 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Check className="w-4 h-4 text-emerald-400 stroke-[2.5]" />
+                          <span>Watched Library</span>
+                        </div>
+                        <span className="font-mono text-emerald-400 font-semibold">{watchedMovies.length}</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          onOpenWatched('watchlist');
+                        }}
+                        className="flex items-center justify-between p-2 rounded-xl hover:bg-zinc-800/80 text-zinc-200 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Bookmark className="w-4 h-4 text-amber-400" />
+                          <span>Watchlist</span>
+                        </div>
+                        <span className="font-mono text-amber-400 font-semibold">{watchlistMovies.length}</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setIsProfileMenuOpen(false);
+                          onOpenDataModal();
+                        }}
+                        className="flex items-center gap-2 p-2 rounded-xl hover:bg-zinc-800/80 text-zinc-300 transition-colors"
+                      >
+                        <Download className="w-4 h-4 text-zinc-400" />
+                        <span>Import / Export Data</span>
+                      </button>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileMenuOpen(false);
+                        logout();
+                      }}
+                      className="flex items-center justify-center gap-2 pt-2 border-t border-zinc-800 text-xs font-semibold text-rose-400 hover:text-rose-300 transition-colors py-1.5 rounded-xl hover:bg-rose-950/30"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           ) : (
             <button
               onClick={onOpenAuthModal}
-              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium shadow-md shadow-rose-950/40 transition-all active:scale-95"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium shadow-md shadow-rose-950/40 transition-all active:scale-95 shrink-0"
             >
               <User className="w-3.5 h-3.5 shrink-0" />
               <span>Sign In</span>
@@ -456,5 +538,65 @@ export default function Navbar({
         </div>
       </div>
     </nav>
-  );
+
+    {/* Mobile Bottom Navigation Bar */}
+    <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80 px-2 py-1.5 flex items-center justify-around shadow-2xl safe-area-bottom">
+      {/* Discover / Feed */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-white active:text-rose-400 transition-all active:scale-95 group"
+      >
+        <Compass className="w-5 h-5 group-hover:text-rose-400 transition-colors" />
+        <span className="text-[10px] font-medium tracking-tight">Discover</span>
+      </button>
+
+      {/* Swipe FYP */}
+      <button
+        onClick={user ? onOpenSwipe : onOpenAuthModal}
+        className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-rose-400 active:text-rose-400 transition-all active:scale-95 relative group"
+      >
+        <div className="relative">
+          <Flame className="w-5 h-5 text-rose-500 group-hover:scale-110 transition-transform" />
+          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-orange-500 animate-ping" />
+          <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500" />
+        </div>
+        <span className="text-[10px] font-medium tracking-tight text-rose-300">Swipe FYP</span>
+      </button>
+
+      {/* Movie Night */}
+      <button
+        onClick={onOpenMovieNight}
+        className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-amber-400 active:text-amber-400 transition-all active:scale-95 group"
+      >
+        <Popcorn className="w-5 h-5 group-hover:text-amber-400 transition-colors" />
+        <span className="text-[10px] font-medium tracking-tight">Movie Night</span>
+      </button>
+
+      {/* Top 250 */}
+      <button
+        onClick={onOpenTop250}
+        className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-amber-300 active:text-amber-300 transition-all active:scale-95 group"
+      >
+        <Trophy className="w-5 h-5 group-hover:text-amber-400 transition-colors" />
+        <span className="text-[10px] font-medium tracking-tight">Top 250</span>
+      </button>
+
+      {/* Watchlist */}
+      <button
+        onClick={onToggleWatchlistShelf || (() => onOpenWatched('watchlist'))}
+        className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-white active:text-amber-400 transition-all active:scale-95 relative group"
+      >
+        <div className="relative">
+          <Bookmark className={`w-5 h-5 transition-colors ${watchlistMovies.length > 0 ? 'text-amber-400 fill-amber-400/30' : 'text-zinc-400 group-hover:text-white'}`} />
+          {watchlistMovies.length > 0 && (
+            <span className="absolute -top-1 -right-2 px-1 py-0.2 min-w-[15px] h-3.5 flex items-center justify-center rounded-full bg-amber-500 text-black font-mono text-[9px] font-bold shadow-sm">
+              {watchlistMovies.length}
+            </span>
+          )}
+        </div>
+        <span className="text-[10px] font-medium tracking-tight">Watchlist</span>
+      </button>
+    </div>
+  </>
+);
 }

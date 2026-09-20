@@ -86,6 +86,8 @@ export default function WatchPartyModal({
   const ytContainerRef = useRef(null);
   const localScreenStreamRef = useRef(null);
   const peerConnectionsRef = useRef({}); // userId -> RTCPeerConnection
+  const pendingIceCandidatesRef = useRef({}); // userId -> Array of ICE candidates
+  const handleServerEventRef = useRef(null);
   const chatScrollRef = useRef(null);
   const isHost = myUserId === hostId;
   const lastSyncTimeRef = useRef(0);
@@ -244,6 +246,10 @@ export default function WatchPartyModal({
         setChatMessages(th.chat_history || []);
         setIsPlaying(th.playback?.is_playing || false);
         setCurrentTime(th.playback?.current_time || 0);
+
+        if (th.video_source?.type === 'webrtc' || (th.webrtc_streamer_id && th.webrtc_streamer_id !== myUserId)) {
+          setActiveTab('screen');
+        }
       }
     } catch (err) {
       console.error('Failed to initialize theater session:', err);
@@ -264,12 +270,21 @@ export default function WatchPartyModal({
 
     ws.onopen = () => {
       console.log('Theater WebSocket connected');
+      // Request active screen stream if host is already sharing
+      ws.send(
+        JSON.stringify({
+          type: 'WEBRTC_SIGNAL',
+          payload: {
+            stream_action: 'request_screen',
+          },
+        })
+      );
     };
 
     ws.onmessage = async (event) => {
       try {
         const data = JSON.parse(event.data);
-        handleServerEvent(data);
+        handleServerEventRef.current?.(data);
       } catch (err) {
         console.error('Failed parsing theater WS message:', err);
       }
@@ -326,6 +341,10 @@ export default function WatchPartyModal({
         if (onShowToast && data.participant) {
           onShowToast({ message: `${data.participant.name} joined the Watch Party 🍿` });
         }
+        if (localScreenStreamRef.current && data.participant?.id && data.participant.id !== myUserId) {
+          console.log(`[Host] Auto-sending screen share offer to newcomer: ${data.participant.id}`);
+          sendScreenOfferToPeer(data.participant.id, localScreenStreamRef.current);
+        }
         break;
       }
 
@@ -380,6 +399,9 @@ export default function WatchPartyModal({
           setVideoSource(newSrc);
           setIsPlaying(false);
           setCurrentTime(0);
+          if (newSrc.type === 'webrtc') {
+            setActiveTab('screen');
+          }
         }
         break;
       }
@@ -426,6 +448,56 @@ export default function WatchPartyModal({
     }
   };
 
+  // Keep latest handler in ref to prevent stale closures in WebSocket event listeners
+  handleServerEventRef.current = handleServerEvent;
+
+  // Helper to initiate or send WebRTC screen share offer to a specific peer
+  const sendScreenOfferToPeer = useCallback(async (targetId, stream) => {
+    if (!targetId || targetId === myUserId || !stream) return;
+    try {
+      if (peerConnectionsRef.current[targetId]) {
+        try { peerConnectionsRef.current[targetId].close(); } catch (_) {}
+      }
+
+      const pc = new RTCPeerConnection(RTC_CONFIG);
+      peerConnectionsRef.current[targetId] = pc;
+
+      stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+
+      pc.onicecandidate = (event) => {
+        if (event.candidate && wsRef.current?.readyState === WebSocket.OPEN) {
+          wsRef.current.send(
+            JSON.stringify({
+              type: 'WEBRTC_SIGNAL',
+              payload: {
+                target_id: targetId,
+                signal: { candidate: event.candidate },
+              },
+            })
+          );
+        }
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(
+          JSON.stringify({
+            type: 'WEBRTC_SIGNAL',
+            payload: {
+              target_id: targetId,
+              stream_action: 'start_screen',
+              signal: { sdp: pc.localDescription },
+            },
+          })
+        );
+      }
+    } catch (err) {
+      console.error(`Failed to send screen offer to ${targetId}:`, err);
+    }
+  }, [myUserId]);
+
   // 4. WebRTC Signaling Handler (Screen Sharing)
   const handleWebRTCSignal = async (data) => {
     const { sender_id, signal, stream_action } = data;
@@ -438,41 +510,66 @@ export default function WatchPartyModal({
       setActiveTab('watch');
       if (onShowToast) onShowToast({ message: 'Screen sharing ended' });
       return;
+    } else if (stream_action === 'request_screen') {
+      // Peer requested the active screen stream
+      if (localScreenStreamRef.current && sender_id && sender_id !== myUserId) {
+        console.log(`[Host] Responding to request_screen from peer ${sender_id}`);
+        sendScreenOfferToPeer(sender_id, localScreenStreamRef.current);
+      }
+      return;
     }
 
     if (!signal) return;
 
-    let pc = peerConnectionsRef.current[sender_id];
-    if (!pc) {
-      pc = new RTCPeerConnection(RTC_CONFIG);
-      peerConnectionsRef.current[sender_id] = pc;
-
-      pc.ontrack = (event) => {
-        if (event.streams && event.streams[0]) {
-          setRemoteStream(event.streams[0]);
-        }
-      };
-
-      pc.onicecandidate = (event) => {
-        if (event.candidate && wsRef.current?.readyState === WebSocket.OPEN) {
-          wsRef.current.send(
-            JSON.stringify({
-              type: 'WEBRTC_SIGNAL',
-              payload: {
-                target_id: sender_id,
-                signal: { candidate: event.candidate },
-              },
-            })
-          );
-        }
-      };
-    }
-
+    // Handle SDP Offers & Answers
     if (signal.sdp) {
-      await pc.setRemoteDescription(new RTCSessionDescription(signal.sdp));
       if (signal.sdp.type === 'offer') {
+        // Close previous peer connection if any
+        if (peerConnectionsRef.current[sender_id]) {
+          try { peerConnectionsRef.current[sender_id].close(); } catch (_) {}
+        }
+
+        const pc = new RTCPeerConnection(RTC_CONFIG);
+        peerConnectionsRef.current[sender_id] = pc;
+
+        pc.ontrack = (event) => {
+          if (event.streams && event.streams[0]) {
+            setRemoteStream(event.streams[0]);
+            setActiveTab('screen');
+          }
+        };
+
+        pc.onicecandidate = (event) => {
+          if (event.candidate && wsRef.current?.readyState === WebSocket.OPEN) {
+            wsRef.current.send(
+              JSON.stringify({
+                type: 'WEBRTC_SIGNAL',
+                payload: {
+                  target_id: sender_id,
+                  signal: { candidate: event.candidate },
+                },
+              })
+            );
+          }
+        };
+
+        await pc.setRemoteDescription(new RTCSessionDescription(signal.sdp));
+
+        // Drain any queued ICE candidates that arrived before remote description
+        if (pendingIceCandidatesRef.current[sender_id]) {
+          for (const cand of pendingIceCandidatesRef.current[sender_id]) {
+            try {
+              await pc.addIceCandidate(new RTCIceCandidate(cand));
+            } catch (e) {
+              console.warn('Error adding queued ICE candidate:', e);
+            }
+          }
+          delete pendingIceCandidatesRef.current[sender_id];
+        }
+
         const answer = await pc.createAnswer();
         await pc.setLocalDescription(answer);
+
         if (wsRef.current?.readyState === WebSocket.OPEN) {
           wsRef.current.send(
             JSON.stringify({
@@ -484,12 +581,36 @@ export default function WatchPartyModal({
             })
           );
         }
+      } else if (signal.sdp.type === 'answer') {
+        const pc = peerConnectionsRef.current[sender_id];
+        if (pc) {
+          await pc.setRemoteDescription(new RTCSessionDescription(signal.sdp));
+          // Drain queued ICE candidates on host side
+          if (pendingIceCandidatesRef.current[sender_id]) {
+            for (const cand of pendingIceCandidatesRef.current[sender_id]) {
+              try {
+                await pc.addIceCandidate(new RTCIceCandidate(cand));
+              } catch (e) {
+                console.warn('Error adding queued ICE candidate:', e);
+              }
+            }
+            delete pendingIceCandidatesRef.current[sender_id];
+          }
+        }
       }
     } else if (signal.candidate) {
-      try {
-        await pc.addIceCandidate(new RTCIceCandidate(signal.candidate));
-      } catch (e) {
-        console.warn('Error adding ICE candidate:', e);
+      const pc = peerConnectionsRef.current[sender_id];
+      if (pc && pc.remoteDescription) {
+        try {
+          await pc.addIceCandidate(new RTCIceCandidate(signal.candidate));
+        } catch (e) {
+          console.warn('Error adding ICE candidate:', e);
+        }
+      } else {
+        if (!pendingIceCandidatesRef.current[sender_id]) {
+          pendingIceCandidatesRef.current[sender_id] = [];
+        }
+        pendingIceCandidatesRef.current[sender_id].push(signal.candidate);
       }
     }
   };
@@ -530,41 +651,9 @@ export default function WatchPartyModal({
       }
 
       // Create WebRTC offers for all other participants in the room
-      participants.forEach(async (p) => {
+      participants.forEach((p) => {
         if (p.id !== myUserId) {
-          const pc = new RTCPeerConnection(RTC_CONFIG);
-          peerConnectionsRef.current[p.id] = pc;
-
-          stream.getTracks().forEach((track) => pc.addTrack(track, stream));
-
-          pc.onicecandidate = (event) => {
-            if (event.candidate && wsRef.current?.readyState === WebSocket.OPEN) {
-              wsRef.current.send(
-                JSON.stringify({
-                  type: 'WEBRTC_SIGNAL',
-                  payload: {
-                    target_id: p.id,
-                    signal: { candidate: event.candidate },
-                  },
-                })
-              );
-            }
-          };
-
-          const offer = await pc.createOffer();
-          await pc.setLocalDescription(offer);
-
-          if (wsRef.current?.readyState === WebSocket.OPEN) {
-            wsRef.current.send(
-              JSON.stringify({
-                type: 'WEBRTC_SIGNAL',
-                payload: {
-                  target_id: p.id,
-                  signal: { sdp: pc.localDescription },
-                },
-              })
-            );
-          }
+          sendScreenOfferToPeer(p.id, stream);
         }
       });
     } catch (err) {
@@ -1120,10 +1209,14 @@ export default function WatchPartyModal({
                   >
                     <video
                       ref={(el) => {
-                        if (el) el.srcObject = remoteStream;
+                        if (el && remoteStream && el.srcObject !== remoteStream) {
+                          el.srcObject = remoteStream;
+                          el.play().catch(() => {});
+                        }
                       }}
                       autoPlay
                       playsInline
+                      controls
                       className="w-full h-full object-contain"
                     />
                     <div className="absolute top-4 left-4 flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-300 text-xs font-semibold backdrop-blur">

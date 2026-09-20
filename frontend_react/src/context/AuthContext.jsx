@@ -384,6 +384,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const loginWithGoogle = async () => {
+    if (typeof window !== 'undefined' && window.__MOCK_TEST_USER__) {
+      const mockUser = window.__MOCK_TEST_USER__;
+      localStorage.setItem('cinematch_token', `mock_token_${mockUser.uid}`);
+      setUser(mockUser);
+      return mockUser;
+    }
+
     const effectiveKey = auth?.app?.options?.apiKey || import.meta.env.VITE_FIREBASE_API_KEY || "";
     const hasRealFirebaseKey = Boolean(effectiveKey && !effectiveKey.includes("AIzaSyDemo"));
     if (!auth || !googleProvider || !hasRealFirebaseKey) {
