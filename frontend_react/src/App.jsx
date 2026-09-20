@@ -11,7 +11,6 @@ import AuthModal from './components/AuthModal';
 import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
-import SyncModal from './components/SyncModal';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
@@ -37,7 +36,6 @@ export default function App() {
   const [libraryTab, setLibraryTab] = useState('watched');
   const [isWatchlistShelfOpen, setIsWatchlistShelfOpen] = useState(true);
   const [isDataOpen, setIsDataOpen] = useState(false);
-  const [isSyncOpen, setIsSyncOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const [toast, setToast] = useState(null);
@@ -119,7 +117,6 @@ export default function App() {
         onOpenAuthModal={() => setIsAuthOpen(true)}
         onOpenSwipe={() => setIsSwipeOpen(true)}
         onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev => !prev)}
-        onOpenSyncModal={() => setIsSyncOpen(true)}
       />
 
       {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
@@ -391,13 +388,7 @@ export default function App() {
         onClose={() => setIsWatchedOpen(false)}
         onSelectMovie={(m) => setSelectedMovie(m)}
         onOpenDataModal={() => setIsDataOpen(true)}
-        onOpenSyncModal={() => setIsSyncOpen(true)}
         initialTab={libraryTab}
-      />
-
-      <SyncModal
-        isOpen={isSyncOpen}
-        onClose={() => setIsSyncOpen(false)}
       />
 
       <DataModal
