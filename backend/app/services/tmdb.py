@@ -726,12 +726,59 @@ class TMDBService:
             "runtime": data.get("runtime") or (data.get("episode_run_time", [0])[0] if data.get("episode_run_time") else 0),
             "seasons_count": data.get("number_of_seasons"),
             "episodes_count": data.get("number_of_episodes"),
+            "seasons": [
+                {
+                    "season_number": s.get("season_number"),
+                    "episode_count": s.get("episode_count", 0),
+                    "name": s.get("name"),
+                    "overview": s.get("overview", ""),
+                    "poster_url": f"{self.image_base}{s.get('poster_path')}" if s.get("poster_path") else None
+                }
+                for s in data.get("seasons", [])
+                if s.get("season_number", 0) > 0
+            ] if data.get("seasons") else [],
             "networks": [net.get("name") for net in data.get("networks", []) if net.get("name")],
             "status": data.get("status", ""),
             "imdb_id": imdb_id,
             "homepage": data.get("homepage"),
         })
         return formatted
+
+    async def get_tv_season_episodes(self, tv_id: int, season_number: int = 1) -> dict:
+        """Fetch all episodes for a specific TV/Anime season with episode titles, stills, & ratings"""
+        cache_key = f"tv_{tv_id}_season_{season_number}"
+        cached = _get_from_cache(cache_key)
+        if cached:
+            return cached
+
+        data = await self._fetch(f"/tv/{tv_id}/season/{season_number}")
+        if not data:
+            return {"episodes": []}
+
+        episodes = []
+        for ep in data.get("episodes", []):
+            still_path = ep.get("still_path")
+            episodes.append({
+                "id": ep.get("id"),
+                "episode_number": ep.get("episode_number"),
+                "season_number": ep.get("season_number"),
+                "name": ep.get("name"),
+                "overview": ep.get("overview", ""),
+                "vote_average": round(float(ep.get("vote_average", 0.0)), 1),
+                "vote_count": ep.get("vote_count", 0),
+                "air_date": ep.get("air_date", ""),
+                "runtime": ep.get("runtime", 0),
+                "still_url": f"{self.image_base}{still_path}" if still_path else None
+            })
+
+        result = {
+            "season_number": season_number,
+            "name": data.get("name"),
+            "overview": data.get("overview"),
+            "episodes": episodes
+        }
+        _set_cache(cache_key, result)
+        return result
 
     async def get_credits(self, item_id: int, media_type: str = "movie") -> dict:
         endpoint_type = "tv" if media_type in ["tv", "anime", "kdrama"] else "movie"

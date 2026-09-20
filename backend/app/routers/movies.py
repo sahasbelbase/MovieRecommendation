@@ -93,3 +93,8 @@ async def get_watch_providers(
         country=country,
         title=title
     )
+
+@router.get("/{tv_id}/season/{season_number}")
+async def get_tv_season_episodes(tv_id: int, season_number: int = 1):
+    return await tmdb_service.get_tv_season_episodes(tv_id, season_number)
+

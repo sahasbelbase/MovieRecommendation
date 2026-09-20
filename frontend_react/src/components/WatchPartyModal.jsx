@@ -1597,7 +1597,6 @@ export default function WatchPartyModal({
            ref={remoteVideoRef}
            autoPlay
            playsInline
-           controls
            className={`w-full h-full object-contain transition-all duration-300 ${isMutedByBrowser ? 'blur-sm brightness-50' : ''}`}
           />
 
