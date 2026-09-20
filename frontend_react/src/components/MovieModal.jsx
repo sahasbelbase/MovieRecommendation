@@ -60,7 +60,7 @@ const EMBED_SERVERS = [
   },
 ];
 
-export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
+export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
  const {
   user,
   watchedIds,
@@ -979,19 +979,21 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
           <p className="text-xs text-zinc-400 font-mono">
            {episodeSearchQuery ? `No episodes found matching "${episodeSearchQuery}"` : `Season ${selectedSeason} details ready for streaming.`}
           </p>
-          <button
-           onClick={() => {
-            if (!user) {
-             if (onRequireAuth) onRequireAuth();
-             if (onShowToast) onShowToast({ message: 'Please sign in to stream full episodes' });
-             return;
-            }
-            setShowStreamPlayer(true);
-           }}
-           className="px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-semibold hover:bg-purple-500 transition-colors shadow-lg shadow-purple-950/50"
-          >
-           Play Season {selectedSeason} Stream
-          </button>
+          {isVip && (
+           <button
+            onClick={() => {
+             if (!user) {
+              if (onRequireAuth) onRequireAuth();
+              if (onShowToast) onShowToast({ message: 'Please sign in to stream full episodes' });
+              return;
+             }
+             setShowStreamPlayer(true);
+            }}
+            className="px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-semibold hover:bg-purple-500 transition-colors shadow-lg shadow-purple-950/50"
+           >
+            Play Season {selectedSeason} Stream
+           </button>
+          )}
          </div>
         )}
        </div>

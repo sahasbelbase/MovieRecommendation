@@ -20,6 +20,7 @@ const RTC_CONFIG = {
 };
 
 export default function WatchPartyModal({
+ isVip,
  isOpen,
  onClose,
  roomCode: propRoomCode,
@@ -852,8 +853,19 @@ export default function WatchPartyModal({
   setShowAudioReminder(false);
   try {
    const stream = await navigator.mediaDevices.getDisplayMedia({
-    video: { cursor: 'always', frameRate: { ideal: 30, max: 60 } },
-    audio: true,
+    video: { 
+      cursor: "never",
+      displaySurface: "browser",
+      frameRate: { ideal: 30, max: 60 },
+      width: { ideal: 1920, max: 1920 },
+      height: { ideal: 1080, max: 1080 }
+    },
+    audio: {
+      echoCancellation: false,
+      noiseSuppression: false,
+      autoGainControl: false,
+      sampleRate: 44100
+    },
     selfBrowserSurface: 'exclude',
     surfaceSwitching: 'include',
     systemAudio: 'include',
@@ -1644,7 +1656,28 @@ export default function WatchPartyModal({
          } bg-black flex items-center justify-center cursor-pointer overflow-hidden`}
          title="Double-click to toggle fullscreen (F)"
         >
-          {(() => {
+          {!user ? (
+           <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center z-50">
+            <div className="w-16 h-16 rounded-full bg-rose-500/20 flex items-center justify-center mb-4 border border-rose-500/30">
+             <span className="text-2xl">🔒</span>
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Sign In Required</h3>
+            <p className="text-sm text-zinc-400 max-w-md mb-6">
+             Please sign in to access full movies, TV series, and watch party streams.
+            </p>
+            {!user && (
+             <button
+              onClick={() => {
+               if (onRequireAuth) onRequireAuth();
+               if (onShowToast) onShowToast({ message: 'Please sign in' });
+              }}
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-white font-bold text-sm hover:from-rose-500 hover:to-orange-500 transition-all shadow-lg shadow-rose-500/20 active:scale-95"
+             >
+              Sign In / Register
+             </button>
+            )}
+           </div>
+          ) : (() => {
            const activeSrc = videoSource?.src || (movie?.id
             ? ['tv', 'anime', 'kdrama'].includes(movie?.media_type)
               ? `https://vidlink.pro/tv/${movie.id}/1/1?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
