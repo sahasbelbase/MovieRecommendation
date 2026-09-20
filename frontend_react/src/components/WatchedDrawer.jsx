@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Trash2, Film, Download, Star, Check, Bookmark, Tv } from 'lucide-react';
+import { X, Trash2, Film, Download, Star, Check, Bookmark, Tv, Cloud, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function WatchedDrawer({
@@ -7,9 +7,10 @@ export default function WatchedDrawer({
   onClose,
   onSelectMovie,
   onOpenDataModal,
+  onOpenSyncModal,
   initialTab = 'watched',
 }) {
-  const { watchedMovies, toggleWatched, watchlistMovies, toggleWatchlist } = useAuth();
+  const { watchedMovies, toggleWatched, watchlistMovies, toggleWatchlist, libraryId } = useAuth();
   const [activeTab, setActiveTab] = useState(initialTab);
 
   // Sync active tab whenever drawer is opened with a specific initialTab
@@ -44,6 +45,16 @@ export default function WatchedDrawer({
               <button
                 onClick={() => {
                   onClose();
+                  if (onOpenSyncModal) onOpenSyncModal();
+                }}
+                className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-rose-300 border border-zinc-800 transition-colors"
+                title="Cloud Library ID & Restore"
+              >
+                <Cloud className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => {
+                  onClose();
                   onOpenDataModal();
                 }}
                 className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 transition-colors"
@@ -58,6 +69,27 @@ export default function WatchedDrawer({
                 <X className="w-4 h-4" />
               </button>
             </div>
+          </div>
+
+          {/* Cloud Library ID Banner */}
+          <div
+            onClick={() => {
+              onClose();
+              if (onOpenSyncModal) onOpenSyncModal();
+            }}
+            className="px-5 py-2 bg-zinc-900/60 border-b border-zinc-800/60 flex items-center justify-between text-[11px] cursor-pointer hover:bg-zinc-900 transition-colors group"
+            title="Click to view Library ID or restore from another device"
+          >
+            <div className="flex items-center gap-1.5 text-zinc-400">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Library ID:</span>
+              <span className="font-mono text-rose-300 font-semibold group-hover:underline">
+                {libraryId ? (libraryId.startsWith('USER-') ? libraryId : `${libraryId.slice(0, 10)}...`) : 'Syncing...'}
+              </span>
+            </div>
+            <span className="text-zinc-500 group-hover:text-rose-300 transition-colors">
+              Manage / Restore &rarr;
+            </span>
           </div>
 
           {/* Library Segmented Tabs */}

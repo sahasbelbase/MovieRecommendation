@@ -232,6 +232,32 @@ def test_actor_search_and_filmography(client):
     # Verify classic Brad Pitt movies are present
     assert any(title in titles for title in ["Fight Club", "Inglourious Basterds", "Se7en", "Moneyball"])
 
+def test_watchlist_exclusion_from_feed_and_recommendations(client):
+    headers = {"Authorization": "Bearer test_watchlist_exclude_user"}
+    user_id = "test_watchlist_exclude_user"
+
+    # Add a movie to watchlist (e.g., ID 550 = Fight Club)
+    movie = {"id": 550, "title": "Fight Club", "media_type": "movie"}
+    res = client.post("/api/users/watchlist", json={"movie": movie}, headers=headers)
+    assert res.status_code == 200
+
+    # Verify that get_all_excluded_ids includes movie ID 550
+    import asyncio
+    from backend.app.core.auth import decode_token_payload
+    from backend.app.services.user_data import user_data_service
+    uid = decode_token_payload("test_watchlist_exclude_user")["uid"]
+    excluded = asyncio.run(user_data_service.get_all_excluded_ids(uid))
+    assert 550 in excluded, "Watchlist item ID must be included in get_all_excluded_ids"
+
+    # Verify recommendation feed does not contain Fight Club in any section
+    feed_res = client.get("/api/recommendations/feed?media_type=all", headers=headers)
+    assert feed_res.status_code == 200
+    feed = feed_res.json()
+    for section in feed.get("sections", []):
+        for m in section.get("movies", []):
+            assert m["id"] != 550, f"Movie in watchlist ({m['id']}) must not appear in feed section '{section.get('title')}'"
+
+
 
 
 

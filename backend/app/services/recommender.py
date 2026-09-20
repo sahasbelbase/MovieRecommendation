@@ -166,13 +166,14 @@ class RecommenderService:
         """
         watched_list = await self.user_data.get_watched_list(user_id)
         watched_ids = [m["id"] for m in watched_list]
+        all_excluded_ids = set(await self.user_data.get_all_excluded_ids(user_id))
 
         # If user explicitly requested Anime category
         if media_type == "anime":
             trending_anime = await self.tmdb.get_trending_anime()
             top_anime = await self.tmdb.get_top_rated_anime()
-            unwatched_trending = [m for m in trending_anime if m["id"] not in set(watched_ids)]
-            unwatched_top = [m for m in top_anime if m["id"] not in set(watched_ids)]
+            unwatched_trending = [m for m in trending_anime if m["id"] not in all_excluded_ids]
+            unwatched_top = [m for m in top_anime if m["id"] not in all_excluded_ids]
             return {
                 "is_cold_start": False,
                 "needs_calibration": len(watched_list) < 3,
@@ -187,8 +188,8 @@ class RecommenderService:
         if media_type == "tv":
             trending_tv = await self.tmdb.get_trending_tv()
             top_tv = await self.tmdb.get_top_rated(media_type="tv")
-            unwatched_tv = [m for m in trending_tv if m["id"] not in set(watched_ids)]
-            unwatched_top_tv = [m for m in top_tv if m["id"] not in set(watched_ids)]
+            unwatched_tv = [m for m in trending_tv if m["id"] not in all_excluded_ids]
+            unwatched_top_tv = [m for m in top_tv if m["id"] not in all_excluded_ids]
             return {
                 "is_cold_start": False,
                 "needs_calibration": len(watched_list) < 3,
@@ -206,9 +207,9 @@ class RecommenderService:
                 self.tmdb.get_trending_anime(),
                 self.tmdb.get_rotten_tomatoes_picks(limit=10)
             )
-            unwatched_trending = [m for m in trending if m["id"] not in set(watched_ids)]
-            unwatched_rt = [m for m in rt_picks if m["id"] not in set(watched_ids)]
-            unwatched_anime = [m for m in anime if m["id"] not in set(watched_ids)]
+            unwatched_trending = [m for m in trending if m["id"] not in all_excluded_ids]
+            unwatched_rt = [m for m in rt_picks if m["id"] not in all_excluded_ids]
+            unwatched_anime = [m for m in anime if m["id"] not in all_excluded_ids]
             return {
                 "is_cold_start": True,
                 "needs_calibration": True,

@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
@@ -15,12 +16,14 @@ const firebaseConfig = {
 let app;
 let auth = null;
 let googleProvider = null;
+let db = null;
 let analytics = null;
 
 try {
   app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
   auth = getAuth(app);
   googleProvider = new GoogleAuthProvider();
+  db = getFirestore(app);
 
   // Initialize analytics if supported in current browser environment
   if (typeof window !== 'undefined') {
@@ -34,4 +37,4 @@ try {
   console.warn("Firebase initialization notice:", error);
 }
 
-export { app, auth, googleProvider, analytics };
+export { app, auth, googleProvider, db, analytics };

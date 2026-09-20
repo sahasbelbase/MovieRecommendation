@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from './context/AuthContext';
 import api from './api/client';
 import Navbar from './components/Navbar';
@@ -10,6 +10,8 @@ import DataModal from './components/DataModal';
 import AuthModal from './components/AuthModal';
 import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
+import WatchlistShelf from './components/WatchlistShelf';
+import SyncModal from './components/SyncModal';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
@@ -24,7 +26,7 @@ const GENRES = [
 ];
 
 export default function App() {
-  const { user, watchedMovies, toggleWatched, toggleWatchlist } = useAuth();
+  const { user, watchedMovies, watchlistMovies, toggleWatched, toggleWatchlist } = useAuth();
 
   const [feed, setFeed] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -33,12 +35,22 @@ export default function App() {
   const [selectedActor, setSelectedActor] = useState(null);
   const [isWatchedOpen, setIsWatchedOpen] = useState(false);
   const [libraryTab, setLibraryTab] = useState('watched');
+  const [isWatchlistShelfOpen, setIsWatchlistShelfOpen] = useState(true);
   const [isDataOpen, setIsDataOpen] = useState(false);
+  const [isSyncOpen, setIsSyncOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("All");
+
+  // Efficient lookup set of all excluded IDs (watched + watchlist)
+  const excludedIds = useMemo(() => {
+    const ids = new Set();
+    (watchedMovies || []).forEach(m => ids.add(Number(m.id)));
+    (watchlistMovies || []).forEach(m => ids.add(Number(m.id)));
+    return ids;
+  }, [watchedMovies, watchlistMovies]);
 
   // Show cold-start wake-up message if request takes longer than 2.5s (free-tier spinup)
   useEffect(() => {
@@ -106,6 +118,17 @@ export default function App() {
         onOpenDataModal={() => setIsDataOpen(true)}
         onOpenAuthModal={() => setIsAuthOpen(true)}
         onOpenSwipe={() => setIsSwipeOpen(true)}
+        onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev => !prev)}
+        onOpenSyncModal={() => setIsSyncOpen(true)}
+      />
+
+      {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
+      <WatchlistShelf
+        isExpanded={isWatchlistShelfOpen}
+        onToggleExpand={() => setIsWatchlistShelfOpen(prev => !prev)}
+        onSelectMovie={(m) => setSelectedMovie(m)}
+        onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
+        onShowToast={showToast}
       />
 
       {/* Main Container */}
@@ -255,8 +278,13 @@ export default function App() {
           </div>
         ) : feed?.sections && feed.sections.length > 0 ? (
           feed.sections.map((section, idx) => {
-            // Filter section items by active category and active genre
+            // Filter section items: strictly exclude any watched or watchlist titles, plus active category/genre
             const movies = (section.movies || []).filter((m) => {
+              // Strictly exclude any title already in watched list or watchlist
+              if (excludedIds.has(Number(m.id))) {
+                return false;
+              }
+
               // 1. Strict category filter
               if (selectedMediaCategory !== "all") {
                 const mType = m.media_type || "movie";
@@ -363,7 +391,13 @@ export default function App() {
         onClose={() => setIsWatchedOpen(false)}
         onSelectMovie={(m) => setSelectedMovie(m)}
         onOpenDataModal={() => setIsDataOpen(true)}
+        onOpenSyncModal={() => setIsSyncOpen(true)}
         initialTab={libraryTab}
+      />
+
+      <SyncModal
+        isOpen={isSyncOpen}
+        onClose={() => setIsSyncOpen(false)}
       />
 
       <DataModal

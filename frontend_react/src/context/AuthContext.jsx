@@ -8,12 +8,20 @@ import {
 } from 'firebase/auth';
 import { auth, googleProvider } from '../firebase/config';
 import api from '../api/client';
+import {
+  getOrCreateLibraryId,
+  setStoredLibraryId,
+  saveLibraryToCloud,
+  loadLibraryFromCloud
+} from '../services/cloudLibrary';
 
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [libraryId, setLibraryId] = useState(() => getOrCreateLibraryId());
+  const [isCloudSynced, setIsCloudSynced] = useState(false);
   const [watchedIds, setWatchedIds] = useState(new Set());
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [unwatchedIds, setUnwatchedIds] = useState(new Set());
@@ -21,114 +29,153 @@ export const AuthProvider = ({ children }) => {
   const [watchlistIds, setWatchlistIds] = useState(new Set());
   const [watchlistMovies, setWatchlistMovies] = useState([]);
 
-  // Load guest watched, unwatched, and watchlist from localStorage on mount
+  // Load guest watched, unwatched, and watchlist from localStorage & Firestore on mount
   useEffect(() => {
-    if (!user) {
+    const initStorageAndCloud = async () => {
+      // 1. Instant local read for zero-latency UI
+      let localWatched = [];
+      let localWatchlist = [];
+      let localUnwatched = [];
       try {
         const savedWatched = localStorage.getItem('cinematch_guest_watched');
         if (savedWatched) {
-          const parsed = JSON.parse(savedWatched);
-          setWatchedMovies(parsed);
-          setWatchedIds(new Set(parsed.map(m => m.id)));
+          localWatched = JSON.parse(savedWatched);
+          setWatchedMovies(localWatched);
+          setWatchedIds(new Set(localWatched.map(m => m.id)));
         }
         const savedUnwatched = localStorage.getItem('cinematch_guest_unwatched');
         if (savedUnwatched) {
-          const parsedUnwatched = JSON.parse(savedUnwatched);
-          setUnwatchedMovies(parsedUnwatched);
-          setUnwatchedIds(new Set(parsedUnwatched.map(m => m.id)));
+          localUnwatched = JSON.parse(savedUnwatched);
+          setUnwatchedMovies(localUnwatched);
+          setUnwatchedIds(new Set(localUnwatched.map(m => m.id)));
         }
         const savedWatchlist = localStorage.getItem('cinematch_guest_watchlist');
         if (savedWatchlist) {
-          const parsedWatchlist = JSON.parse(savedWatchlist);
-          setWatchlistMovies(parsedWatchlist);
-          setWatchlistIds(new Set(parsedWatchlist.map(m => m.id)));
+          localWatchlist = JSON.parse(savedWatchlist);
+          setWatchlistMovies(localWatchlist);
+          setWatchlistIds(new Set(localWatchlist.map(m => m.id)));
         }
       } catch (e) {
         console.error("Failed to load local data:", e);
       }
+
+      // 2. Fetch authoritative cloud backup from Firestore
+      const activeId = getOrCreateLibraryId();
+      setLibraryId(activeId);
+      try {
+        const cloudData = await loadLibraryFromCloud(activeId);
+        if (cloudData) {
+          const cloudWatched = cloudData.watched || [];
+          const cloudWatchlist = cloudData.watchlist || [];
+          const cloudUnwatched = cloudData.unwatched || [];
+
+          // Merge: use cloud data if it has entries or merge unique items
+          if (cloudWatched.length > 0 || cloudWatchlist.length > 0) {
+            setWatchedMovies(cloudWatched);
+            setWatchedIds(new Set(cloudWatched.map(m => m.id)));
+            setWatchlistMovies(cloudWatchlist);
+            setWatchlistIds(new Set(cloudWatchlist.map(m => m.id)));
+            setUnwatchedMovies(cloudUnwatched);
+            setUnwatchedIds(new Set(cloudUnwatched.map(m => m.id)));
+            setIsCloudSynced(true);
+          } else if (localWatched.length > 0 || localWatchlist.length > 0) {
+            // First time cloud sync: persist local data to Firestore
+            await saveLibraryToCloud(activeId, {
+              watched: localWatched,
+              watchlist: localWatchlist,
+              unwatched: localUnwatched
+            });
+            setIsCloudSynced(true);
+          }
+        } else if (localWatched.length > 0 || localWatchlist.length > 0) {
+          // No cloud record yet: upload local state
+          await saveLibraryToCloud(activeId, {
+            watched: localWatched,
+            watchlist: localWatchlist,
+            unwatched: localUnwatched
+          });
+          setIsCloudSynced(true);
+        }
+      } catch (err) {
+        console.warn("Cloud Firestore initial sync notice:", err);
+      }
+    };
+
+    if (!user) {
+      initStorageAndCloud();
     }
   }, [user]);
 
   // Synchronize local guest watched and unwatched titles with user's remote account upon sign in
-  const syncGuestWatchedToAccount = async () => {
+  const syncGuestWatchedToAccount = async (firebaseUid) => {
     try {
-      // 1. Sync Watched
+      const activeLibId = firebaseUid || user?.uid || getOrCreateLibraryId();
+
+      // Check Firestore cloud data for this user first
+      const cloudData = await loadLibraryFromCloud(activeLibId);
+      const cloudWatched = cloudData?.watched || [];
+      const cloudWatchlist = cloudData?.watchlist || [];
+      const cloudUnwatched = cloudData?.unwatched || [];
+
+      // Also read any guest items
       const savedGuest = localStorage.getItem('cinematch_guest_watched');
       const guestItems = savedGuest ? JSON.parse(savedGuest) : [];
 
-      const res = await api.get('/users/watched');
-      const remoteItems = res.data || [];
-      const remoteIds = new Set(remoteItems.map(m => m.id));
+      const savedGuestWatchlist = localStorage.getItem('cinematch_guest_watchlist');
+      const guestWlItems = savedGuestWatchlist ? JSON.parse(savedGuestWatchlist) : [];
 
-      const missingFromRemote = guestItems.filter(m => !remoteIds.has(m.id));
-
-      if (missingFromRemote.length > 0) {
-        for (const item of missingFromRemote) {
-          try {
-            await api.post('/users/watched', { movie: item, rating: item.rating || 8.0 });
-          } catch (e) {
-            console.error("Failed to sync guest title to account:", item.title, e);
-          }
-        }
-        const updatedRes = await api.get('/users/watched');
-        const unified = updatedRes.data || [...remoteItems, ...missingFromRemote];
-        setWatchedMovies(unified);
-        setWatchedIds(new Set(unified.map(m => m.id)));
-      } else {
-        setWatchedMovies(remoteItems);
-        setWatchedIds(new Set(remoteItems.map(m => m.id)));
-      }
-      // Once synced, wipe guest cache so it doesn't leak to other accounts or sessions
-      localStorage.removeItem('cinematch_guest_watched');
-
-      // 2. Sync Unwatched / Skipped
       const savedGuestUnwatched = localStorage.getItem('cinematch_guest_unwatched');
       const guestUnwatchedItems = savedGuestUnwatched ? JSON.parse(savedGuestUnwatched) : [];
 
-      if (guestUnwatchedItems.length > 0) {
-        for (const item of guestUnwatchedItems) {
-          try {
-            await api.post('/users/unwatched', { movie: item });
-          } catch (e) {
-            console.error("Failed to sync guest unwatched title:", item.title, e);
-          }
-        }
-      }
-      try {
-        const unwatchedRes = await api.get('/users/unwatched');
-        const remoteUnwatched = unwatchedRes.data || [];
-        setUnwatchedMovies(remoteUnwatched);
-        setUnwatchedIds(new Set(remoteUnwatched.map(m => m.id)));
-      } catch (err) {
-        console.warn("Could not fetch remote unwatched:", err);
-      }
-      // Wipe guest unwatched cache
-      localStorage.removeItem('cinematch_guest_unwatched');
+      // Combine unique watched
+      const watchedMap = new Map();
+      cloudWatched.forEach(m => watchedMap.set(m.id, m));
+      guestItems.forEach(m => watchedMap.set(m.id, m));
 
-      // 3. Sync Watchlist ("Want to Watch")
-      const savedGuestWatchlist = localStorage.getItem('cinematch_guest_watchlist');
-      const guestWatchlistItems = savedGuestWatchlist ? JSON.parse(savedGuestWatchlist) : [];
+      // Combine unique watchlist
+      const watchlistMap = new Map();
+      cloudWatchlist.forEach(m => watchlistMap.set(m.id, m));
+      guestWlItems.forEach(m => watchlistMap.set(m.id, m));
 
-      if (guestWatchlistItems.length > 0) {
-        for (const item of guestWatchlistItems) {
-          try {
-            await api.post('/users/watchlist', { movie: item });
-          } catch (e) {
-            console.error("Failed to sync guest watchlist item:", item.title, e);
-          }
-        }
-      }
+      // Combine unique unwatched
+      const unwatchedMap = new Map();
+      cloudUnwatched.forEach(m => unwatchedMap.set(m.id, m));
+      guestUnwatchedItems.forEach(m => unwatchedMap.set(m.id, m));
+
+      const mergedWatched = Array.from(watchedMap.values());
+      const mergedWatchlist = Array.from(watchlistMap.values());
+      const mergedUnwatched = Array.from(unwatchedMap.values());
+
+      setWatchedMovies(mergedWatched);
+      setWatchedIds(new Set(mergedWatched.map(m => m.id)));
+      setWatchlistMovies(mergedWatchlist);
+      setWatchlistIds(new Set(mergedWatchlist.map(m => m.id)));
+      setUnwatchedMovies(mergedUnwatched);
+      setUnwatchedIds(new Set(mergedUnwatched.map(m => m.id)));
+      setIsCloudSynced(true);
+
+      // Save merged library permanently to Cloud Firestore
+      await saveLibraryToCloud(activeLibId, {
+        watched: mergedWatched,
+        watchlist: mergedWatchlist,
+        unwatched: mergedUnwatched
+      });
+
+      // Also forward any guest items to backend API if reachable
       try {
-        const watchlistRes = await api.get('/users/watchlist');
-        const remoteWatchlist = watchlistRes.data || [];
-        setWatchlistMovies(remoteWatchlist);
-        setWatchlistIds(new Set(remoteWatchlist.map(m => m.id)));
-      } catch (err) {
-        console.warn("Could not fetch remote watchlist:", err);
-      }
+        for (const item of guestItems) {
+          api.post('/users/watched', { movie: item, rating: item.rating || 8.0 }).catch(() => {});
+        }
+        for (const item of guestWlItems) {
+          api.post('/users/watchlist', { movie: item }).catch(() => {});
+        }
+      } catch (e) {}
+
+      localStorage.removeItem('cinematch_guest_watched');
       localStorage.removeItem('cinematch_guest_watchlist');
+      localStorage.removeItem('cinematch_guest_unwatched');
     } catch (err) {
-      console.error("Failed to sync guest watched titles:", err);
+      console.error("Failed to sync guest titles to account:", err);
     }
   };
 
@@ -143,22 +190,19 @@ export const AuthProvider = ({ children }) => {
       if (firebaseUser) {
         const token = await firebaseUser.getIdToken();
         localStorage.setItem('cinematch_token', token);
+        const activeUid = firebaseUser.uid;
+        setLibraryId(activeUid);
+        setStoredLibraryId(activeUid);
         setUser({
-          uid: firebaseUser.uid,
+          uid: activeUid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || "Movie Lover",
           photoURL: firebaseUser.photoURL
         });
-        await syncGuestWatchedToAccount();
+        await syncGuestWatchedToAccount(activeUid);
       } else {
         localStorage.removeItem('cinematch_token');
         setUser(null);
-        setWatchedMovies([]);
-        setWatchedIds(new Set());
-        setUnwatchedMovies([]);
-        setUnwatchedIds(new Set());
-        setWatchlistMovies([]);
-        setWatchlistIds(new Set());
       }
       setLoading(false);
     });
@@ -220,10 +264,15 @@ export const AuthProvider = ({ children }) => {
       }
     }
     localStorage.removeItem('cinematch_token');
+    // Note: Cloud Firestore library data is preserved forever!
+    setUser(null);
+    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+    const freshGuestId = `USER-${randomCode}`;
+    setLibraryId(freshGuestId);
+    setStoredLibraryId(freshGuestId);
     localStorage.removeItem('cinematch_guest_watched');
     localStorage.removeItem('cinematch_guest_unwatched');
     localStorage.removeItem('cinematch_guest_watchlist');
-    setUser(null);
     setWatchedMovies([]);
     setWatchedIds(new Set());
     setUnwatchedMovies([]);
@@ -232,10 +281,55 @@ export const AuthProvider = ({ children }) => {
     setWatchlistIds(new Set());
   };
 
-  // Toggle Watched status with optimistic UI updates
+  // Restore Library by ID (works across incognito, devices, sessions)
+  const restoreLibraryById = async (targetId) => {
+    if (!targetId || !targetId.trim()) {
+      return { success: false, error: 'Please enter a valid Library ID' };
+    }
+    const cleanId = targetId.trim();
+    try {
+      const cloudData = await loadLibraryFromCloud(cleanId);
+      if (!cloudData) {
+        return {
+          success: false,
+          error: `No cloud library found for "${cleanId}". Please check the ID and try again.`
+        };
+      }
+      const loadedWatched = cloudData.watched || [];
+      const loadedWatchlist = cloudData.watchlist || [];
+      const loadedUnwatched = cloudData.unwatched || [];
+
+      setWatchedMovies(loadedWatched);
+      setWatchedIds(new Set(loadedWatched.map(m => m.id)));
+      setWatchlistMovies(loadedWatchlist);
+      setWatchlistIds(new Set(loadedWatchlist.map(m => m.id)));
+      setUnwatchedMovies(loadedUnwatched);
+      setUnwatchedIds(new Set(loadedUnwatched.map(m => m.id)));
+
+      const finalId = cloudData.id || cleanId;
+      setLibraryId(finalId);
+      setStoredLibraryId(finalId);
+      localStorage.setItem('cinematch_guest_watched', JSON.stringify(loadedWatched));
+      localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(loadedWatchlist));
+      setIsCloudSynced(true);
+
+      return {
+        success: true,
+        countWatched: loadedWatched.length,
+        countWatchlist: loadedWatchlist.length,
+        libraryId: finalId
+      };
+    } catch (err) {
+      console.error("Restore error:", err);
+      return { success: false, error: err.message || 'Failed to restore library' };
+    }
+  };
+
+  // Toggle Watched status with optimistic UI updates & Firestore cloud persistence
   const toggleWatched = async (movie, rating = null) => {
     const movieId = movie.id;
     const isWatched = watchedIds.has(movieId);
+    const activeLibId = libraryId || getOrCreateLibraryId(user);
 
     if (isWatched) {
       // Remove from watched
@@ -244,6 +338,13 @@ export const AuthProvider = ({ children }) => {
       setWatchedIds(nextIds);
       const nextMovies = watchedMovies.filter(m => m.id !== movieId);
       setWatchedMovies(nextMovies);
+
+      // Save to Cloud Firestore
+      saveLibraryToCloud(activeLibId, {
+        watched: nextMovies,
+        watchlist: watchlistMovies,
+        unwatched: unwatchedMovies
+      });
 
       if (user) {
         try {
@@ -274,17 +375,25 @@ export const AuthProvider = ({ children }) => {
       const nextMovies = [record, ...watchedMovies];
       setWatchedMovies(nextMovies);
 
-      // Auto-remove from Watchlist if present (since the user has now watched it)
+      // Auto-remove from Watchlist if present (since user has now watched it)
+      let nextWlMovies = watchlistMovies;
       if (watchlistIds.has(movieId)) {
         const nextWlIds = new Set(watchlistIds);
         nextWlIds.delete(movieId);
         setWatchlistIds(nextWlIds);
-        const nextWlMovies = watchlistMovies.filter(m => m.id !== movieId);
+        nextWlMovies = watchlistMovies.filter(m => m.id !== movieId);
         setWatchlistMovies(nextWlMovies);
         if (!user) {
           localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(nextWlMovies));
         }
       }
+
+      // Save to Cloud Firestore
+      saveLibraryToCloud(activeLibId, {
+        watched: nextMovies,
+        watchlist: nextWlMovies,
+        unwatched: unwatchedMovies
+      });
 
       if (user) {
         try {
@@ -304,6 +413,7 @@ export const AuthProvider = ({ children }) => {
     if (!movie?.id) return false;
     const movieId = movie.id;
     const inWatchlist = watchlistIds.has(movieId);
+    const activeLibId = libraryId || getOrCreateLibraryId(user);
 
     if (inWatchlist) {
       // Remove from watchlist
@@ -312,6 +422,13 @@ export const AuthProvider = ({ children }) => {
       setWatchlistIds(nextIds);
       const nextMovies = watchlistMovies.filter(m => m.id !== movieId);
       setWatchlistMovies(nextMovies);
+
+      // Save to Cloud Firestore
+      saveLibraryToCloud(activeLibId, {
+        watched: watchedMovies,
+        watchlist: nextMovies,
+        unwatched: unwatchedMovies
+      });
 
       if (user) {
         try {
@@ -345,6 +462,13 @@ export const AuthProvider = ({ children }) => {
       const nextMovies = [record, ...watchlistMovies.filter(m => m.id !== movieId)];
       setWatchlistMovies(nextMovies);
 
+      // Save to Cloud Firestore
+      saveLibraryToCloud(activeLibId, {
+        watched: watchedMovies,
+        watchlist: nextMovies,
+        unwatched: unwatchedMovies
+      });
+
       if (user) {
         try {
           await api.post('/users/watchlist', { movie: record });
@@ -362,6 +486,7 @@ export const AuthProvider = ({ children }) => {
   const markUnwatched = async (movie) => {
     if (!movie?.id) return;
     const movieId = movie.id;
+    const activeLibId = libraryId || getOrCreateLibraryId(user);
     const record = {
       id: movieId,
       title: movie.title,
@@ -377,6 +502,13 @@ export const AuthProvider = ({ children }) => {
     setUnwatchedIds(nextIds);
     const nextList = [record, ...unwatchedMovies.filter(m => m.id !== movieId)];
     setUnwatchedMovies(nextList);
+
+    // Save to Cloud Firestore
+    saveLibraryToCloud(activeLibId, {
+      watched: watchedMovies,
+      watchlist: watchlistMovies,
+      unwatched: nextList
+    });
 
     if (user) {
       try {
@@ -396,10 +528,13 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider value={{
       user,
       loading,
+      libraryId,
+      isCloudSynced,
       loginWithGoogle,
       loginWithEmail,
       registerWithEmail,
       logout,
+      restoreLibraryById,
       watchedIds,
       watchedMovies,
       unwatchedIds,

@@ -165,12 +165,13 @@ class UserDataService:
 
     async def get_all_excluded_ids(self, user_id: str) -> List[int]:
         """
-        Returns the union of watched movie IDs and skipped/unwatched movie IDs.
+        Returns the union of watched movie IDs, skipped/unwatched movie IDs, and watchlist IDs.
         Used to ensure titles are never repeatedly shown in Swipe Mode or recommendation cards.
         """
         watched = await self.get_watched_ids(user_id)
         unwatched = await self.get_unwatched_ids(user_id)
-        return list(set(watched + unwatched))
+        watchlist = await self.get_watchlist_ids(user_id)
+        return list(set(watched + unwatched + watchlist))
 
     async def unmark_watched(self, user_id: str, movie_id: int) -> bool:
         """Removes a movie from the user's watched list"""
