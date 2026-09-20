@@ -146,6 +146,45 @@ export default function WatchPartyModal({
   }
  }, [remoteStream, activeTab]);
 
+ // VidLink Sync: Listen for host's player events and broadcast them
+ useEffect(() => {
+  if (activeTab !== 'embed' || !videoSource?.src?.includes('vidlink.pro')) return;
+  
+  const handleMessage = (e) => {
+   if (e.origin !== 'https://vidlink.pro') return;
+   
+   // Parse timeupdate to keep our local currentTime accurate
+   let type = '';
+   let time = currentTime;
+   
+   if (typeof e.data === 'string') {
+     type = e.data;
+   } else if (e.data && typeof e.data === 'object') {
+     type = e.data.type || e.data.event;
+     time = typeof e.data.currentTime === 'number' ? e.data.currentTime : (e.data.time || time);
+     if (type === 'timeupdate' && typeof time === 'number') {
+       setCurrentTime(time);
+     }
+   }
+
+   // Only host broadcasts state
+   if (isHost && wsRef.current?.readyState === WebSocket.OPEN) {
+     if (type === 'play') {
+       setIsPlaying(true);
+       wsRef.current.send(JSON.stringify({ type: 'PLAY', payload: { current_time: time } }));
+     } else if (type === 'pause') {
+       setIsPlaying(false);
+       wsRef.current.send(JSON.stringify({ type: 'PAUSE', payload: { current_time: time } }));
+     } else if (type === 'seeked' || type === 'seek') {
+       wsRef.current.send(JSON.stringify({ type: 'SEEK', payload: { current_time: time } }));
+     }
+   }
+  };
+
+  window.addEventListener('message', handleMessage);
+  return () => window.removeEventListener('message', handleMessage);
+ }, [activeTab, videoSource, isHost, currentTime]);
+
  const handleTogglePiP = async (e) => {
   e.stopPropagation();
   if (!remoteVideoRef.current) return;
@@ -483,6 +522,19 @@ export default function WatchPartyModal({
       }
       ytPlayerRef.current.playVideo();
      }
+     
+     // VidLink Sync (Viewer Side)
+     if (!isHost && activeTab === 'embed' && videoSource?.src?.includes('vidlink.pro')) {
+       setVideoSource(prev => {
+         if (!prev) return prev;
+         try {
+           const url = new URL(prev.src);
+           url.searchParams.set('startAt', Math.floor(targetTime));
+           url.searchParams.set('autoplay', 'true');
+           return { ...prev, src: url.toString() };
+         } catch(e) { return prev; }
+       });
+     }
     }
     break;
    }
@@ -495,6 +547,19 @@ export default function WatchPartyModal({
      if (ytPlayerRef.current && typeof ytPlayerRef.current.pauseVideo === 'function') {
       ytPlayerRef.current.pauseVideo();
      }
+
+     // VidLink Sync (Viewer Side)
+     if (!isHost && activeTab === 'embed' && videoSource?.src?.includes('vidlink.pro')) {
+       setVideoSource(prev => {
+         if (!prev) return prev;
+         try {
+           const url = new URL(prev.src);
+           url.searchParams.set('startAt', Math.floor(targetTime));
+           url.searchParams.set('autoplay', 'false');
+           return { ...prev, src: url.toString() };
+         } catch(e) { return prev; }
+       });
+     }
     }
     break;
    }
@@ -505,6 +570,19 @@ export default function WatchPartyModal({
      setCurrentTime(targetTime);
      if (ytPlayerRef.current && typeof ytPlayerRef.current.seekTo === 'function') {
       ytPlayerRef.current.seekTo(targetTime, true);
+     }
+
+     // VidLink Sync (Viewer Side)
+     if (!isHost && activeTab === 'embed' && videoSource?.src?.includes('vidlink.pro')) {
+       setVideoSource(prev => {
+         if (!prev) return prev;
+         try {
+           const url = new URL(prev.src);
+           url.searchParams.set('startAt', Math.floor(targetTime));
+           url.searchParams.set('autoplay', isPlaying ? 'true' : 'false');
+           return { ...prev, src: url.toString() };
+         } catch(e) { return prev; }
+       });
      }
     }
     break;
@@ -1546,10 +1624,30 @@ export default function WatchPartyModal({
             />
            );
           })()}
-          <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-950/90 border border-indigo-500/50 text-indigo-300 text-[11px] font-semibold backdrop-blur">
+          <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-950/90 border border-indigo-500/50 text-indigo-300 text-[11px] font-semibold backdrop-blur z-20">
            <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
            <span>Live Stream</span>
           </div>
+
+          {/* Viewer Overlays for Host Authority & Pause States */}
+          {!isHost && (
+            <>
+              {/* Invisible overlay to block clicks so viewers can't seek/play/pause */}
+              <div className="absolute inset-0 z-40 bg-transparent" title="Only the host can control playback" />
+              
+              {/* Dim overlay when the host pauses the video */}
+              {!isPlaying && (
+                <div className="absolute inset-0 z-30 bg-black/80 flex flex-col items-center justify-center backdrop-blur-sm transition-all">
+                  <div className="p-4 rounded-full bg-white/10 mb-3">
+                    <svg className="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                    </svg>
+                  </div>
+                  <span className="text-white font-medium">Host Paused</span>
+                </div>
+              )}
+            </>
+          )}
         </div>
        </div>
       )}
