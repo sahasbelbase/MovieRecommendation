@@ -109,6 +109,7 @@ export default function WatchPartyModal({
   const [remoteStream, setRemoteStream] = useState(null);
   const [streamAudioMuted, setStreamAudioMuted] = useState(false);
   const remoteVideoRef = useRef(null);
+  const localVideoRef = useRef(null);
 
   // Helper to ensure participants is always an array of objects
   const normalizeParticipants = useCallback((p) => {
@@ -120,17 +121,29 @@ export default function WatchPartyModal({
 
   // Sync remote video stream to DOM video element with autoplay mobile audio fallback
   useEffect(() => {
-    if (remoteVideoRef.current && remoteStream) {
-      remoteVideoRef.current.srcObject = remoteStream;
-      remoteVideoRef.current.play().catch(() => {
-        if (remoteVideoRef.current) {
-          remoteVideoRef.current.muted = true;
-          setStreamAudioMuted(true);
-          remoteVideoRef.current.play().catch((err) => console.warn('Remote video autoplay fallback:', err));
-        }
-      });
+    if (remoteVideoRef.current && remoteStream && activeTab === 'screen') {
+      if (remoteVideoRef.current.srcObject !== remoteStream) {
+        remoteVideoRef.current.srcObject = remoteStream;
+        remoteVideoRef.current.play().catch(() => {
+          if (remoteVideoRef.current) {
+            remoteVideoRef.current.muted = true;
+            setStreamAudioMuted(true);
+            remoteVideoRef.current.play().catch((err) => console.warn('Remote video autoplay fallback:', err));
+          }
+        });
+      }
     }
-  }, [remoteStream]);
+  }, [remoteStream, activeTab]);
+
+  // Sync local screen share stream to Host preview video element
+  useEffect(() => {
+    if (localVideoRef.current && localScreenStreamRef.current && isScreenSharing && activeTab === 'screen') {
+      if (localVideoRef.current.srcObject !== localScreenStreamRef.current) {
+        localVideoRef.current.srcObject = localScreenStreamRef.current;
+        localVideoRef.current.play().catch((err) => console.warn('Local screen preview play error:', err));
+      }
+    }
+  }, [isScreenSharing, activeTab]);
 
   // Refs
   const wsRef = useRef(null);
@@ -603,10 +616,9 @@ export default function WatchPartyModal({
         peerConnectionsRef.current[sender_id] = pc;
 
         pc.ontrack = (event) => {
-          if (event.streams && event.streams[0]) {
-            setRemoteStream(event.streams[0]);
-            setActiveTab('screen');
-          }
+          const stream = (event.streams && event.streams[0]) ? event.streams[0] : new MediaStream([event.track]);
+          setRemoteStream(stream);
+          setActiveTab('screen');
         };
 
         pc.onicecandidate = (event) => {
@@ -1397,11 +1409,7 @@ export default function WatchPartyModal({
                     title="Double-click to toggle fullscreen (F)"
                   >
                     <video
-                      ref={(el) => {
-                        if (el && localScreenStreamRef.current) {
-                          el.srcObject = localScreenStreamRef.current;
-                        }
-                      }}
+                      ref={localVideoRef}
                       autoPlay
                       muted
                       playsInline
