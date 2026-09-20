@@ -11,7 +11,7 @@ export default function WatchlistShelf({
 }) {
   const { watchlistMovies, toggleWatchlist, toggleWatched } = useAuth();
 
-  if (!isExpanded && watchlistMovies.length === 0) {
+  if (!isExpanded) {
     return null;
   }
 

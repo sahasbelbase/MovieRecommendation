@@ -12,7 +12,7 @@ import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
 import Top250Modal from './components/Top250Modal';
-import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy } from 'lucide-react';
+import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
   { id: "all", label: "All Entertainment" },
@@ -35,7 +35,7 @@ export default function App() {
   const [selectedActor, setSelectedActor] = useState(null);
   const [isWatchedOpen, setIsWatchedOpen] = useState(false);
   const [libraryTab, setLibraryTab] = useState('watched');
-  const [isWatchlistShelfOpen, setIsWatchlistShelfOpen] = useState(true);
+  const [isWatchlistShelfOpen, setIsWatchlistShelfOpen] = useState(false);
   const [isDataOpen, setIsDataOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
@@ -71,11 +71,12 @@ export default function App() {
     setIsWatchedOpen(true);
   };
 
-  // Fetch recommendation feed whenever user state or media category changes
+  // Fetch recommendation feed whenever user state, media category, or genre changes
   const loadFeed = async () => {
     setLoading(true);
     try {
-      const url = `/recommendations/feed?media_type=${selectedMediaCategory}`;
+      const genreParam = selectedGenre && selectedGenre !== "All" ? `&genre=${encodeURIComponent(selectedGenre)}` : '';
+      const url = `/recommendations/feed?media_type=${selectedMediaCategory}${genreParam}`;
       const res = await api.get(url);
       setFeed(res.data);
     } catch (err) {
@@ -87,7 +88,7 @@ export default function App() {
 
   useEffect(() => {
     loadFeed();
-  }, [user, selectedMediaCategory]);
+  }, [user, selectedMediaCategory, selectedGenre]);
 
   // Auto-open taste calibration swipe deck when user logs in for the first time
   useEffect(() => {
@@ -217,6 +218,45 @@ export default function App() {
           </div>
         )}
 
+        {/* Your Watchlist - Card Carousel View Below Main Picture/Banner */}
+        {watchlistMovies && watchlistMovies.length > 0 && (
+          <section className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800/80">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                  <Bookmark className="w-4 h-4 fill-amber-400" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">Your Watchlist</h2>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                      {watchlistMovies.length} saved
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-400 hidden sm:block">Titles queued for later — ready to watch</p>
+                </div>
+              </div>
+              <button
+                onClick={() => handleOpenLibrary('watchlist')}
+                className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1"
+              >
+                View in Drawer →
+              </button>
+            </div>
+            <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-1 px-1">
+              {watchlistMovies.map((movie) => (
+                <div key={`watchlist_card_${movie.id}`} className="w-36 sm:w-44 shrink-0 snap-start">
+                  <MovieCard
+                    movie={movie}
+                    onSelect={(m) => setSelectedMovie(m)}
+                    onShowToast={showToast}
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* Media Category Switcher Tabs & Top 250 Launcher */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
           <div className="flex items-center gap-2.5 flex-wrap">
@@ -279,8 +319,8 @@ export default function App() {
               {[1, 2, 3].map((row) => (
                 <div key={row} className="space-y-4">
                   <div className="h-6 w-48 bg-zinc-800/60 rounded-md animate-pulse" />
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                    {[1, 2, 3, 4, 5].map((i) => (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
                       <div key={i} className="aspect-[2/3] bg-zinc-800/40 rounded-xl animate-pulse" />
                     ))}
                   </div>
@@ -305,13 +345,21 @@ export default function App() {
                 if (selectedMediaCategory === "movie" && mType !== "movie") return false;
               }
 
-              // 2. Genre matching (flexible matching for Action within Action & Adventure, etc.)
-              if (selectedGenre === "All") return true;
-              if (!m.genres || m.genres.length === 0) return false;
-              return m.genres.some((g) =>
-                g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
-                selectedGenre.toLowerCase().includes(g.toLowerCase())
-              );
+              // 2. Genre matching: if user selected a genre, backend returned dedicated discovery sections
+              if (selectedGenre !== "All") {
+                if (section.title?.toLowerCase().includes(selectedGenre.toLowerCase())) {
+                  return true;
+                }
+                if (m.genres && m.genres.length > 0) {
+                  return m.genres.some((g) =>
+                    g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
+                    selectedGenre.toLowerCase().includes(g.toLowerCase())
+                  );
+                }
+                return true;
+              }
+
+              return true;
             });
 
             if (movies.length === 0) return null;
@@ -330,7 +378,7 @@ export default function App() {
                 </div>
 
                 {/* Media Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
                   {movies.map((movie) => (
                     <MovieCard
                       key={`${movie.media_type || 'movie'}_${movie.id}`}

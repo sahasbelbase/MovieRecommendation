@@ -307,10 +307,84 @@ class TMDBService:
         data = await self._fetch("/movie/upcoming", {"page": page})
         return [self._format_item(m, default_type="movie") for m in data.get("results", [])]
 
-    async def get_top_rated(self, media_type: str = "movie", page: int = 1) -> List[dict]:
-        endpoint = "/tv/top_rated" if media_type in ["tv", "anime", "kdrama"] else "/movie/top_rated"
-        data = await self._fetch(endpoint, {"page": page})
-        return [self._format_item(m, default_type=media_type) for m in data.get("results", [])]
+    async def discover_by_genre(
+        self,
+        genre_name: str,
+        media_type: str = "all",
+        sort_by: str = "popularity.desc",
+        page: int = 1
+    ) -> List[dict]:
+        """Discovers movies and/or TV series by genre name"""
+        clean_genre = genre_name.lower().strip()
+        genre_map = {
+            "action": {"movie": "28", "tv": "10759"},
+            "adventure": {"movie": "12", "tv": "10759"},
+            "animation": {"movie": "16", "tv": "16"},
+            "comedy": {"movie": "35", "tv": "35"},
+            "crime": {"movie": "80", "tv": "80"},
+            "documentary": {"movie": "99", "tv": "99"},
+            "drama": {"movie": "18", "tv": "18"},
+            "family": {"movie": "10751", "tv": "10751"},
+            "fantasy": {"movie": "14", "tv": "10765"},
+            "history": {"movie": "36", "tv": "18"},
+            "horror": {"movie": "27", "tv": "9648"},
+            "music": {"movie": "10402", "tv": "10767"},
+            "mystery": {"movie": "9648", "tv": "9648"},
+            "romance": {"movie": "10749", "tv": "10766"},
+            "sci-fi": {"movie": "878", "tv": "10765"},
+            "science fiction": {"movie": "878", "tv": "10765"},
+            "thriller": {"movie": "53", "tv": "9648"},
+            "war": {"movie": "10752", "tv": "10768"},
+            "western": {"movie": "37", "tv": "37"},
+        }
+        g_ids = genre_map.get(clean_genre, {})
+        movie_gid = g_ids.get("movie", "35")
+        tv_gid = g_ids.get("tv", "35")
+
+        results = []
+        if media_type in ["movie", "all"]:
+            params = {
+                "page": page,
+                "with_genres": movie_gid,
+                "sort_by": sort_by,
+                "include_adult": "false"
+            }
+            if "vote_average" in sort_by:
+                params["vote_count.gte"] = "200"
+            m_data = await self._fetch("/discover/movie", params)
+            for m in m_data.get("results", []):
+                results.append(self._format_item(m, default_type="movie"))
+
+        if media_type in ["tv", "all"]:
+            params = {
+                "page": page,
+                "with_genres": tv_gid,
+                "sort_by": sort_by,
+                "include_adult": "false"
+            }
+            if "vote_average" in sort_by:
+                params["vote_count.gte"] = "100"
+            tv_data = await self._fetch("/discover/tv", params)
+            for m in tv_data.get("results", []):
+                results.append(self._format_item(m, default_type="tv"))
+
+        if media_type == "anime":
+            params = {
+                "page": page,
+                "with_origin_country": "JP",
+                "with_genres": f"16,{tv_gid}",
+                "sort_by": sort_by,
+                "include_adult": "false"
+            }
+            if "vote_average" in sort_by:
+                params["vote_count.gte"] = "50"
+            a_data = await self._fetch("/discover/tv", params)
+            for m in a_data.get("results", []):
+                item = self._format_item(m, default_type="anime")
+                item["media_type"] = "anime"
+                results.append(item)
+
+        return results
 
     async def get_top_250(self, category: str = "movies", page: int = 1, limit: int = 50) -> dict:
         """

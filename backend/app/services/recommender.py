@@ -158,15 +158,46 @@ class RecommenderService:
 
         return await self._enrich_with_tmdb_posters(results[:limit])
 
-    async def get_tailored_feed(self, user_id: str, media_type: Optional[str] = None) -> Dict[str, Any]:
+    async def get_tailored_feed(self, user_id: str, media_type: Optional[str] = None, genre: Optional[str] = None) -> Dict[str, Any]:
         """
         Generates personalized FYP recommendation feed for authenticated user.
-        Adaptively detects tastes (e.g. K-Drama, Anime, skipping action, Rotten Tomatoes favorites)
-        and strictly excludes all watched titles.
+        Adaptively detects tastes (e.g. K-Drama, Anime, skipping action, Rotten Tomatoes favorites),
+        strictly excludes all watched titles, and honors genre fatigue suppression.
         """
         watched_list = await self.user_data.get_watched_list(user_id)
         watched_ids = [m["id"] for m in watched_list]
         all_excluded_ids = set(await self.user_data.get_all_excluded_ids(user_id))
+
+        # Handle specific genre filter (e.g. "Comedy", "Sci-Fi", "Action", etc.)
+        if genre and genre.strip().lower() != "all":
+            clean_g = genre.strip()
+            target_type = media_type or "all"
+            pop_items, top_items = await asyncio.gather(
+                self.tmdb.discover_by_genre(clean_g, media_type=target_type, sort_by="popularity.desc"),
+                self.tmdb.discover_by_genre(clean_g, media_type=target_type, sort_by="vote_average.desc")
+            )
+            unwatched_pop = [m for m in pop_items if m["id"] not in all_excluded_ids]
+            seen_pop_ids = {m["id"] for m in unwatched_pop}
+            unwatched_top = [m for m in top_items if m["id"] not in all_excluded_ids and m["id"] not in seen_pop_ids]
+
+            type_label = "Movies & Shows" if target_type == "all" else "Movies" if target_type == "movie" else "TV Series" if target_type == "tv" else "Anime"
+            return {
+                "is_cold_start": False,
+                "needs_calibration": False,
+                "watched_count": len(watched_list),
+                "sections": [
+                    {
+                        "title": f"Trending {clean_g} {type_label}",
+                        "subtitle": f"Popular {clean_g.lower()} titles streaming right now",
+                        "movies": unwatched_pop[:12]
+                    },
+                    {
+                        "title": f"Critically Acclaimed {clean_g}",
+                        "subtitle": f"Highest-rated {clean_g.lower()} titles (IMDb & Rotten Tomatoes Elite)",
+                        "movies": unwatched_top[:12]
+                    }
+                ]
+            }
 
         # If user explicitly requested Anime category
         if media_type == "anime":
@@ -197,6 +228,28 @@ class RecommenderService:
                 "sections": [
                     {"title": "Trending TV Series", "subtitle": "Top shows streaming this week", "movies": unwatched_tv[:10]},
                     {"title": "Critically Acclaimed Television", "subtitle": "Highest rated TV series (IMDb & RT)", "movies": unwatched_top_tv[:10]},
+                ]
+            }
+
+        # If user explicitly requested Movies category
+        if media_type == "movie":
+            trending_movies, top_movies, rt_picks = await asyncio.gather(
+                self.tmdb.get_trending_movies(),
+                self.tmdb.get_top_rated(media_type="movie"),
+                self.tmdb.get_rotten_tomatoes_picks(limit=15)
+            )
+            unwatched_trending = [m for m in trending_movies if m["id"] not in all_excluded_ids]
+            seen_movie_ids = {m["id"] for m in unwatched_trending}
+            unwatched_top = [m for m in top_movies if m["id"] not in all_excluded_ids and m["id"] not in seen_movie_ids]
+            unwatched_rt = [m for m in rt_picks if m["id"] not in all_excluded_ids and m["id"] not in seen_movie_ids]
+            return {
+                "is_cold_start": False,
+                "needs_calibration": len(watched_list) < 3,
+                "watched_count": len(watched_list),
+                "sections": [
+                    {"title": "Trending Feature Films", "subtitle": "Blockbusters and popular movies worldwide", "movies": unwatched_trending[:10]},
+                    {"title": "Critically Acclaimed Cinema", "subtitle": "85%+ Rotten Tomatoes & IMDb Elite", "movies": unwatched_rt[:10]},
+                    {"title": "All-Time Top Rated Movies", "subtitle": "Highest rated films you haven't watched yet", "movies": unwatched_top[:10]},
                 ]
             }
 
@@ -238,6 +291,32 @@ class RecommenderService:
 
             for g in item_genres:
                 genre_frequency[g] = genre_frequency.get(g, 0) + 1
+                if g == "Action":
+                    action_count += 1
+
+        # Fetch Not Interested list to compute negative preferences & genre fatigue
+        not_interested_list = await self.user_data.get_not_interested_list(user_id)
+        genre_negative_frequency = {}
+        kdrama_negative_count = 0
+        anime_negative_count = 0
+
+        for item in not_interested_list:
+            m_type = item.get("media_type", "movie")
+            item_genres = item.get("genres", [])
+            if m_type == "kdrama" or "K-Drama" in item_genres:
+                kdrama_negative_count += 1
+            if m_type == "anime" or "Anime" in item_genres:
+                anime_negative_count += 1
+            for g in item_genres:
+                genre_negative_frequency[g] = genre_negative_frequency.get(g, 0) + 1
+
+        # A genre is FATIGUED/REJECTED if marked not-interested >= 5 times,
+        # or >= 3 times when user has watched <= 1 title in that genre.
+        rejected_genres = set()
+        for g, neg_cnt in genre_negative_frequency.items():
+            pos_cnt = genre_frequency.get(g, 0)
+            if neg_cnt >= 5 or (pos_cnt <= 1 and neg_cnt >= 3):
+                rejected_genres.add(g.lower())
                 if g == "Action":
                     action_count += 1
 
@@ -403,9 +482,10 @@ class RecommenderService:
                 "movies": anchor_recs
             })
 
-        # 4. Format-Specific & Taste Rows:
-        # Only show K-Drama section if user has ACTUALLY watched K-Drama
-        if kdrama_count > 0:
+        # 4. Format-Specific & Taste Rows with Genre Fatigue Guards:
+        # Only show K-Drama section if user has watched >= 2 K-Dramas AND has not rejected them
+        is_kdrama_rejected = kdrama_negative_count >= 4 or (kdrama_count <= 1 and kdrama_negative_count >= 2)
+        if kdrama_count >= 2 and not is_kdrama_rejected:
             kdrama_recs = await self.tmdb.get_trending_kdrama()
             unwatched_kdrama = [m for m in kdrama_recs if m["id"] not in all_excluded_ids][:10]
             if unwatched_kdrama:
@@ -415,28 +495,30 @@ class RecommenderService:
                     "movies": unwatched_kdrama
                 })
 
-        # Anime curation: Tailor title and subtitle based on what the user actually watches
-        anime_recs = await self.tmdb.get_trending_anime()
-        unwatched_anime = [m for m in anime_recs if m["id"] not in all_excluded_ids][:10]
-        if unwatched_anime:
-            if anime_count > 0:
-                anime_title = "Anime For You"
-                anime_sub = "Top series matching your animation viewing history"
-            elif action_count > 0:
-                anime_title = "High-Octane Anime & Animation"
-                anime_sub = "Top-tier action animation you haven't watched yet"
-            elif "Romance" in genre_frequency or "Drama" in genre_frequency:
-                anime_title = "Story-Rich & Emotional Anime"
-                anime_sub = "Character-driven storytelling and world-class animation"
-            else:
-                anime_title = "Top-Rated Anime Series"
-                anime_sub = "Critically acclaimed Japanese animation"
+        # Anime curation: only show if user has not repeatedly marked anime as not interested
+        is_anime_rejected = anime_negative_count >= 5 or (anime_count <= 1 and anime_negative_count >= 3)
+        if not is_anime_rejected:
+            anime_recs = await self.tmdb.get_trending_anime()
+            unwatched_anime = [m for m in anime_recs if m["id"] not in all_excluded_ids][:10]
+            if unwatched_anime:
+                if anime_count > 0:
+                    anime_title = "Anime For You"
+                    anime_sub = "Top series matching your animation viewing history"
+                elif action_count > 0:
+                    anime_title = "High-Octane Anime & Animation"
+                    anime_sub = "Top-tier action animation you haven't watched yet"
+                elif "Romance" in genre_frequency or "Drama" in genre_frequency:
+                    anime_title = "Story-Rich & Emotional Anime"
+                    anime_sub = "Character-driven storytelling and world-class animation"
+                else:
+                    anime_title = "Top-Rated Anime Series"
+                    anime_sub = "Critically acclaimed Japanese animation"
 
-            sections.append({
-                "title": anime_title,
-                "subtitle": anime_sub,
-                "movies": unwatched_anime
-            })
+                sections.append({
+                    "title": anime_title,
+                    "subtitle": anime_sub,
+                    "movies": unwatched_anime
+                })
 
         # 5. Dedicated Franchise Row Below (for completionists)
         if saturated_franchise:
@@ -472,12 +554,38 @@ class RecommenderService:
             "sections": sections
         }
 
-    async def get_guest_feed(self, media_type: Optional[str] = None) -> Dict[str, Any]:
+    async def get_guest_feed(self, media_type: Optional[str] = None, genre: Optional[str] = None) -> Dict[str, Any]:
         """
         Public discovery feed for guests across Movies, TV Series, and Anime,
         including Rotten Tomatoes Certified Fresh selections.
         Sub-millisecond latency via in-memory caching and parallel async TMDB querying.
         """
+        clean_g = (genre or "").strip()
+        if clean_g and clean_g.lower() != "all":
+            target_type = media_type or "all"
+            pop_items, top_items = await asyncio.gather(
+                self.tmdb.discover_by_genre(clean_g, media_type=target_type, sort_by="popularity.desc"),
+                self.tmdb.discover_by_genre(clean_g, media_type=target_type, sort_by="vote_average.desc")
+            )
+            seen_pop_ids = {m["id"] for m in pop_items}
+            top_filtered = [m for m in top_items if m["id"] not in seen_pop_ids]
+            type_label = "Movies & Shows" if target_type == "all" else "Movies" if target_type == "movie" else "TV Series" if target_type == "tv" else "Anime"
+            return {
+                "is_guest": True,
+                "sections": [
+                    {
+                        "title": f"Trending {clean_g} {type_label}",
+                        "subtitle": f"Popular {clean_g.lower()} titles right now",
+                        "movies": pop_items[:12]
+                    },
+                    {
+                        "title": f"Critically Acclaimed {clean_g}",
+                        "subtitle": f"Highest-rated {clean_g.lower()} titles",
+                        "movies": top_filtered[:12]
+                    }
+                ]
+            }
+
         cache_key = f"guest_feed_{media_type or 'all'}"
         if cache_key in _guest_feed_cache:
             ts, val = _guest_feed_cache[cache_key]

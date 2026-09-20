@@ -16,15 +16,17 @@ class SwipeActionRequest(BaseModel):
 @router.get("/feed")
 async def get_recommendation_feed(
     media_type: Optional[str] = Query(None, pattern="^(all|movie|tv|anime)$"),
+    genre: Optional[str] = Query(None),
     user: Optional[dict] = Depends(get_current_user_optional)
 ):
     """
     Returns personalized FYP feed for authenticated users,
     or public discovery feed across Movies, TV, Anime, and Rotten Tomatoes picks for guests.
+    Supports media_type and genre filtering.
     """
     if user:
-        return await recommender_service.get_tailored_feed(user_id=user["uid"], media_type=media_type)
-    return await recommender_service.get_guest_feed(media_type=media_type)
+        return await recommender_service.get_tailored_feed(user_id=user["uid"], media_type=media_type, genre=genre)
+    return await recommender_service.get_guest_feed(media_type=media_type, genre=genre)
 
 @router.get("/similar/{movie_id}")
 async def get_similar(
