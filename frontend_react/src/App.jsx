@@ -518,6 +518,7 @@ export default function App() {
      onSelectActor={(a) => setSelectedActor(a)}
      onShowToast={showToast}
      onStartWatchParty={(m) => handleStartWatchParty(m)}
+     onRequireAuth={() => setIsAuthOpen(true)}
     />
    )}
 

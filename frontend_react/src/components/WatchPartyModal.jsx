@@ -1371,6 +1371,45 @@ export default function WatchPartyModal({
        <span>Movie Trailer</span>
       </button>
 
+      {movie?.id && (
+       <button
+        onClick={() => {
+         if (!user) {
+          if (onRequireAuth) onRequireAuth();
+          if (onShowToast) onShowToast({ message: 'Please sign in to stream full movies 🍿' });
+          return;
+         }
+         setActiveTab('embed');
+         if (isScreenSharing) stopScreenShare();
+         const embedSrc = movie.media_type === 'tv'
+          ? `https://vidsrc.sbs/embed/tv/${movie.id}/1/1`
+          : `https://vidsrc.sbs/embed/movie/${movie.id}`;
+         const newSrc = {
+          type: 'embed',
+          src: embedSrc,
+          title: `${movie.title || 'Movie'} (Full Stream)`
+         };
+         setVideoSource(newSrc);
+         if (wsRef.current?.readyState === WebSocket.OPEN) {
+          wsRef.current.send(
+           JSON.stringify({
+            type: 'CHANGE_SOURCE',
+            payload: { source: newSrc }
+           })
+          );
+         }
+        }}
+        className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
+         activeTab === 'embed'
+          ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
+          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+        }`}
+       >
+        <Play className="w-3.5 h-3.5 fill-current" />
+        <span>Full Movie (VidSrc 🍿)</span>
+       </button>
+      )}
+
       <button
        onClick={() => setActiveTab('screen')}
        className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
@@ -1476,6 +1515,39 @@ export default function WatchPartyModal({
           </p>
          </div>
         )}
+       </div>
+      )}
+
+      {/* Mode A2: VidSrc Sandboxed Ad-Shielded Embed Player */}
+      {activeTab === 'embed' && (
+       <div className="relative w-full h-full flex flex-col justify-center items-center">
+        <div
+         onDoubleClick={toggleFullscreen}
+         className={`relative w-full ${
+          isFullscreen ? 'h-full max-h-none flex-1' : 'aspect-video max-h-[75vh]'
+         } bg-black flex items-center justify-center cursor-pointer overflow-hidden`}
+         title="Double-click to toggle fullscreen (F)"
+        >
+         <iframe
+          src={
+           videoSource?.src ||
+           (movie?.id
+            ? movie.media_type === 'tv'
+              ? `https://vidsrc.sbs/embed/tv/${movie.id}/1/1`
+              : `https://vidsrc.sbs/embed/movie/${movie.id}`
+            : '')
+          }
+          title={videoSource?.title || movie?.title || 'Full Movie Stream'}
+          allow="autoplay; encrypted-media; picture-in-picture"
+          allowFullScreen
+          sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+          className="w-full h-full border-0"
+         />
+         <div className="absolute top-3 left-3 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-950/90 border border-indigo-500/50 text-indigo-300 text-[11px] font-semibold backdrop-blur">
+          <span className="w-2 h-2 rounded-full bg-indigo-400 animate-pulse" />
+          <span>Ad-Shielded Stream 🍿</span>
+         </div>
+        </div>
        </div>
       )}
 

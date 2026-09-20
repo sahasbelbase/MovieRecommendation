@@ -17,7 +17,30 @@ const COUNTRY_OPTIONS = [
  { code: 'FR', label: '🇫🇷 France' },
 ];
 
-export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty }) {
+const EMBED_SERVERS = [
+  {
+    id: 'vidsrc_sbs',
+    name: 'Server 1 (VidSrc)',
+    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.sbs/embed/tv/${id}/1/1` : `https://vidsrc.sbs/embed/movie/${id}`
+  },
+  {
+    id: 'vidsrc_pro',
+    name: 'Server 2 (Pro)',
+    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.pro/embed/tv/${id}/1/1` : `https://vidsrc.pro/embed/movie/${id}`
+  },
+  {
+    id: 'vidsrc_cc',
+    name: 'Server 3 (HD)',
+    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.cc/v2/embed/tv/${id}/1/1` : `https://vidsrc.cc/v2/embed/movie/${id}`
+  },
+  {
+    id: 'vidsrc_me',
+    name: 'Server 4 (Fast)',
+    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1` : `https://vidsrc.me/embed/movie?tmdb=${id}`
+  },
+];
+
+export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
  const {
   watchedIds,
   watchedMovies,
@@ -36,6 +59,8 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
  const [providersLoading, setProvidersLoading] = useState(false);
  const [similarItems, setSimilarItems] = useState([]);
  const [showTrailerPlayer, setShowTrailerPlayer] = useState(false);
+ const [showStreamPlayer, setShowStreamPlayer] = useState(false);
+ const [streamServerIndex, setStreamServerIndex] = useState(0);
  const [loading, setLoading] = useState(true);
 
  const watchedRecord = watchedMovies.find(m => m.id === movie.id);
@@ -205,49 +230,108 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
 
     {/* Scrollable Content Container */}
     <div className="overflow-y-auto flex-1">
-     {/* Backdrop Header / Video Player */}
-     <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
-      {showTrailerPlayer && activeTrailer ? (
-       <iframe
-        src={`${activeTrailer.embed_url}?autoplay=1`}
-        title={activeTrailer.name}
-        allow="autoplay; encrypted-media"
-        allowFullScreen
-        className="w-full h-full border-0"
-       />
-      ) : (
-       <>
-        <img
-         src={details?.backdrop_url || movie.backdrop_url || movie.poster_url}
-         alt={movie.title}
-         className="w-full h-full object-cover opacity-60"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-        <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
-         {activeTrailer && (
+      {/* Backdrop Header / Video Player */}
+      <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
+       {showStreamPlayer ? (
+        <div className="relative w-full h-full bg-black flex flex-col">
+         {/* Server Selector Bar */}
+         <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-xs z-10">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+           <span className="text-zinc-400 font-mono text-[11px] hidden sm:inline">Stream Server:</span>
+           {EMBED_SERVERS.map((srv, idx) => (
+            <button
+             key={srv.id}
+             onClick={() => setStreamServerIndex(idx)}
+             className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all whitespace-nowrap ${
+              streamServerIndex === idx
+               ? 'bg-purple-600 text-white shadow-md'
+               : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+             }`}
+            >
+             {srv.name}
+            </button>
+           ))}
+          </div>
           <button
-           onClick={() => setShowTrailerPlayer(true)}
-           className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-950/60 transition-all active:scale-95"
+           onClick={() => setShowStreamPlayer(false)}
+           className="text-zinc-400 hover:text-white px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] shrink-0"
+          >
+           Close Stream ✕
+          </button>
+         </div>
+
+         {/* Ad-Shielded Sandboxed Player */}
+         <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
+          <iframe
+           key={`${EMBED_SERVERS[streamServerIndex].id}_${movie.id}`}
+           src={EMBED_SERVERS[streamServerIndex].getUrl(movie.id, mediaType)}
+           title={`${movie.title} Stream`}
+           allow="autoplay; encrypted-media; picture-in-picture"
+           allowFullScreen
+           sandbox="allow-scripts allow-same-origin allow-presentation allow-forms"
+           className="w-full h-full border-0"
+          />
+         </div>
+        </div>
+       ) : showTrailerPlayer && activeTrailer ? (
+        <iframe
+         src={`${activeTrailer.embed_url}?autoplay=1`}
+         title={activeTrailer.name}
+         allow="autoplay; encrypted-media"
+         allowFullScreen
+         className="w-full h-full border-0"
+        />
+       ) : (
+        <>
+         <img
+          src={details?.backdrop_url || movie.backdrop_url || movie.poster_url}
+          alt={movie.title}
+          className="w-full h-full object-cover opacity-60"
+         />
+         <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
+         <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
+          <button
+           onClick={() => {
+            if (!user) {
+             if (onRequireAuth) onRequireAuth();
+             if (onShowToast) onShowToast({ message: 'Please sign in to stream full movies & series 🍿' });
+             return;
+            }
+            setShowTrailerPlayer(false);
+            setShowStreamPlayer(true);
+           }}
+           className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-purple-950/60 transition-all active:scale-95"
           >
            <Play className="w-4 h-4 fill-white" />
-           <span>Watch Official Trailer</span>
+           <span>Play Full Movie (Stream 🍿)</span>
           </button>
-         )}
-         <button
-          onClick={() => {
-           if (onStartWatchParty) {
-            onStartWatchParty(movie);
-           }
-          }}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-amber-950/60 transition-all active:scale-95"
-         >
-          <span></span>
-          <span>Watch Party</span>
-         </button>
-        </div>
-       </>
-      )}
-     </div>
+          {activeTrailer && (
+           <button
+            onClick={() => {
+             setShowStreamPlayer(false);
+             setShowTrailerPlayer(true);
+            }}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700 text-white text-xs sm:text-sm font-semibold shadow-lg transition-all active:scale-95"
+           >
+            <Film className="w-4 h-4 text-rose-400" />
+            <span>Trailer</span>
+           </button>
+          )}
+          <button
+           onClick={() => {
+            if (onStartWatchParty) {
+             onStartWatchParty(movie);
+            }
+           }}
+           className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-amber-950/60 transition-all active:scale-95"
+          >
+           <span>🍿</span>
+           <span>Watch Party</span>
+          </button>
+         </div>
+        </>
+       )}
+      </div>
 
      {/* Core Info Section */}
      <div className="p-4 sm:p-8 space-y-5 sm:space-y-6">
