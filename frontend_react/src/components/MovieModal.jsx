@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap, Lock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
@@ -60,7 +60,7 @@ const EMBED_SERVERS = [
   },
 ];
 
-export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
+export default function MovieModal({ isVip, onActivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
  const {
   user,
   watchedIds,
@@ -87,6 +87,11 @@ export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onSho
  const [seasonData, setSeasonData] = useState(null);
  const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
+
+ // VIP Passcode Unlock state
+ const [showVipUnlockPrompt, setShowVipUnlockPrompt] = useState(false);
+ const [vipPasscode, setVipPasscode] = useState('');
+ const [passcodeError, setPasscodeError] = useState(false);
 
  // Episode sorting, range chunking & search jump for long-running series / anime
  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
@@ -428,6 +433,10 @@ export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onSho
          <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
           <button
            onClick={() => {
+            if (!isVip) {
+             setShowVipUnlockPrompt(true);
+             return;
+            }
             if (!user) {
              if (onRequireAuth) onRequireAuth();
              if (onShowToast) onShowToast({ message: 'Please sign in to stream full titles' });
@@ -440,9 +449,11 @@ export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onSho
           >
            <Play className="w-4 h-4 fill-white" />
            <span>
-            {['tv', 'anime', 'kdrama'].includes(mediaType)
-             ? `Play S${selectedSeason} E${selectedEpisode}`
-             : 'Play Stream'}
+            {!isVip
+             ? 'Unlock Stream'
+             : ['tv', 'anime', 'kdrama'].includes(mediaType)
+               ? `Play S${selectedSeason} E${selectedEpisode}`
+               : 'Play Stream'}
            </span>
           </button>
           {activeTrailer && (
@@ -886,6 +897,10 @@ export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onSho
             <div
              key={ep.id || ep.episode_number}
              onClick={() => {
+              if (!isVip) {
+               setShowVipUnlockPrompt(true);
+               return;
+              }
               if (!user) {
                if (onRequireAuth) onRequireAuth();
                if (onShowToast) onShowToast({ message: 'Please sign in to stream full episodes' });
@@ -1214,6 +1229,68 @@ export default function MovieModal({ isVip, movie, onClose, onSelectMovie, onSho
      </div>
     </div>
    </div>
+   {/* VIP Passcode Unlock Modal Prompt */}
+   {showVipUnlockPrompt && (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-150">
+     <div className="fixed inset-0" onClick={() => setShowVipUnlockPrompt(false)} />
+     <div className="relative w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-6 shadow-2xl z-10 flex flex-col items-center text-center space-y-4">
+      <div className="w-12 h-12 rounded-2xl bg-purple-950/80 border border-purple-700/50 flex items-center justify-center text-purple-400">
+       <Lock className="w-6 h-6" />
+      </div>
+      <div className="space-y-1">
+       <h4 className="text-base font-bold text-white">VIP Streaming Passcode</h4>
+       <p className="text-xs text-zinc-400">Enter secret access code to unlock full movies, series & episode streams.</p>
+      </div>
+      <form
+       onSubmit={(e) => {
+        e.preventDefault();
+        if (vipPasscode.trim() === '9999') {
+         if (onActivateVip) onActivateVip();
+         setShowVipUnlockPrompt(false);
+         setPasscodeError(false);
+         setVipPasscode('');
+         if (onShowToast) onShowToast({ message: 'VIP Access Unlocked 🤫' });
+         setShowStreamPlayer(true);
+        } else {
+         setPasscodeError(true);
+        }
+       }}
+       className="w-full space-y-3"
+      >
+       <input
+        type="text"
+        value={vipPasscode}
+        onChange={(e) => {
+         setVipPasscode(e.target.value);
+         setPasscodeError(false);
+        }}
+        placeholder="Enter Passcode..."
+        maxLength={4}
+        autoFocus
+        className="w-full text-center px-4 py-2.5 bg-zinc-950 border border-zinc-700 rounded-xl text-sm font-mono text-white placeholder-zinc-500 focus:outline-none focus:border-purple-500 uppercase tracking-widest"
+       />
+       {passcodeError && (
+        <p className="text-xs text-rose-400 font-mono">Incorrect passcode. Try again.</p>
+       )}
+       <div className="flex items-center gap-2 pt-1">
+        <button
+         type="button"
+         onClick={() => setShowVipUnlockPrompt(false)}
+         className="flex-1 py-2 rounded-xl bg-zinc-800 text-zinc-300 text-xs font-semibold hover:bg-zinc-700 transition-colors"
+        >
+         Cancel
+        </button>
+        <button
+         type="submit"
+         className="flex-1 py-2 rounded-xl bg-purple-600 text-white text-xs font-bold hover:bg-purple-500 transition-colors shadow-md shadow-purple-950/50"
+        >
+         Unlock Access
+        </button>
+       </div>
+      </form>
+     </div>
+    </div>
+   )}
   </div>
  );
 }

@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
 export default function Navbar({
+  isVip,
+  onVipActivated,
   onSelectMovie,
   onSelectActor,
   onOpenWatched,

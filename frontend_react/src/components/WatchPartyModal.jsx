@@ -21,6 +21,7 @@ const RTC_CONFIG = {
 
 export default function WatchPartyModal({
  isVip,
+ onActivateVip,
  isOpen,
  onClose,
  roomCode: propRoomCode,
@@ -1656,16 +1657,20 @@ export default function WatchPartyModal({
          } bg-black flex items-center justify-center cursor-pointer overflow-hidden`}
          title="Double-click to toggle fullscreen (F)"
         >
-          {!user ? (
+          {(!user || !isVip) ? (
            <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center z-50">
             <div className="w-16 h-16 rounded-full bg-rose-500/20 flex items-center justify-center mb-4 border border-rose-500/30">
              <span className="text-2xl">🔒</span>
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Sign In Required</h3>
+            <h3 className="text-lg font-bold text-white mb-2 font-mono">
+             {!user ? 'Sign In Required' : 'VIP Passcode Required'}
+            </h3>
             <p className="text-sm text-zinc-400 max-w-md mb-6">
-             Please sign in to access full movies, TV series, and watch party streams.
+             {!user
+              ? 'Please sign in to access full movies, TV series, and watch party streams.'
+              : 'Enter secret access code (e.g. 9999) to unlock streaming in Watch Party.'}
             </p>
-            {!user && (
+            {!user ? (
              <button
               onClick={() => {
                if (onRequireAuth) onRequireAuth();
@@ -1675,6 +1680,34 @@ export default function WatchPartyModal({
              >
               Sign In / Register
              </button>
+            ) : (
+             <form
+              onSubmit={(e) => {
+               e.preventDefault();
+               const code = e.target.elements.passcode.value.trim();
+               if (code === '9999') {
+                if (onActivateVip) onActivateVip();
+                if (onShowToast) onShowToast({ message: 'VIP Stream Access Unlocked 🤫' });
+               } else {
+                alert('Incorrect passcode');
+               }
+              }}
+              className="flex items-center gap-2 w-full max-w-xs"
+             >
+              <input
+               name="passcode"
+               type="text"
+               maxLength={4}
+               placeholder="Passcode..."
+               className="flex-1 px-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-sm font-mono text-white text-center focus:outline-none focus:border-rose-500 uppercase tracking-widest"
+              />
+              <button
+               type="submit"
+               className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-sm transition-colors shadow-md shrink-0"
+              >
+               Unlock
+              </button>
+             </form>
             )}
            </div>
           ) : (() => {
