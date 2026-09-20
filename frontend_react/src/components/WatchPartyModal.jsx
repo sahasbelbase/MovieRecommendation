@@ -89,6 +89,64 @@ export default function WatchPartyModal({
   const lastSyncTimeRef = useRef(0);
   const isSeekingRef = useRef(false);
 
+  // Fullscreen theater state and container ref
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const modalContainerRef = useRef(null);
+
+  const toggleFullscreen = useCallback(async () => {
+    try {
+      if (!document.fullscreenElement) {
+        const el = modalContainerRef.current;
+        if (el?.requestFullscreen) {
+          await el.requestFullscreen();
+        } else if (el?.webkitRequestFullscreen) {
+          await el.webkitRequestFullscreen();
+        } else if (el?.msRequestFullscreen) {
+          await el.msRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          await document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+          await document.msExitFullscreen();
+        }
+      }
+    } catch (err) {
+      console.warn('Fullscreen toggle error:', err);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isOpen || !user) return;
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+
+      if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        toggleFullscreen();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, user, toggleFullscreen]);
+
   // 1. Initialize or join Theater session
   const initTheater = useCallback(async () => {
     if (!roomCode) return;
@@ -732,9 +790,20 @@ export default function WatchPartyModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black/95 backdrop-blur-xl animate-fade-in select-none">
+    <div
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/95 backdrop-blur-xl animate-fade-in select-none ${
+        isFullscreen ? 'p-0' : 'p-0 sm:p-4'
+      }`}
+    >
       {/* Container */}
-      <div className="relative w-full h-full sm:h-[94vh] sm:max-w-7xl bg-zinc-950 sm:border sm:border-zinc-800/80 sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+      <div
+        ref={modalContainerRef}
+        className={`relative w-full h-full bg-zinc-950 shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${
+          isFullscreen
+            ? 'w-screen h-screen sm:max-w-none sm:h-screen sm:rounded-none sm:border-0'
+            : 'sm:h-[94vh] sm:max-w-7xl sm:border sm:border-zinc-800/80 sm:rounded-3xl'
+        }`}
+      >
         
         {/* Top Header Bar */}
         <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/80 border-b border-zinc-800/60 backdrop-blur z-20">
@@ -786,6 +855,15 @@ export default function WatchPartyModal({
                   {unreadChatCount}
                 </span>
               )}
+            </button>
+
+            {/* Fullscreen toggle button */}
+            <button
+              onClick={toggleFullscreen}
+              className="p-2 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all active:scale-95"
+              title={isFullscreen ? 'Exit Full Screen (F)' : 'Full Screen Mode (F)'}
+            >
+              {isFullscreen ? <Minimize2 className="w-4 h-4 text-rose-400" /> : <Maximize2 className="w-4 h-4" />}
             </button>
 
             <button
@@ -840,13 +918,23 @@ export default function WatchPartyModal({
         <div className="relative flex-1 flex flex-col lg:flex-row overflow-hidden">
           
           {/* Left / Top: Video Stage */}
-          <div className="relative flex-1 flex flex-col bg-black justify-center items-center overflow-hidden">
+          <div
+            onDoubleClick={toggleFullscreen}
+            className="relative flex-1 flex flex-col bg-black justify-center items-center overflow-hidden cursor-pointer"
+            title="Double-click to toggle fullscreen (F)"
+          >
             
             {/* Mode A: Synchronized YouTube / Video Player */}
             {activeTab === 'watch' && (
               <div className="relative w-full h-full flex flex-col justify-center items-center">
                 {videoSource?.src ? (
-                  <div className="relative w-full aspect-video max-h-[75vh] bg-black">
+                  <div
+                    onDoubleClick={toggleFullscreen}
+                    className={`relative w-full ${
+                      isFullscreen ? 'h-full max-h-none flex-1' : 'aspect-video max-h-[75vh]'
+                    } bg-black flex items-center justify-center cursor-pointer`}
+                    title="Double-click to toggle fullscreen (F)"
+                  >
                     <div ref={ytContainerRef} className="w-full h-full" />
                   </div>
                 ) : (
@@ -865,7 +953,13 @@ export default function WatchPartyModal({
             {activeTab === 'screen' && (
               <div className="relative w-full h-full flex flex-col justify-center items-center p-4">
                 {isScreenSharing ? (
-                  <div className="relative w-full aspect-video max-h-[75vh] rounded-2xl overflow-hidden bg-zinc-950 border border-purple-500/40">
+                  <div
+                    onDoubleClick={toggleFullscreen}
+                    className={`relative w-full ${
+                      isFullscreen ? 'h-full max-h-none flex-1 rounded-none border-0' : 'aspect-video max-h-[75vh] rounded-2xl border border-purple-500/40'
+                    } overflow-hidden bg-zinc-950 cursor-pointer`}
+                    title="Double-click to toggle fullscreen (F)"
+                  >
                     <video
                       ref={(el) => {
                         if (el && localScreenStreamRef.current) {
@@ -883,7 +977,13 @@ export default function WatchPartyModal({
                     </div>
                   </div>
                 ) : remoteStream ? (
-                  <div className="relative w-full aspect-video max-h-[75vh] rounded-2xl overflow-hidden bg-zinc-950 border border-purple-500/40">
+                  <div
+                    onDoubleClick={toggleFullscreen}
+                    className={`relative w-full ${
+                      isFullscreen ? 'h-full max-h-none flex-1 rounded-none border-0' : 'aspect-video max-h-[75vh] rounded-2xl border border-purple-500/40'
+                    } overflow-hidden bg-zinc-950 cursor-pointer`}
+                    title="Double-click to toggle fullscreen (F)"
+                  >
                     <video
                       ref={(el) => {
                         if (el) el.srcObject = remoteStream;
@@ -1105,8 +1205,17 @@ export default function WatchPartyModal({
                       }
                     }}
                     className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 transition-all"
+                    title={isMuted ? 'Unmute' : 'Mute'}
                   >
                     {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  </button>
+
+                  <button
+                    onClick={toggleFullscreen}
+                    className="p-2 rounded-xl bg-zinc-800/80 hover:bg-zinc-700 text-zinc-300 hover:text-white transition-all active:scale-95"
+                    title={isFullscreen ? 'Exit Full Screen (F)' : 'Full Screen Mode (F)'}
+                  >
+                    {isFullscreen ? <Minimize2 className="w-4 h-4 text-rose-400" /> : <Maximize2 className="w-4 h-4" />}
                   </button>
                 </div>
 

@@ -369,8 +369,13 @@ export const AuthProvider = ({ children }) => {
         });
         await syncGuestWatchedToAccount(activeUid);
       } else {
-        localStorage.removeItem('cinematch_token');
-        setUser(null);
+        const mockTestUser = typeof window !== 'undefined' && window.__MOCK_TEST_USER__;
+        if (mockTestUser) {
+          setUser(mockTestUser);
+        } else {
+          localStorage.removeItem('cinematch_token');
+          setUser(null);
+        }
       }
       setLoading(false);
     });
