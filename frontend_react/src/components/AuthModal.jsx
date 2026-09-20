@@ -3,9 +3,17 @@ import { X, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function AuthModal({ isOpen, onClose }) {
-  const { loginWithGoogle } = useAuth();
+  const { user, loginWithGoogle } = useAuth();
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+
+  // Automatically close modal as soon as user is authenticated
+  React.useEffect(() => {
+    if (user && isOpen) {
+      setSubmitting(false);
+      onClose();
+    }
+  }, [user, isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -13,10 +21,7 @@ export default function AuthModal({ isOpen, onClose }) {
     setError('');
     setSubmitting(true);
     try {
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Sign-in timed out. Please check if your browser blocked the Google popup window.")), 25000)
-      );
-      await Promise.race([loginWithGoogle(), timeoutPromise]);
+      await loginWithGoogle();
       onClose();
     } catch (err) {
       console.error("Google Auth error:", err);

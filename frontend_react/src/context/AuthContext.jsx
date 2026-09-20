@@ -342,8 +342,11 @@ export const AuthProvider = ({ children }) => {
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (credential?.accessToken) {
       setStoredDriveToken(credential.accessToken);
-      await syncGuestWatchedToAccount(result.user.uid, credential.accessToken);
     }
+    // Synchronize library in the background without blocking the modal or sign-in completion
+    syncGuestWatchedToAccount(result.user.uid, credential?.accessToken).catch(e => {
+      console.warn("Background sync notice:", e);
+    });
     return result.user;
   };
 

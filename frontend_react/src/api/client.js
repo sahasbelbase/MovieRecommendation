@@ -9,6 +9,7 @@ if (rawBaseUrl && rawBaseUrl.startsWith('http') && !rawBaseUrl.replace(/\/+$/, '
 
 const api = axios.create({
   baseURL: rawBaseUrl,
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },
