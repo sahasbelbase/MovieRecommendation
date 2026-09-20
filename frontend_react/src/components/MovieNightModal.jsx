@@ -56,6 +56,35 @@ export default function MovieNightModal({ isOpen, onClose, initialRoomCode = '',
     }
   }, [user]);
 
+  // Reset state every time the modal opens — prevents blank body when mode
+  // was stuck on 'room' from a previous session but currentRoom was already null.
+  useEffect(() => {
+    if (isOpen) {
+      // Only reset to lobby if there's no active room session
+      if (!currentRoom) {
+        setMode('lobby');
+        setDeck([]);
+        setCurrentIndex(0);
+        setShowDetails(false);
+        setActiveMatchOverlay(null);
+        setShowMatchesSheet(false);
+        setErrorMsg('');
+      }
+    }
+  }, [isOpen]);
+
+  // Close modal on Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   useEffect(() => {
     if (initialRoomCode) {
       setJoinCode(initialRoomCode.toUpperCase());
