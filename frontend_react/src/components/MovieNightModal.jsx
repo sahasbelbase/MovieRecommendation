@@ -130,8 +130,6 @@ export default function MovieNightModal({ isOpen, onClose, initialRoomCode = '',
     };
   }, [isOpen, mode, currentRoom?.code, currentRoom?.matches?.length, myUserId, deck.length]);
 
-  if (!isOpen) return null;
-
   // Handle Room Creation
   const handleCreateRoom = async (e) => {
     e.preventDefault();
@@ -311,6 +309,8 @@ export default function MovieNightModal({ isOpen, onClose, initialRoomCode = '',
 
   const currentMovie = deck[currentIndex];
   const hasFinishedDeck = deck.length > 0 && currentIndex >= deck.length;
+
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
