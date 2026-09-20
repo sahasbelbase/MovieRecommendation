@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy, Flame, Popcorn, Compass } from 'lucide-react';
+import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy, Flame, Popcorn, Compass, Database, Menu } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
@@ -92,7 +92,7 @@ export default function Navbar({
  return (
   <>
   <nav className="sticky top-0 z-40 w-full md:w-64 md:h-screen bg-zinc-950/90 border-b md:border-b-0 md:border-r border-zinc-800/80 backdrop-blur-md shrink-0 flex flex-col">
-   <div className="w-full px-3 sm:px-6 lg:px-5 h-16 md:h-full md:py-6 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 md:gap-8 overflow-y-auto overflow-x-hidden no-scrollbar">
+   <div className="w-full px-3 sm:px-6 lg:px-5 h-16 md:h-full md:py-6 flex flex-row md:flex-col items-center md:items-start justify-between md:justify-start gap-2 md:gap-8 overflow-y-auto no-scrollbar">
      {/* Logo & Project Title */}
      <div className="flex items-center gap-2 sm:gap-3 cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
       <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-950/50">
@@ -114,27 +114,27 @@ export default function Navbar({
       </div>
      </div>
 
-    {/* Desktop Only Navigation Links container (for sidebar styling) */}
+    {/* Desktop Navigation Links Container */}
     <div className="hidden md:flex flex-col gap-2 w-full mt-2">
       <button
        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
        className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-all active:scale-95"
       >
-       <Compass className="w-4 h-4" />
+       <Compass className="w-4 h-4 text-rose-400" />
        <span>Discover</span>
       </button>
       <button
        onClick={onOpenMovieNight}
        className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-amber-400 hover:bg-zinc-800/50 transition-all active:scale-95"
       >
-       <Popcorn className="w-4 h-4" />
+       <Popcorn className="w-4 h-4 text-amber-400" />
        <span>Movie Night</span>
       </button>
       <button
        onClick={onOpenTop250}
        className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-amber-400 hover:bg-zinc-800/50 transition-all active:scale-95"
       >
-       <Trophy className="w-4 h-4" />
+       <Trophy className="w-4 h-4 text-amber-400" />
        <span>Top 250</span>
       </button>
       {user && (
@@ -142,10 +142,18 @@ export default function Navbar({
         onClick={onOpenSwipe}
         className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-rose-400 hover:bg-zinc-800/50 transition-all active:scale-95"
        >
-        <Flame className="w-4 h-4" />
+        <Flame className="w-4 h-4 text-rose-400" />
         <span>Swipe FYP</span>
        </button>
       )}
+      <button
+       onClick={onOpenDataModal}
+       className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-purple-400 hover:bg-zinc-800/50 transition-all active:scale-95"
+       title="Library Resources, Backup & Data Sync"
+      >
+       <Database className="w-4 h-4 text-purple-400" />
+       <span>Resources & Data</span>
+      </button>
     </div>
 
     {/* Global Multi-Search Input (Movies, Series, Anime, Actors) */}
@@ -585,11 +593,11 @@ export default function Navbar({
   </nav>
 
   {/* Mobile Bottom Navigation Bar */}
-  <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80 px-2 py-1.5 flex items-center justify-around shadow-2xl safe-area-bottom">
+  <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80 px-1.5 py-1.5 flex items-center justify-around shadow-2xl safe-area-bottom">
    {/* Discover / Feed */}
    <button
     onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-    className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-white active:text-rose-400 transition-all active:scale-95 group"
+    className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-white active:text-rose-400 transition-all active:scale-95 group"
    >
     <Compass className="w-5 h-5 group-hover:text-rose-400 transition-colors" />
     <span className="text-[10px] font-medium tracking-tight">Discover</span>
@@ -598,29 +606,29 @@ export default function Navbar({
    {/* Swipe FYP */}
    <button
     onClick={user ? onOpenSwipe : onOpenAuthModal}
-    className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-rose-400 active:text-rose-400 transition-all active:scale-95 relative group"
+    className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-rose-400 active:text-rose-400 transition-all active:scale-95 relative group"
    >
     <div className="relative">
      <Flame className="w-5 h-5 text-rose-500 group-hover:scale-110 transition-transform" />
      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-orange-500 animate-ping" />
      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-rose-500" />
     </div>
-    <span className="text-[10px] font-medium tracking-tight text-rose-300">Swipe FYP</span>
+    <span className="text-[10px] font-medium tracking-tight text-rose-300">Swipe</span>
    </button>
 
    {/* Movie Night */}
    <button
     onClick={onOpenMovieNight}
-    className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-amber-400 active:text-amber-400 transition-all active:scale-95 group"
+    className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-amber-400 active:text-amber-400 transition-all active:scale-95 group"
    >
     <Popcorn className="w-5 h-5 group-hover:text-amber-400 transition-colors" />
-    <span className="text-[10px] font-medium tracking-tight">Movie Night</span>
+    <span className="text-[10px] font-medium tracking-tight">Night</span>
    </button>
 
    {/* Top 250 */}
    <button
     onClick={onOpenTop250}
-    className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-amber-300 active:text-amber-300 transition-all active:scale-95 group"
+    className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-amber-300 active:text-amber-300 transition-all active:scale-95 group"
    >
     <Trophy className="w-5 h-5 group-hover:text-amber-400 transition-colors" />
     <span className="text-[10px] font-medium tracking-tight">Top 250</span>
@@ -629,7 +637,7 @@ export default function Navbar({
    {/* Watchlist */}
    <button
     onClick={onToggleWatchlistShelf || (() => onOpenWatched('watchlist'))}
-    className="flex flex-col items-center justify-center gap-1 py-1 px-3 rounded-xl text-zinc-400 hover:text-white active:text-amber-400 transition-all active:scale-95 relative group"
+    className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-white active:text-amber-400 transition-all active:scale-95 relative group"
    >
     <div className="relative">
      <Bookmark className={`w-5 h-5 transition-colors ${watchlistMovies.length > 0 ? 'text-amber-400 fill-amber-400/30' : 'text-zinc-400 group-hover:text-white'}`} />
@@ -640,6 +648,16 @@ export default function Navbar({
      )}
     </div>
     <span className="text-[10px] font-medium tracking-tight">Watchlist</span>
+   </button>
+
+   {/* Resources & Data */}
+   <button
+    onClick={onOpenDataModal}
+    className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-purple-300 active:text-purple-300 transition-all active:scale-95 group"
+    title="Library Resources & Data Backup"
+   >
+    <Database className="w-5 h-5 text-purple-400 group-hover:text-purple-300 transition-colors" />
+    <span className="text-[10px] font-medium tracking-tight text-purple-300">Resources</span>
    </button>
   </div>
  </>

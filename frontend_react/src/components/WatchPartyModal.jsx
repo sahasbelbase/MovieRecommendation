@@ -1449,6 +1449,44 @@ export default function WatchPartyModal({
        <span>Movie Trailer</span>
       </button>
 
+      {movie?.id && movie?.media_type === 'anime' && (
+       <button
+        onClick={() => {
+         if (!user) {
+          if (onRequireAuth) onRequireAuth();
+          if (onShowToast) onShowToast({ message: 'Please sign in to stream full movies 🍿' });
+          return;
+         }
+         setActiveTab('embed');
+         if (isScreenSharing) stopScreenShare();
+         
+         const embedSrc = `https://anime.vidsrc.me/embed/anime?tmdb=${movie.id}`;
+         const newSrc = {
+          type: 'embed',
+          src: embedSrc,
+          title: `${movie.title || 'Movie'} (Anime HD)`
+         };
+         setVideoSource(newSrc);
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+           wsRef.current.send(
+            JSON.stringify({
+             type: 'CHANGE_SOURCE',
+             payload: { source: newSrc }
+            })
+           );
+          }
+        }}
+        className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
+         activeTab === 'embed' && videoSource?.src?.includes('anime.vidsrc.me')
+          ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
+          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+        }`}
+       >
+        <Play className="w-3.5 h-3.5 fill-current" />
+        <span>Anime (VidSrc ⭐)</span>
+       </button>
+      )}
+
       {movie?.id && (
        <button
         onClick={() => {
@@ -1478,13 +1516,13 @@ export default function WatchPartyModal({
           }
         }}
         className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
-         activeTab === 'embed'
+         activeTab === 'embed' && (!videoSource?.src?.includes('anime.vidsrc.me'))
           ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
         }`}
        >
         <Play className="w-3.5 h-3.5 fill-current" />
-        <span>Full Movie (VidLink 🍿)</span>
+        <span>{movie?.media_type === 'anime' ? 'Fallback (VidLink 🍿)' : 'Full Movie (VidLink 🍿)'}</span>
        </button>
       )}
 

@@ -19,8 +19,16 @@ const COUNTRY_OPTIONS = [
 
 const EMBED_SERVERS = [
   {
+    id: 'anime_vidsrc_me',
+    name: 'Server 1 (Anime HD ⭐)',
+    mediaTypes: ['anime'],
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    getUrl: (id, type, s = 1, e = 1) => `https://anime.vidsrc.me/embed/anime?tmdb=${id}`
+  },
+  {
     id: 'vidlink_pro',
-    name: 'Server 1 (VidLink HD ⭐)',
+    name: 'Server 2 (VidLink HD)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null, // VidLink requires non-sandboxed frame to render player without error
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
@@ -90,6 +98,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
  const isWatchlist = watchlistIds.has(movie.id);
  const isNotInterested = notInterestedIds?.has(movie.id);
  const mediaType = movie.media_type || 'movie';
+ const availableServers = useMemo(() => EMBED_SERVERS.filter(s => !s.mediaTypes || s.mediaTypes.includes(mediaType)), [mediaType]);
 
  const [userRating, setUserRating] = useState(watchedRecord?.rating || 0);
  const [userReview, setUserReview] = useState(watchedRecord?.review || '');
@@ -344,7 +353,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
              S{selectedSeason} E{selectedEpisode}
             </span>
            )}
-           {EMBED_SERVERS.map((srv, idx) => (
+           {availableServers.map((srv, idx) => (
             <button
              key={srv.id}
              onClick={() => setStreamServerIndex(idx)}
@@ -368,15 +377,36 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
 
          {/* Stream Player */}
          <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
-          <iframe
-           key={`${EMBED_SERVERS[streamServerIndex].id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
-           src={EMBED_SERVERS[streamServerIndex].getUrl(movie.id, mediaType, selectedSeason, selectedEpisode)}
-           title={`${movie.title} Stream`}
-           allow="autoplay; encrypted-media; picture-in-picture"
-           allowFullScreen
-           {...(EMBED_SERVERS[streamServerIndex].sandbox ? { sandbox: EMBED_SERVERS[streamServerIndex].sandbox } : {})}
-           className="w-full h-full border-0"
-          />
+          {!user ? (
+           <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center">
+            <div className="w-16 h-16 rounded-full bg-rose-500/20 flex items-center justify-center mb-4 border border-rose-500/30">
+             <span className="text-2xl">🔒</span>
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Sign in to Watch Free</h3>
+            <p className="text-sm text-zinc-400 max-w-md mb-6">
+             Create a free account or sign in to access full movies and TV shows, join watch parties, and more.
+            </p>
+            <button
+             onClick={() => {
+              if (onRequireAuth) onRequireAuth();
+              if (onShowToast) onShowToast({ message: 'Please sign in to stream content 🍿' });
+             }}
+             className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-lg transition-transform active:scale-95"
+            >
+             Sign In Now
+            </button>
+           </div>
+          ) : (
+           <iframe
+            key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
+            src={availableServers[streamServerIndex]?.getUrl(movie.id, mediaType, selectedSeason, selectedEpisode)}
+            title={`${movie.title} Stream`}
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowFullScreen
+            {...(availableServers[streamServerIndex]?.sandbox ? { sandbox: availableServers[streamServerIndex].sandbox } : {})}
+            className="w-full h-full border-0"
+           />
+          )}
          </div>
         </div>
        ) : showTrailerPlayer && activeTrailer ? (
