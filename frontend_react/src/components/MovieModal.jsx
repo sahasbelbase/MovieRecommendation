@@ -17,7 +17,7 @@ const COUNTRY_OPTIONS = [
   { code: 'FR', label: '🇫🇷 France' },
 ];
 
-export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor }) {
+export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty }) {
   const {
     watchedIds,
     watchedMovies,
@@ -223,7 +223,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
                   className="w-full h-full object-cover opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-                <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex items-center gap-3">
+                <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
                   {activeTrailer && (
                     <button
                       onClick={() => setShowTrailerPlayer(true)}
@@ -233,6 +233,17 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
                       <span>Watch Official Trailer</span>
                     </button>
                   )}
+                  <button
+                    onClick={() => {
+                      if (onStartWatchParty) {
+                        onStartWatchParty(movie);
+                      }
+                    }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-amber-950/60 transition-all active:scale-95"
+                  >
+                    <span>🍿</span>
+                    <span>Watch Party</span>
+                  </button>
                 </div>
               </>
             )}

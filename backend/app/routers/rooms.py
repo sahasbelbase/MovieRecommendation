@@ -1,8 +1,10 @@
 import logging
-from typing import Optional
-from fastapi import APIRouter, HTTPException, Query
+from typing import Optional, Dict, Any
+from fastapi import APIRouter, HTTPException, Query, WebSocket, WebSocketDisconnect
 from pydantic import BaseModel, Field
 from ..services.room_manager import room_manager
+from ..services.theater_manager import theater_manager
+from ..services.tmdb import tmdb_service
 
 logger = logging.getLogger("rooms_router")
 
@@ -31,6 +33,13 @@ class SwipeRequest(BaseModel):
 
 class LeaveRoomRequest(BaseModel):
     user_id: str = Field(..., description="Participant user ID")
+
+
+class StartTheaterRequest(BaseModel):
+    host_id: str = Field(..., description="Host user ID")
+    host_name: str = Field(..., description="Host display name")
+    movie: Optional[Dict[str, Any]] = Field(None, description="Movie object (title, poster_path, id, etc.)")
+    video_source: Optional[Dict[str, Any]] = Field(None, description="Optional custom video source (type, src, title)")
 
 
 @router.post("/create")
@@ -132,3 +141,78 @@ async def leave_room(code: str, req: LeaveRoomRequest):
     except Exception as e:
         logger.error(f"Failed to leave room {code}: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/{code}/theater/start")
+async def start_theater(code: str, req: StartTheaterRequest):
+    """
+    Starts or connects to a Cinematch Theater (Watch Party) session.
+    Automatically fetches official TMDB YouTube trailer if no video source is provided.
+    """
+    try:
+        video_src = req.video_source
+        if not video_src and req.movie and req.movie.get("id"):
+            try:
+                videos = await tmdb_service.get_videos(
+                    item_id=req.movie["id"],
+                    media_type=req.movie.get("media_type", "movie")
+                )
+                if videos:
+                    primary_vid = videos[0]
+                    video_src = {
+                        "type": "youtube",
+                        "src": primary_vid["key"],
+                        "title": f"{req.movie.get('title') or req.movie.get('name', 'Movie')} - {primary_vid.get('name', 'Trailer')}"
+                    }
+            except Exception as e:
+                logger.warning(f"Could not auto-fetch trailer for movie in theater: {e}")
+
+        session = theater_manager.get_or_create_session(
+            room_code=code,
+            host_id=req.host_id,
+            host_name=req.host_name,
+            movie=req.movie,
+            video_source=video_src
+        )
+        return {"status": "success", "theater": session}
+    except Exception as e:
+        logger.error(f"Failed to start theater in room {code}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/{code}/theater/state")
+async def get_theater_state(code: str):
+    """Retrieves the current synchronized playback and participant state for a theater"""
+    state = theater_manager.get_current_state(code)
+    if not state:
+        raise HTTPException(status_code=404, detail="Theater session not found for this room")
+    return {"status": "success", "theater": state}
+
+
+@router.websocket("/{code}/theater/ws")
+async def theater_websocket(
+    websocket: WebSocket,
+    code: str,
+    user_id: str = Query(..., description="Participant user ID"),
+    user_name: str = Query(..., description="Participant display name")
+):
+    """
+    Bi-directional synchronized watch party WebSocket stream.
+    Broadcasts play/pause/seek events, reactions, live chat, and WebRTC signaling.
+    """
+    await theater_manager.register_connection(
+        websocket=websocket,
+        room_code=code,
+        user_id=user_id,
+        user_name=user_name
+    )
+    try:
+        while True:
+            data = await websocket.receive_json()
+            await theater_manager.handle_message(websocket, data)
+    except WebSocketDisconnect:
+        logger.info(f"WebSocket client {user_name} disconnected from room {code}")
+    except Exception as e:
+        logger.warning(f"Theater WebSocket error for {user_name} in room {code}: {e}")
+    finally:
+        await theater_manager.remove_connection(websocket)

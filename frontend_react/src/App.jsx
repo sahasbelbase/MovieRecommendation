@@ -13,6 +13,7 @@ import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
 import Top250Modal from './components/Top250Modal';
 import MovieNightModal from './components/MovieNightModal';
+import WatchPartyModal from './components/WatchPartyModal';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
@@ -43,6 +44,22 @@ export default function App() {
   const [isTop250Open, setIsTop250Open] = useState(false);
   const [isMovieNightOpen, setIsMovieNightOpen] = useState(false);
   const [initialRoomCode, setInitialRoomCode] = useState('');
+  const [watchPartyData, setWatchPartyData] = useState({
+    isOpen: false,
+    roomCode: '',
+    movie: null,
+    videoSource: null,
+  });
+
+  const handleStartWatchParty = (movie, roomCode = null) => {
+    const code = roomCode || Math.random().toString(36).substring(2, 6).toUpperCase();
+    setWatchPartyData({
+      isOpen: true,
+      roomCode: code,
+      movie: movie || null,
+      videoSource: null,
+    });
+  };
   const [toast, setToast] = useState(null);
   const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("All");
@@ -105,11 +122,19 @@ export default function App() {
     }
   }, [user?.uid]);
 
-  // Handle direct share link: ?room=CODE
+  // Handle direct share link: ?room=CODE or ?party=CODE
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
-    if (roomParam) {
+    const partyParam = params.get('party') || params.get('theater');
+    if (partyParam) {
+      setWatchPartyData({
+        isOpen: true,
+        roomCode: partyParam.toUpperCase(),
+        movie: null,
+        videoSource: null,
+      });
+    } else if (roomParam) {
       setInitialRoomCode(roomParam.toUpperCase());
       setIsMovieNightOpen(true);
     }
@@ -464,6 +489,7 @@ export default function App() {
           onSelectMovie={(m) => setSelectedMovie(m)}
           onSelectActor={(a) => setSelectedActor(a)}
           onShowToast={showToast}
+          onStartWatchParty={(m) => handleStartWatchParty(m)}
         />
       )}
 
@@ -515,6 +541,16 @@ export default function App() {
         initialRoomCode={initialRoomCode}
         onShowToast={showToast}
         onSelectMovie={(m) => setSelectedMovie(m)}
+        onStartWatchParty={(m, code) => handleStartWatchParty(m, code)}
+      />
+
+      <WatchPartyModal
+        isOpen={watchPartyData.isOpen}
+        onClose={() => setWatchPartyData((prev) => ({ ...prev, isOpen: false }))}
+        roomCode={watchPartyData.roomCode}
+        movie={watchPartyData.movie}
+        initialVideoSource={watchPartyData.videoSource}
+        onShowToast={showToast}
       />
 
       <Toast

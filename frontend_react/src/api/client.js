@@ -27,4 +27,15 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+export const getWsUrl = (path) => {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  if (rawBaseUrl && rawBaseUrl.startsWith('http')) {
+    const wsProto = rawBaseUrl.startsWith('https:') ? 'wss:' : 'ws:';
+    const host = new URL(rawBaseUrl).host;
+    return `${wsProto}//${host}/api${cleanPath}`;
+  }
+  const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  return `${proto}//${window.location.host}/api${cleanPath}`;
+};
+
 export default api;

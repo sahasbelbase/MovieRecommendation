@@ -6,7 +6,14 @@ import {
 import api from '../api/client';
 import { useAuth } from '../context/AuthContext';
 
-export default function MovieNightModal({ isOpen, onClose, initialRoomCode = '', onShowToast, onSelectMovie }) {
+export default function MovieNightModal({
+  isOpen,
+  onClose,
+  initialRoomCode = '',
+  onShowToast,
+  onSelectMovie,
+  onStartWatchParty
+}) {
   const { user, toggleWatchlist, watchlistIds } = useAuth();
 
   // Mode: 'lobby' (create or join) or 'room' (active swiping)
@@ -936,25 +943,41 @@ export default function MovieNightModal({ isOpen, onClose, initialRoomCode = '',
               </div>
             </div>
 
-            <div className="flex items-center gap-3 w-full max-w-xs">
+            <div className="flex flex-col gap-2.5 w-full max-w-xs">
               <button
+                type="button"
                 onClick={() => {
-                  if (activeMatchOverlay.movie) {
-                    toggleWatchlist(activeMatchOverlay.movie);
-                    if (onShowToast) onShowToast({ message: `Saved "${activeMatchOverlay.movie.title}" to Watchlist` });
+                  if (onStartWatchParty && activeMatchOverlay.movie) {
+                    onStartWatchParty(activeMatchOverlay.movie, currentRoom?.code);
                   }
                   setActiveMatchOverlay(null);
                 }}
-                className="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-white border border-zinc-700 transition-all"
+                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 via-rose-600 to-purple-600 text-xs sm:text-sm font-bold text-white shadow-xl shadow-rose-950/60 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
               >
-                Save to Watchlist 🔖
+                <span className="text-base">🍿</span>
+                <span>Start Watch Party Now!</span>
               </button>
-              <button
-                onClick={() => setActiveMatchOverlay(null)}
-                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-xs font-bold text-white shadow-lg transition-all"
-              >
-                Keep Swiping ⏭️
-              </button>
+
+              <div className="flex items-center gap-2 w-full">
+                <button
+                  onClick={() => {
+                    if (activeMatchOverlay.movie) {
+                      toggleWatchlist(activeMatchOverlay.movie);
+                      if (onShowToast) onShowToast({ message: `Saved "${activeMatchOverlay.movie.title}" to Watchlist` });
+                    }
+                    setActiveMatchOverlay(null);
+                  }}
+                  className="flex-1 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-white border border-zinc-700 transition-all"
+                >
+                  Save 🔖
+                </button>
+                <button
+                  onClick={() => setActiveMatchOverlay(null)}
+                  className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-xs font-bold text-white shadow-lg transition-all"
+                >
+                  Keep Swiping ⏭️
+                </button>
+              </div>
             </div>
 
             <button
@@ -1047,18 +1070,35 @@ export default function MovieNightModal({ isOpen, onClose, initialRoomCode = '',
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => {
-                        if (match.movie) {
-                          toggleWatchlist(match.movie);
-                          if (onShowToast) onShowToast({ message: `Saved "${match.movie.title}" to Watchlist` });
-                        }
-                      }}
-                      className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:bg-zinc-800 transition-colors"
-                      title="Save to Watchlist"
-                    >
-                      <Bookmark className="w-4 h-4 fill-amber-400" />
-                    </button>
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowMatchesSheet(false);
+                          if (onStartWatchParty && match.movie) {
+                            onStartWatchParty(match.movie, currentRoom?.code);
+                          }
+                        }}
+                        className="px-2.5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs font-semibold shadow flex items-center gap-1 transition-all active:scale-95"
+                        title="Start Watch Party 🍿"
+                      >
+                        <span>🍿</span>
+                        <span className="hidden sm:inline">Watch Party</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          if (match.movie) {
+                            toggleWatchlist(match.movie);
+                            if (onShowToast) onShowToast({ message: `Saved "${match.movie.title}" to Watchlist` });
+                          }
+                        }}
+                        className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-amber-400 hover:bg-zinc-800 transition-colors"
+                        title="Save to Watchlist"
+                      >
+                        <Bookmark className="w-4 h-4 fill-amber-400" />
+                      </button>
+                    </div>
                   </div>
                 ))
               )}
