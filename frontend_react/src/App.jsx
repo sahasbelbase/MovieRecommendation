@@ -16,10 +16,10 @@ import MovieNightModal from './components/MovieNightModal';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
-  { id: "all", label: "All Entertainment" },
-  { id: "movie", label: "Movies" },
-  { id: "tv", label: "TV Series" },
-  { id: "anime", label: "Anime" }
+  { id: "all", label: "All Entertainment", shortLabel: "All" },
+  { id: "movie", label: "Movies", shortLabel: "Movies" },
+  { id: "tv", label: "TV Series", shortLabel: "TV" },
+  { id: "anime", label: "Anime", shortLabel: "Anime" }
 ];
 
 const GENRES = [
@@ -148,14 +148,14 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 space-y-6 sm:space-y-8">
         {/* Onboarding Taste Calibration Banner for Signed-In Users */}
         {user && watchedMovies.length < 5 && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-gradient-to-r from-rose-950/60 via-zinc-900 to-zinc-900 border border-rose-800/40 gap-4 shadow-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-950/60 via-zinc-900 to-zinc-900 border border-rose-800/40 gap-3.5 sm:gap-4 shadow-xl">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
                 <span className="text-xl">🔥</span>
-                <h2 className="text-base font-bold text-white">
+                <h2 className="text-sm sm:text-base font-bold text-white">
                   Calibrate Your For You Page ({watchedMovies.length}/5 titles rated)
                 </h2>
                 <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-rose-900/60 text-rose-300 border border-rose-700/50">
@@ -168,7 +168,7 @@ export default function App() {
             </div>
             <button
               onClick={() => setIsSwipeOpen(true)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/50 transition-all self-start sm:self-auto active:scale-95"
+              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/50 transition-all self-stretch sm:self-auto active:scale-95"
             >
               Open Swipe Mode
               <ChevronRight className="w-4 h-4" />
@@ -178,10 +178,10 @@ export default function App() {
 
         {/* Banner: Guest invitation vs Authenticated summary */}
         {user ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-surface border border-border-subtle gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-surface border border-border-subtle gap-3.5 sm:gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-bold tracking-tight text-white">
+                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
                   Welcome back, {user.displayName}
                 </h1>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
@@ -193,22 +193,22 @@ export default function App() {
                 <strong className="text-zinc-200">{watchedMovies.length} watched titles</strong>.
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="grid grid-cols-2 xs:flex xs:items-center gap-2 w-full xs:w-auto">
               <button
                 onClick={() => setIsMovieNightOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
               >
                 <span>🍿 Movie Night</span>
               </button>
               <button
                 onClick={() => setIsSwipeOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 hover:from-rose-600/30 hover:to-orange-600/30 text-xs font-semibold text-rose-300 border border-rose-500/40 transition-all active:scale-95"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 hover:from-rose-600/30 hover:to-orange-600/30 text-xs font-semibold text-rose-300 border border-rose-500/40 transition-all active:scale-95"
               >
                 <span>🔥 Swipe FYP</span>
               </button>
               <button
                 onClick={loadFeed}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-zinc-200 border border-zinc-700 transition-all active:scale-95"
+                className="col-span-2 xs:col-span-1 flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-zinc-200 border border-zinc-700 transition-all active:scale-95"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
                 Refresh
@@ -216,10 +216,10 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 gap-3.5 sm:gap-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <h1 className="text-lg font-bold text-white">Movies, TV Series & Anime Discovery</h1>
+                <h1 className="text-base sm:text-lg font-bold text-white">Movies, TV Series & Anime Discovery</h1>
                 <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
                   Guest Mode
                 </span>
@@ -228,18 +228,18 @@ export default function App() {
                 Sign in to save your watched history permanently and unlock a tailored taste profile across all media.
               </p>
             </div>
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="grid grid-cols-2 xs:flex xs:items-center gap-2 w-full xs:w-auto">
               <button
                 onClick={() => setIsMovieNightOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
+                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
               >
                 <span>🍿 Movie Night</span>
               </button>
               <button
                 onClick={() => setIsAuthOpen(true)}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/40 transition-all self-start sm:self-auto active:scale-95"
+                className="flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/40 transition-all active:scale-95"
               >
-                Sign In / Register
+                <span>Sign In</span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
@@ -271,9 +271,9 @@ export default function App() {
                 View in Drawer →
               </button>
             </div>
-            <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-1 px-1">
+            <div className="flex gap-2.5 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
               {watchlistMovies.map((movie) => (
-                <div key={`watchlist_card_${movie.id}`} className="w-36 sm:w-44 shrink-0 snap-start">
+                <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
                   <MovieCard
                     movie={movie}
                     onSelect={(m) => setSelectedMovie(m)}
@@ -286,41 +286,43 @@ export default function App() {
         )}
 
         {/* Media Category Switcher Tabs & Top 250 Launcher */}
-        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
-          <div className="flex items-center gap-2.5 flex-wrap">
-            <div className="flex items-center gap-2 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-zinc-800/80 pb-4">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+            <div className="flex items-center gap-1 xs:gap-2 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800 shrink-0">
               {MEDIA_CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setSelectedMediaCategory(cat.id)}
-                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
                     selectedMediaCategory === cat.id
                       ? 'bg-zinc-800 text-white shadow font-semibold'
                       : 'text-zinc-400 hover:text-zinc-200'
                   }`}
                 >
-                  {cat.label}
+                  <span className="xs:hidden">{cat.shortLabel || cat.label}</span>
+                  <span className="hidden xs:inline">{cat.label}</span>
                 </button>
               ))}
             </div>
 
             <button
               onClick={() => setIsTop250Open(true)}
-              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-orange-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-500/60 hover:from-amber-500/25 hover:to-orange-500/30 transition-all shadow-sm active:scale-95"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-orange-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-500/60 hover:from-amber-500/25 hover:to-orange-500/30 transition-all shadow-sm active:scale-95 shrink-0"
               title="Explore Top 250 Movies, TV Series & Anime of All Time"
             >
-              <Trophy className="w-3.5 h-3.5 text-amber-400" />
-              <span>Top 250 All-Time</span>
+              <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span className="hidden xs:inline">Top 250 All-Time</span>
+              <span className="xs:hidden">Top 250</span>
             </button>
           </div>
 
           {/* Genre Filter Chips */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
             {GENRES.map((genre) => (
               <button
                 key={genre}
                 onClick={() => setSelectedGenre(genre)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all ${
+                className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
                   selectedGenre === genre
                     ? 'bg-rose-600/20 text-rose-300 border border-rose-500/40 font-semibold'
                     : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
@@ -347,7 +349,7 @@ export default function App() {
               {[1, 2, 3].map((row) => (
                 <div key={row} className="space-y-4">
                   <div className="h-6 w-48 bg-zinc-800/60 rounded-md animate-pulse" />
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
                     {[1, 2, 3, 4, 5, 6].map((i) => (
                       <div key={i} className="aspect-[2/3] bg-zinc-800/40 rounded-xl animate-pulse" />
                     ))}
@@ -396,7 +398,7 @@ export default function App() {
               <section key={idx} className="space-y-4">
                 <div className="flex items-baseline justify-between">
                   <div>
-                    <h2 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
                       {section.title}
                     </h2>
                     {section.subtitle && (
@@ -406,7 +408,7 @@ export default function App() {
                 </div>
 
                 {/* Media Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4">
+                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
                   {movies.map((movie) => (
                     <MovieCard
                       key={`${movie.media_type || 'movie'}_${movie.id}`}

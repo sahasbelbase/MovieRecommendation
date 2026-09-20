@@ -93,7 +93,7 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Main Container */}
-      <div className="relative w-full max-w-6xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92vh]">
+      <div className="relative w-full max-w-6xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 flex flex-col max-h-[92dvh] sm:max-h-[92vh]">
         {/* Header Bar */}
         <div className="p-4 sm:p-6 border-b border-zinc-800/80 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950 flex flex-col gap-4">
           <div className="flex items-center justify-between gap-4">
@@ -150,7 +150,7 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
           {/* Segmented Category Tabs & Controls */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             {/* Category Switcher */}
-            <div className="flex items-center gap-1.5 p-1 bg-zinc-900 rounded-xl border border-zinc-800 shrink-0">
+            <div className="flex items-center gap-1 sm:gap-1.5 p-1 bg-zinc-900 rounded-xl border border-zinc-800 overflow-x-auto no-scrollbar max-w-full shrink-0">
               {TOP_250_CATEGORIES.map((cat) => {
                 const Icon = cat.icon;
                 const isActive = activeCategory === cat.id;
@@ -158,14 +158,15 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
                   <button
                     key={cat.id}
                     onClick={() => setActiveCategory(cat.id)}
-                    className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
+                    className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-lg text-xs font-semibold transition-all shrink-0 ${
                       isActive
                         ? 'bg-amber-500 text-black shadow-md font-bold'
                         : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
                     }`}
                   >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{cat.label}</span>
+                    <Icon className="w-3.5 h-3.5 shrink-0" />
+                    <span className="sm:hidden">{cat.label.replace('Top 250 ', '')}</span>
+                    <span className="hidden sm:inline">{cat.label}</span>
                   </button>
                 );
               })}
@@ -206,7 +207,7 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
         {/* Media Grid / List Body */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
               {Array.from({ length: 15 }).map((_, i) => (
                 <div key={i} className="aspect-[2/3] bg-zinc-900/60 rounded-xl animate-pulse border border-zinc-800/50" />
               ))}
@@ -218,7 +219,7 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
               <p className="text-xs text-zinc-500">Try adjusting your search query or filter options.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
               {currentPageItems.map((movie) => {
                 const isWatched = watchedIds?.has(movie.id);
                 const isWatchlist = watchlistIds?.has(movie.id);

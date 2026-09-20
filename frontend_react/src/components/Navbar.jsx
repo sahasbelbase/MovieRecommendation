@@ -92,27 +92,30 @@ export default function Navbar({
     <nav className="sticky top-0 z-40 w-full bg-zinc-950/90 border-b border-zinc-800/80 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Logo & Project Title */}
-        <div className="flex items-center gap-3 cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-950/50">
-            <Film className="w-5 h-5 stroke-[2.2]" />
+        <div className="flex items-center gap-2 sm:gap-3 cursor-pointer flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+          <div className="flex items-center justify-center w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-rose-600 text-white shadow-lg shadow-rose-950/50">
+            <Film className="w-4 h-4 sm:w-5 sm:h-5 stroke-[2.2]" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm sm:text-base font-bold tracking-tight text-white leading-tight">
+            <span className="font-bold text-sm sm:hidden tracking-tight text-white leading-tight">
+              Cinematch
+            </span>
+            <span className="hidden sm:inline text-sm sm:text-base font-bold tracking-tight text-white leading-tight">
               Movie Recommendation Engine
             </span>
             <div className="flex items-center gap-1.5 mt-0.5">
               <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`} />
               <span className="text-[10px] font-mono text-zinc-400">
-                {user ? 'Tailored Mode' : 'Guest Mode'}
+                {user ? 'Tailored' : 'Guest'}
               </span>
             </div>
           </div>
         </div>
 
         {/* Global Multi-Search Input (Movies, Series, Anime, Actors) */}
-        <div className="relative flex-1 max-w-lg">
+        <div className="relative flex-1 max-w-lg min-w-0">
           <div className="relative flex items-center z-50">
-            <Search className="absolute left-3.5 w-4 h-4 text-zinc-500 pointer-events-none" />
+            <Search className="absolute left-3 w-3.5 h-3.5 sm:w-4 sm:h-4 text-zinc-500 pointer-events-none" />
             <input
               ref={searchInputRef}
               type="text"
@@ -123,8 +126,8 @@ export default function Navbar({
                 setPersonCredits(null);
               }}
               onFocus={() => query.trim() && setShowDropdown(true)}
-              placeholder="Search movies, series, actors, directors... (Press '/' to focus)"
-              className="w-full pl-10 pr-10 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-rose-500/80 focus:ring-1 focus:ring-rose-500/50 transition-all"
+              placeholder="Search movies, cast, shows..."
+              className="w-full pl-8 sm:pl-10 pr-8 sm:pr-10 py-1.5 sm:py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-rose-500/80 focus:ring-1 focus:ring-rose-500/50 transition-all"
             />
             {query && (
               <button
@@ -364,14 +367,14 @@ export default function Navbar({
         </div>
 
         {/* Right Actions */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Top 250 Hall of Fame Button */}
           <button
             onClick={onOpenTop250}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all shadow-sm active:scale-95"
+            className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all shadow-sm active:scale-95"
             title="Explore Top 250 Movies, TV Series & Anime of All Time"
           >
-            <Trophy className="w-3.5 h-3.5 text-amber-400" />
+            <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span className="hidden sm:inline">Top 250</span>
           </button>
 
@@ -379,41 +382,40 @@ export default function Navbar({
           {user && (
             <button
               onClick={onOpenSwipe}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 border border-rose-500/40 text-xs font-semibold text-rose-300 hover:from-rose-600/30 hover:to-orange-600/30 transition-all shadow-sm active:scale-95"
+              className="flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 border border-rose-500/40 text-xs font-semibold text-rose-300 hover:from-rose-600/30 hover:to-orange-600/30 transition-all shadow-sm active:scale-95"
               title="Swipe Mode: Calibrate your FYP"
             >
               <span className="text-sm">🔥</span>
-              <span className="hidden sm:inline">Swipe Mode</span>
+              <span className="hidden sm:inline">Swipe</span>
             </button>
           )}
-
 
           {/* Watchlist Button */}
           <button
             onClick={onToggleWatchlistShelf || (() => onOpenWatched('watchlist'))}
-            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
             title="Toggle Watchlist shelf below navigation"
           >
-            <Bookmark className={`w-3.5 h-3.5 ${watchlistMovies.length > 0 ? 'text-amber-400 fill-amber-400' : 'text-zinc-400'}`} />
+            <Bookmark className={`w-3.5 h-3.5 shrink-0 ${watchlistMovies.length > 0 ? 'text-amber-400 fill-amber-400' : 'text-zinc-400'}`} />
             <span className="hidden sm:inline">Watchlist:</span>
-            <span className="font-mono text-white font-semibold">{watchlistMovies.length}</span>
+            <span className="font-mono text-white font-semibold text-[11px] sm:text-xs">{watchlistMovies.length}</span>
           </button>
 
           {/* Watched Button */}
           <button
             onClick={() => onOpenWatched('watched')}
-            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
+            className="flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300 hover:text-white hover:border-zinc-700 transition-all active:scale-95"
             title="View watched movies & series"
           >
-            <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+            <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5] shrink-0" />
             <span className="hidden sm:inline">Watched:</span>
-            <span className="font-mono text-white font-semibold">{watchedMovies.length}</span>
+            <span className="font-mono text-white font-semibold text-[11px] sm:text-xs">{watchedMovies.length}</span>
           </button>
 
-          {/* Import / Export Button */}
+          {/* Import / Export Button (Visible on tablet/desktop, accessible via drawer on mobile) */}
           <button
             onClick={onOpenDataModal}
-            className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all"
+            className="hidden md:flex p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all"
             title="Import or Export Watch Data"
           >
             <Download className="w-4 h-4" />
@@ -421,33 +423,33 @@ export default function Navbar({
 
           {/* User Auth */}
           {user ? (
-            <div className="flex items-center gap-2 pl-2 border-l border-zinc-800">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 pl-1 sm:pl-2 border-l border-zinc-800">
+              <div className="flex items-center gap-1.5 sm:gap-2">
                 {user.photoURL ? (
-                  <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full border border-zinc-700" />
+                  <img src={user.photoURL} alt={user.displayName} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full border border-zinc-700 shrink-0" />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-xs font-medium text-rose-300">
+                  <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-rose-600/20 border border-rose-500/40 flex items-center justify-center text-xs font-medium text-rose-300 shrink-0">
                     {user.displayName[0]?.toUpperCase()}
                   </div>
                 )}
-                <span className="hidden md:inline text-xs font-medium text-zinc-300 truncate max-w-[120px]">
+                <span className="hidden lg:inline text-xs font-medium text-zinc-300 truncate max-w-[120px]">
                   {user.displayName}
                 </span>
               </div>
               <button
                 onClick={logout}
-                className="p-1.5 text-zinc-500 hover:text-rose-400 transition-colors"
+                className="p-1 sm:p-1.5 text-zinc-500 hover:text-rose-400 transition-colors"
                 title="Log out"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </div>
           ) : (
             <button
               onClick={onOpenAuthModal}
-              className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium shadow-md shadow-rose-950/40 transition-all active:scale-95"
+              className="flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-medium shadow-md shadow-rose-950/40 transition-all active:scale-95"
             >
-              <User className="w-3.5 h-3.5" />
+              <User className="w-3.5 h-3.5 shrink-0" />
               <span>Sign In</span>
             </button>
           )}

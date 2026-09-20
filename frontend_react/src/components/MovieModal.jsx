@@ -189,16 +189,16 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
       {/* Backdrop Light-Dismiss Click Area */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal Card */}
-      <div className="relative w-full max-w-4xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto max-h-[90vh] flex flex-col">
+      <div className="relative w-full max-w-4xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto max-h-[92dvh] sm:max-h-[90vh] flex flex-col">
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
+          className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
         >
           <X className="w-5 h-5" />
         </button>
@@ -223,26 +223,27 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
                   className="w-full h-full object-cover opacity-60"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-
-                {activeTrailer && (
-                  <button
-                    onClick={() => setShowTrailerPlayer(true)}
-                    className="absolute inset-0 m-auto flex items-center justify-center gap-2 w-36 h-12 rounded-full bg-rose-600/90 hover:bg-rose-600 text-white font-medium shadow-xl transition-transform active:scale-95"
-                  >
-                    <Play className="w-4 h-4 fill-white" />
-                    Play Trailer
-                  </button>
-                )}
+                <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex items-center gap-3">
+                  {activeTrailer && (
+                    <button
+                      onClick={() => setShowTrailerPlayer(true)}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-rose-950/60 transition-all active:scale-95"
+                    >
+                      <Play className="w-4 h-4 fill-white" />
+                      <span>Watch Official Trailer</span>
+                    </button>
+                  )}
+                </div>
               </>
             )}
           </div>
 
           {/* Core Info Section */}
-          <div className="p-6 sm:p-8 space-y-6">
+          <div className="p-4 sm:p-8 space-y-5 sm:space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                  <h2 className="text-xl sm:text-3xl font-bold tracking-tight text-white">
                     {details?.title || movie.title}
                   </h2>
                   {mediaType === 'anime' && (
@@ -258,11 +259,11 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
                 </div>
 
                 {details?.tagline && (
-                  <p className="text-sm italic text-zinc-400">"{details.tagline}"</p>
+                  <p className="text-xs sm:text-sm italic text-zinc-400">"{details.tagline}"</p>
                 )}
 
                 {/* Metadata Pills */}
-                <div className="flex flex-wrap items-center gap-3 pt-2 text-xs font-mono text-zinc-400">
+                <div className="flex flex-wrap items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2 text-xs font-mono text-zinc-400">
                   {movie.year && (
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
@@ -316,43 +317,46 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
               </div>
 
               {/* Watchlist, Watched & Not Interested Actions */}
-              <div className="flex flex-wrap items-center gap-2.5">
+              <div className="grid grid-cols-3 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
                 <button
                   onClick={handleNotInterestedToggle}
-                  className={`flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
+                  className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
                     isNotInterested
                       ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 hover:bg-rose-500/30'
                       : 'bg-zinc-900 text-zinc-400 hover:text-rose-400 hover:bg-zinc-800 border border-zinc-700'
                   }`}
                   title={isNotInterested ? "Remove from Not Interested" : "Not Interested (Hide everywhere)"}
                 >
-                  <EyeOff className={`w-4 h-4 ${isNotInterested ? 'text-rose-400' : ''}`} />
-                  <span>{isNotInterested ? 'Not Interested' : 'Not Interested'}</span>
+                  <EyeOff className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isNotInterested ? 'text-rose-400' : ''}`} />
+                  <span className="hidden xs:inline">Not Interested</span>
+                  <span className="xs:hidden">Hide</span>
                 </button>
 
                 <button
                   onClick={handleWatchlistToggle}
-                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
+                  className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
                     isWatchlist
                       ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 hover:bg-amber-500/30'
                       : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-zinc-700'
                   }`}
                   title={isWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}
                 >
-                  <Bookmark className={`w-4 h-4 ${isWatchlist ? 'fill-amber-400 text-amber-400' : ''}`} />
-                  <span>{isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}</span>
+                  <Bookmark className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isWatchlist ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  <span className="hidden xs:inline">{isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}</span>
+                  <span className="xs:hidden">{isWatchlist ? 'Saved' : 'Watchlist'}</span>
                 </button>
 
                 <button
                   onClick={handleWatchedToggle}
-                  className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
+                  className={`flex items-center justify-center gap-1.5 sm:gap-2 px-2.5 sm:px-5 py-2 sm:py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
                     isWatched
                       ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-600/30'
                       : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 border border-zinc-700'
                   }`}
                 >
-                  <Check className={`w-4 h-4 stroke-[2.5] ${isWatched ? 'text-emerald-400' : ''}`} />
-                  <span>{isWatched ? 'Watched' : 'Mark as Watched'}</span>
+                  <Check className={`w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5] shrink-0 ${isWatched ? 'text-emerald-400' : ''}`} />
+                  <span className="hidden xs:inline">{isWatched ? 'Watched' : 'Mark Watched'}</span>
+                  <span className="xs:hidden">{isWatched ? 'Watched' : 'Watched'}</span>
                 </button>
               </div>
             </div>
