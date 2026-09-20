@@ -80,21 +80,24 @@ class UserDataService:
             try:
                 doc_ref = self.db.collection("users").document(user_id).collection("watched").document(str(movie_id))
                 doc_ref.set(record)
-                # If it was previously in unwatched, delete from unwatched
+                # If it was previously in unwatched or watchlist, remove from them
                 self.db.collection("users").document(user_id).collection("unwatched").document(str(movie_id)).delete()
+                self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id)).delete()
                 return record
             except Exception as e:
                 logger.error(f"Firestore mark_watched error: {e}")
 
         store = self._read_dev_store()
         if user_id not in store:
-            store[user_id] = {"watched": {}, "unwatched": {}}
+            store[user_id] = {"watched": {}, "unwatched": {}, "watchlist": {}}
         if "watched" not in store[user_id]:
             store[user_id]["watched"] = {}
         store[user_id]["watched"][str(movie_id)] = record
-        # Remove from unwatched if present
+        # Remove from unwatched and watchlist if present
         if "unwatched" in store[user_id] and str(movie_id) in store[user_id]["unwatched"]:
             del store[user_id]["unwatched"][str(movie_id)]
+        if "watchlist" in store[user_id] and str(movie_id) in store[user_id]["watchlist"]:
+            del store[user_id]["watchlist"][str(movie_id)]
         self._write_dev_store(store)
         return record
 
@@ -182,6 +185,77 @@ class UserDataService:
         if user_id in store and "watched" in store[user_id]:
             if str(movie_id) in store[user_id]["watched"]:
                 del store[user_id]["watched"][str(movie_id)]
+                self._write_dev_store(store)
+                return True
+        return False
+
+    async def get_watchlist(self, user_id: str) -> List[dict]:
+        """Returns list of movies in the user's Watchlist / Want to Watch list"""
+        if self.db:
+            try:
+                docs = self.db.collection("users").document(user_id).collection("watchlist").order_by("added_at", direction="DESCENDING").stream()
+                return [doc.to_dict() for doc in docs]
+            except Exception as e:
+                logger.error(f"Firestore get_watchlist error: {e}")
+
+        store = self._read_dev_store()
+        user_watchlist = store.get(user_id, {}).get("watchlist", {})
+        movies = list(user_watchlist.values())
+        movies.sort(key=lambda x: x.get("added_at", 0), reverse=True)
+        return movies
+
+    async def get_watchlist_ids(self, user_id: str) -> List[int]:
+        """Returns just the list of movie IDs in the user's watchlist"""
+        movies = await self.get_watchlist(user_id)
+        return [int(m["id"]) for m in movies if "id" in m]
+
+    async def add_to_watchlist(self, user_id: str, movie: dict) -> dict:
+        """Adds a movie to the user's Watchlist / Want to Watch list"""
+        movie_id = int(movie["id"])
+        record = {
+            "id": movie_id,
+            "title": movie.get("title", "Untitled"),
+            "poster_url": movie.get("poster_url"),
+            "backdrop_url": movie.get("backdrop_url"),
+            "year": movie.get("year", ""),
+            "vote_average": movie.get("vote_average", 0.0),
+            "genres": movie.get("genres", []),
+            "media_type": movie.get("media_type", "movie"),
+            "added_at": time.time(),
+            "rotten_tomatoes": movie.get("rotten_tomatoes"),
+            "imdb_rating": movie.get("imdb_rating")
+        }
+
+        if self.db:
+            try:
+                doc_ref = self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id))
+                doc_ref.set(record)
+                return record
+            except Exception as e:
+                logger.error(f"Firestore add_to_watchlist error: {e}")
+
+        store = self._read_dev_store()
+        if user_id not in store:
+            store[user_id] = {"watched": {}, "unwatched": {}, "watchlist": {}}
+        if "watchlist" not in store[user_id]:
+            store[user_id]["watchlist"] = {}
+        store[user_id]["watchlist"][str(movie_id)] = record
+        self._write_dev_store(store)
+        return record
+
+    async def remove_from_watchlist(self, user_id: str, movie_id: int) -> bool:
+        """Removes a movie from the user's watchlist"""
+        if self.db:
+            try:
+                self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id)).delete()
+                return True
+            except Exception as e:
+                logger.error(f"Firestore remove_from_watchlist error: {e}")
+
+        store = self._read_dev_store()
+        if user_id in store and "watchlist" in store[user_id]:
+            if str(movie_id) in store[user_id]["watchlist"]:
+                del store[user_id]["watchlist"][str(movie_id)]
                 self._write_dev_store(store)
                 return True
         return False

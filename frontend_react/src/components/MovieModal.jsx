@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Play, Star, Check, Clock, Calendar, Tv, Layers, ExternalLink, Globe } from 'lucide-react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
@@ -18,7 +18,7 @@ const COUNTRY_OPTIONS = [
 ];
 
 export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast }) {
-  const { watchedIds, toggleWatched } = useAuth();
+  const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist } = useAuth();
   const [details, setDetails] = useState(null);
   const [credits, setCredits] = useState(null);
   const [trailers, setTrailers] = useState([]);
@@ -30,6 +30,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast 
   const [loading, setLoading] = useState(true);
 
   const isWatched = watchedIds.has(movie.id);
+  const isWatchlist = watchlistIds.has(movie.id);
   const mediaType = movie.media_type || 'movie';
 
   // Keyboard shortcut: Escape to close
@@ -105,6 +106,16 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast 
     if (onShowToast) {
       onShowToast({
         message: nowWatched ? `Marked "${movie.title}" as watched` : `Removed "${movie.title}" from watched`,
+        movie
+      });
+    }
+  };
+
+  const handleWatchlistToggle = async () => {
+    const nowInWatchlist = await toggleWatchlist(movie);
+    if (onShowToast) {
+      onShowToast({
+        message: nowInWatchlist ? `Added "${movie.title}" to Watchlist` : `Removed "${movie.title}" from Watchlist`,
         movie
       });
     }
@@ -237,18 +248,33 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast 
                 </div>
               </div>
 
-              {/* Watched Action Button */}
-              <button
-                onClick={handleWatchedToggle}
-                className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 ${
-                  isWatched
-                    ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-600/30'
-                    : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 border border-zinc-700'
-                }`}
-              >
-                <Check className={`w-4 h-4 stroke-[2.5] ${isWatched ? 'text-emerald-400' : ''}`} />
-                {isWatched ? 'Watched' : 'Mark as Watched'}
-              </button>
+              {/* Watchlist & Watched Actions */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={handleWatchlistToggle}
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 ${
+                    isWatchlist
+                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 hover:bg-amber-500/30'
+                      : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-zinc-700'
+                  }`}
+                  title={isWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}
+                >
+                  <Bookmark className={`w-4 h-4 ${isWatchlist ? 'fill-amber-400 text-amber-400' : ''}`} />
+                  {isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+                </button>
+
+                <button
+                  onClick={handleWatchedToggle}
+                  className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 ${
+                    isWatched
+                      ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-600/30'
+                      : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 border border-zinc-700'
+                  }`}
+                >
+                  <Check className={`w-4 h-4 stroke-[2.5] ${isWatched ? 'text-emerald-400' : ''}`} />
+                  {isWatched ? 'Watched' : 'Mark as Watched'}
+                </button>
+              </div>
             </div>
 
             {/* Genres */}

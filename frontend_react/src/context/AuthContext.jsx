@@ -18,8 +18,10 @@ export const AuthProvider = ({ children }) => {
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [unwatchedIds, setUnwatchedIds] = useState(new Set());
   const [unwatchedMovies, setUnwatchedMovies] = useState([]);
+  const [watchlistIds, setWatchlistIds] = useState(new Set());
+  const [watchlistMovies, setWatchlistMovies] = useState([]);
 
-  // Load guest watched and unwatched lists from localStorage on mount
+  // Load guest watched, unwatched, and watchlist from localStorage on mount
   useEffect(() => {
     if (!user) {
       try {
@@ -35,8 +37,14 @@ export const AuthProvider = ({ children }) => {
           setUnwatchedMovies(parsedUnwatched);
           setUnwatchedIds(new Set(parsedUnwatched.map(m => m.id)));
         }
+        const savedWatchlist = localStorage.getItem('cinematch_guest_watchlist');
+        if (savedWatchlist) {
+          const parsedWatchlist = JSON.parse(savedWatchlist);
+          setWatchlistMovies(parsedWatchlist);
+          setWatchlistIds(new Set(parsedWatchlist.map(m => m.id)));
+        }
       } catch (e) {
-        console.error("Failed to load local watched/unwatched list:", e);
+        console.error("Failed to load local data:", e);
       }
     }
   }, [user]);
@@ -96,6 +104,29 @@ export const AuthProvider = ({ children }) => {
       }
       // Wipe guest unwatched cache
       localStorage.removeItem('cinematch_guest_unwatched');
+
+      // 3. Sync Watchlist ("Want to Watch")
+      const savedGuestWatchlist = localStorage.getItem('cinematch_guest_watchlist');
+      const guestWatchlistItems = savedGuestWatchlist ? JSON.parse(savedGuestWatchlist) : [];
+
+      if (guestWatchlistItems.length > 0) {
+        for (const item of guestWatchlistItems) {
+          try {
+            await api.post('/users/watchlist', { movie: item });
+          } catch (e) {
+            console.error("Failed to sync guest watchlist item:", item.title, e);
+          }
+        }
+      }
+      try {
+        const watchlistRes = await api.get('/users/watchlist');
+        const remoteWatchlist = watchlistRes.data || [];
+        setWatchlistMovies(remoteWatchlist);
+        setWatchlistIds(new Set(remoteWatchlist.map(m => m.id)));
+      } catch (err) {
+        console.warn("Could not fetch remote watchlist:", err);
+      }
+      localStorage.removeItem('cinematch_guest_watchlist');
     } catch (err) {
       console.error("Failed to sync guest watched titles:", err);
     }
@@ -126,6 +157,8 @@ export const AuthProvider = ({ children }) => {
         setWatchedIds(new Set());
         setUnwatchedMovies([]);
         setUnwatchedIds(new Set());
+        setWatchlistMovies([]);
+        setWatchlistIds(new Set());
       }
       setLoading(false);
     });
@@ -189,11 +222,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('cinematch_token');
     localStorage.removeItem('cinematch_guest_watched');
     localStorage.removeItem('cinematch_guest_unwatched');
+    localStorage.removeItem('cinematch_guest_watchlist');
     setUser(null);
     setWatchedMovies([]);
     setWatchedIds(new Set());
     setUnwatchedMovies([]);
     setUnwatchedIds(new Set());
+    setWatchlistMovies([]);
+    setWatchlistIds(new Set());
   };
 
   // Toggle Watched status with optimistic UI updates
@@ -238,6 +274,18 @@ export const AuthProvider = ({ children }) => {
       const nextMovies = [record, ...watchedMovies];
       setWatchedMovies(nextMovies);
 
+      // Auto-remove from Watchlist if present (since the user has now watched it)
+      if (watchlistIds.has(movieId)) {
+        const nextWlIds = new Set(watchlistIds);
+        nextWlIds.delete(movieId);
+        setWatchlistIds(nextWlIds);
+        const nextWlMovies = watchlistMovies.filter(m => m.id !== movieId);
+        setWatchlistMovies(nextWlMovies);
+        if (!user) {
+          localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(nextWlMovies));
+        }
+      }
+
       if (user) {
         try {
           await api.post('/users/watched', { movie: record, rating });
@@ -246,6 +294,65 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         localStorage.setItem('cinematch_guest_watched', JSON.stringify(nextMovies));
+      }
+      return true;
+    }
+  };
+
+  // Toggle Watchlist ("Want to Watch" / "Watch Later")
+  const toggleWatchlist = async (movie) => {
+    if (!movie?.id) return false;
+    const movieId = movie.id;
+    const inWatchlist = watchlistIds.has(movieId);
+
+    if (inWatchlist) {
+      // Remove from watchlist
+      const nextIds = new Set(watchlistIds);
+      nextIds.delete(movieId);
+      setWatchlistIds(nextIds);
+      const nextMovies = watchlistMovies.filter(m => m.id !== movieId);
+      setWatchlistMovies(nextMovies);
+
+      if (user) {
+        try {
+          await api.delete(`/users/watchlist/${movieId}`);
+        } catch (e) {
+          console.error("Failed to remove from watchlist on server:", e);
+        }
+      } else {
+        localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(nextMovies));
+      }
+      return false;
+    } else {
+      // Add to watchlist
+      const record = {
+        id: movie.id,
+        title: movie.title || "Untitled",
+        poster_url: movie.poster_url,
+        backdrop_url: movie.backdrop_url,
+        year: movie.year,
+        vote_average: movie.vote_average,
+        genres: movie.genres,
+        media_type: movie.media_type || "movie",
+        added_at: Date.now() / 1000,
+        rotten_tomatoes: movie.rotten_tomatoes,
+        imdb_rating: movie.imdb_rating
+      };
+
+      const nextIds = new Set(watchlistIds);
+      nextIds.add(movieId);
+      setWatchlistIds(nextIds);
+      const nextMovies = [record, ...watchlistMovies.filter(m => m.id !== movieId)];
+      setWatchlistMovies(nextMovies);
+
+      if (user) {
+        try {
+          await api.post('/users/watchlist', { movie: record });
+        } catch (e) {
+          console.error("Failed to add to watchlist on server:", e);
+        }
+      } else {
+        localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(nextMovies));
       }
       return true;
     }
@@ -297,7 +404,10 @@ export const AuthProvider = ({ children }) => {
       watchedMovies,
       unwatchedIds,
       unwatchedMovies,
+      watchlistIds,
+      watchlistMovies,
       toggleWatched,
+      toggleWatchlist,
       markUnwatched,
       refreshWatchedList: async () => {
         if (user) {
@@ -308,6 +418,9 @@ export const AuthProvider = ({ children }) => {
             const unwatchedRes = await api.get('/users/unwatched');
             setUnwatchedMovies(unwatchedRes.data);
             setUnwatchedIds(new Set(unwatchedRes.data.map(m => m.id)));
+            const watchlistRes = await api.get('/users/watchlist');
+            setWatchlistMovies(watchlistRes.data);
+            setWatchlistIds(new Set(watchlistRes.data.map(m => m.id)));
           } catch (e) {}
         }
       }

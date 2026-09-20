@@ -1,10 +1,11 @@
 import React from 'react';
-import { Star, Check, Film, Tv } from 'lucide-react';
+import { Star, Check, Bookmark, Film, Tv } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function MovieCard({ movie, onSelect, onShowToast }) {
-  const { watchedIds, toggleWatched } = useAuth();
+  const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist } = useAuth();
   const isWatched = watchedIds.has(movie.id);
+  const isWatchlist = watchlistIds.has(movie.id);
 
   const handleWatchedClick = async (e) => {
     e.stopPropagation();
@@ -14,6 +15,19 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
         message: nowWatched
           ? `Marked "${movie.title}" as watched`
           : `Removed "${movie.title}" from watched`,
+        movie,
+      });
+    }
+  };
+
+  const handleWatchlistClick = async (e) => {
+    e.stopPropagation();
+    const nowInWatchlist = await toggleWatchlist(movie);
+    if (onShowToast) {
+      onShowToast({
+        message: nowInWatchlist
+          ? `Added "${movie.title}" to Watchlist`
+          : `Removed "${movie.title}" from Watchlist`,
         movie,
       });
     }
@@ -42,19 +56,34 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
           </div>
         )}
 
-        {/* Quick Action: Mark as Watched Toggle Button */}
-        <button
-          onClick={handleWatchedClick}
-          aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
-          className={`absolute top-2 right-2 rounded-full p-2 transition-all active:scale-90 ${
-            isWatched
-              ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
-              : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
-          }`}
-          title={isWatched ? "Watched (Click to remove)" : "Mark as Watched"}
-        >
-          <Check className={`w-3.5 h-3.5 stroke-[2.5] ${isWatched ? 'text-white' : ''}`} />
-        </button>
+        {/* Quick Actions: Watchlist & Watched */}
+        <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+          <button
+            onClick={handleWatchlistClick}
+            aria-label={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
+            className={`rounded-full p-2 transition-all active:scale-90 ${
+              isWatchlist
+                ? 'bg-amber-500 text-black shadow-lg shadow-amber-900/50'
+                : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
+            }`}
+            title={isWatchlist ? "In Watchlist (Click to remove)" : "Add to Watchlist"}
+          >
+            <Bookmark className={`w-3.5 h-3.5 ${isWatchlist ? 'fill-black stroke-black' : ''}`} />
+          </button>
+
+          <button
+            onClick={handleWatchedClick}
+            aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
+            className={`rounded-full p-2 transition-all active:scale-90 ${
+              isWatched
+                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
+                : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
+            }`}
+            title={isWatched ? "Watched (Click to remove)" : "Mark as Watched"}
+          >
+            <Check className={`w-3.5 h-3.5 stroke-[2.5] ${isWatched ? 'text-white' : ''}`} />
+          </button>
+        </div>
 
         {/* Top Left Badges: Media Type & Year */}
         <div className="absolute top-2 left-2 flex items-center gap-1.5">

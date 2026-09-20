@@ -1,11 +1,16 @@
 import asyncio
 import logging
+import time
 from typing import List, Optional, Dict, Any
 from .vector_store import vector_store
 from .tmdb import tmdb_service
 from .user_data import user_data_service
 
 logger = logging.getLogger("recommender")
+
+# In-memory TTL cache for public discovery feeds (10 minute TTL)
+_guest_feed_cache: Dict[str, tuple[float, dict]] = {}
+GUEST_FEED_TTL = 600  # 10 minutes
 
 # Iconic seed catalog for taste calibration swipe deck
 ICONIC_SWIPE_SEEDS = [
@@ -195,10 +200,12 @@ class RecommenderService:
             }
 
         if len(watched_list) < 3:
-            # Under-calibrated user: Return onboarding FYP prompt + top trending
-            trending = await self.tmdb.get_trending_all(time_window="day")
-            anime = await self.tmdb.get_trending_anime()
-            rt_picks = await self.tmdb.get_rotten_tomatoes_picks(limit=10)
+            # Under-calibrated user: Return onboarding FYP prompt + top trending (run in parallel)
+            trending, anime, rt_picks = await asyncio.gather(
+                self.tmdb.get_trending_all(time_window="day"),
+                self.tmdb.get_trending_anime(),
+                self.tmdb.get_rotten_tomatoes_picks(limit=10)
+            )
             unwatched_trending = [m for m in trending if m["id"] not in set(watched_ids)]
             unwatched_rt = [m for m in rt_picks if m["id"] not in set(watched_ids)]
             unwatched_anime = [m for m in anime if m["id"] not in set(watched_ids)]
@@ -468,33 +475,51 @@ class RecommenderService:
         """
         Public discovery feed for guests across Movies, TV Series, and Anime,
         including Rotten Tomatoes Certified Fresh selections.
+        Sub-millisecond latency via in-memory caching and parallel async TMDB querying.
         """
-        rt_picks = await self.tmdb.get_rotten_tomatoes_picks(limit=10)
+        cache_key = f"guest_feed_{media_type or 'all'}"
+        if cache_key in _guest_feed_cache:
+            ts, val = _guest_feed_cache[cache_key]
+            if time.time() - ts < GUEST_FEED_TTL:
+                return val
 
         if media_type == "anime":
-            anime = await self.tmdb.get_trending_anime()
-            top_anime = await self.tmdb.get_top_rated_anime()
-            return {
+            anime, top_anime = await asyncio.gather(
+                self.tmdb.get_trending_anime(),
+                self.tmdb.get_top_rated_anime()
+            )
+            result = {
                 "is_guest": True,
                 "sections": [
                     {"title": "Top Trending Anime", "subtitle": "Most popular Japanese animation right now", "movies": anime},
                     {"title": "All-Time Masterpiece Anime", "subtitle": "Highest rated Japanese animation (IMDb & Critic Elite)", "movies": top_anime},
                 ]
             }
+            _guest_feed_cache[cache_key] = (time.time(), result)
+            return result
+
         elif media_type == "tv":
-            tv = await self.tmdb.get_trending_tv()
-            top_tv = await self.tmdb.get_top_rated(media_type="tv")
-            return {
+            tv, top_tv = await asyncio.gather(
+                self.tmdb.get_trending_tv(),
+                self.tmdb.get_top_rated(media_type="tv")
+            )
+            result = {
                 "is_guest": True,
                 "sections": [
                     {"title": "Trending TV Series", "subtitle": "Most watched shows this week", "movies": tv[:10]},
                     {"title": "Highest Rated TV Series (IMDb & RT Elite)", "subtitle": "Critically acclaimed television", "movies": top_tv[:10]},
                 ]
             }
+            _guest_feed_cache[cache_key] = (time.time(), result)
+            return result
+
         elif media_type == "movie":
-            now_playing = await self.tmdb.get_now_playing()
-            trending_movies = await self.tmdb.get_trending_movies()
-            return {
+            rt_picks, trending_movies, now_playing = await asyncio.gather(
+                self.tmdb.get_rotten_tomatoes_picks(limit=10),
+                self.tmdb.get_trending_movies(),
+                self.tmdb.get_now_playing()
+            )
+            result = {
                 "is_guest": True,
                 "sections": [
                     {"title": "Rotten Tomatoes & IMDb Certified Fresh", "subtitle": "85%+ Fresh critical favorites", "movies": rt_picks},
@@ -502,14 +527,19 @@ class RecommenderService:
                     {"title": "In Theaters & Fresh Cinema", "subtitle": "Current 2025–2026 releases", "movies": now_playing[:10]},
                 ]
             }
+            _guest_feed_cache[cache_key] = (time.time(), result)
+            return result
 
-        # Combined "All" Feed
-        trending_all = await self.tmdb.get_trending_all(time_window="day")
-        anime = await self.tmdb.get_trending_anime()
-        tv = await self.tmdb.get_trending_tv()
-        now_playing = await self.tmdb.get_now_playing()
+        # Combined "All" Feed - run all 5 requests concurrently in parallel
+        trending_all, rt_picks, anime, tv, now_playing = await asyncio.gather(
+            self.tmdb.get_trending_all(time_window="day"),
+            self.tmdb.get_rotten_tomatoes_picks(limit=10),
+            self.tmdb.get_trending_anime(),
+            self.tmdb.get_trending_tv(),
+            self.tmdb.get_now_playing()
+        )
 
-        return {
+        result = {
             "is_guest": True,
             "sections": [
                 {"title": "Trending Across Movies, TV & Anime", "subtitle": "What the world is streaming right now", "movies": trending_all[:10]},
@@ -518,5 +548,7 @@ class RecommenderService:
                 {"title": "Popular TV Series", "subtitle": "Drama, Sci-Fi, and mystery series", "movies": tv[:10]},
             ]
         }
+        _guest_feed_cache[cache_key] = (time.time(), result)
+        return result
 
 recommender_service = RecommenderService()

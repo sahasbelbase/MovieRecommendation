@@ -29,6 +29,17 @@ class TMDBService:
         self.backdrop_base = settings.TMDB_BACKDROP_BASE_URL
         self.omdb_api_key = settings.OMDB_API_KEY
         self.omdb_base_url = settings.OMDB_BASE_URL
+        self._client: Optional[httpx.AsyncClient] = None
+
+    @property
+    def client(self) -> httpx.AsyncClient:
+        """Returns persistent, pooled HTTP client with HTTP keep-alive for sub-50ms query latency"""
+        if self._client is None or self._client.is_closed:
+            self._client = httpx.AsyncClient(
+                timeout=httpx.Timeout(10.0, connect=5.0),
+                limits=httpx.Limits(max_keepalive_connections=30, max_connections=100)
+            )
+        return self._client
 
     def _detect_media_type(self, item: dict, default_type: Optional[str] = None) -> str:
         raw_type = item.get("media_type") or default_type or "movie"
@@ -139,16 +150,15 @@ class TMDBService:
             return cached
 
         url = f"{self.base_url}{endpoint}"
-        async with httpx.AsyncClient(timeout=20.0) as client:
-            try:
-                response = await client.get(url, params=query_params)
-                response.raise_for_status()
-                data = response.json()
-                _set_cache(cache_key, data)
-                return data
-            except Exception as e:
-                logger.error(f"TMDB request failed for {endpoint}: {e}")
-                return {}
+        try:
+            response = await self.client.get(url, params=query_params)
+            response.raise_for_status()
+            data = response.json()
+            _set_cache(cache_key, data)
+            return data
+        except Exception as e:
+            logger.error(f"TMDB request failed for {endpoint}: {e}")
+            return {}
 
     async def get_omdb_ratings(self, imdb_id: Optional[str] = None, title: Optional[str] = None, year: Optional[str] = None) -> dict:
         """Fetches official Rotten Tomatoes and IMDb ratings from OMDb"""
@@ -168,28 +178,27 @@ class TMDBService:
             if year:
                 params["y"] = year
 
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            try:
-                res = await client.get(self.omdb_base_url, params=params)
-                if res.status_code == 200:
-                    data = res.json()
-                    if data.get("Response") == "True":
-                        rt_score = None
-                        for r in data.get("Ratings", []):
-                            if r.get("Source") == "Rotten Tomatoes":
-                                rt_score = r.get("Value")
-                                break
-                        imdb_rating = data.get("imdbRating")
-                        result = {
-                            "rotten_tomatoes": rt_score,
-                            "imdb_rating": imdb_rating if imdb_rating != "N/A" else None,
-                            "metascore": data.get("Metascore") if data.get("Metascore") != "N/A" else None,
-                            "awards": data.get("Awards")
-                        }
-                        _set_cache(cache_key, result)
-                        return result
-            except Exception as e:
-                logger.warning(f"OMDb fetch error for {imdb_id or title}: {e}")
+        try:
+            res = await self.client.get(self.omdb_base_url, params=params)
+            if res.status_code == 200:
+                data = res.json()
+                if data.get("Response") == "True":
+                    rt_score = None
+                    for r in data.get("Ratings", []):
+                        if r.get("Source") == "Rotten Tomatoes":
+                            rt_score = r.get("Value")
+                            break
+                    imdb_rating = data.get("imdbRating")
+                    result = {
+                        "rotten_tomatoes": rt_score,
+                        "imdb_rating": imdb_rating if imdb_rating != "N/A" else None,
+                        "metascore": data.get("Metascore") if data.get("Metascore") != "N/A" else None,
+                        "awards": data.get("Awards")
+                    }
+                    _set_cache(cache_key, result)
+                    return result
+        except Exception as e:
+            logger.warning(f"OMDb fetch error for {imdb_id or title}: {e}")
 
         return {}
 

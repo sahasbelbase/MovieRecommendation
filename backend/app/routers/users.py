@@ -24,6 +24,27 @@ async def unmark_movie_watched(movie_id: int, user: dict = Depends(get_current_u
     success = await user_data_service.unmark_watched(user["uid"], movie_id)
     return {"status": "success" if success else "not_found"}
 
+# Watchlist ("Want to Watch" / "Watch Later") Endpoints
+class WatchlistRequest(BaseModel):
+    movie: dict
+
+@router.get("/watchlist")
+async def get_user_watchlist(user: dict = Depends(get_current_user_required)):
+    """Returns the user's Watchlist / Want to Watch list"""
+    return await user_data_service.get_watchlist(user["uid"])
+
+@router.post("/watchlist")
+async def add_to_watchlist(payload: WatchlistRequest, user: dict = Depends(get_current_user_required)):
+    """Adds a movie to the user's Watchlist"""
+    record = await user_data_service.add_to_watchlist(user["uid"], payload.movie)
+    return {"status": "success", "record": record}
+
+@router.delete("/watchlist/{movie_id}")
+async def remove_from_watchlist(movie_id: int, user: dict = Depends(get_current_user_required)):
+    """Removes a movie from the user's Watchlist"""
+    success = await user_data_service.remove_from_watchlist(user["uid"], movie_id)
+    return {"status": "success" if success else "not_found"}
+
 @router.get("/unwatched")
 async def get_user_unwatched(user: dict = Depends(get_current_user_required)):
     """Returns list of movies the user skipped or marked unwatched"""

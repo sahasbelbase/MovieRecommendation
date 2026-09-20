@@ -23,18 +23,38 @@ const GENRES = [
 ];
 
 export default function App() {
-  const { user, watchedMovies } = useAuth();
+  const { user, watchedMovies, toggleWatched, toggleWatchlist } = useAuth();
 
   const [feed, setFeed] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [slowNotice, setSlowNotice] = useState(false);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [isWatchedOpen, setIsWatchedOpen] = useState(false);
+  const [libraryTab, setLibraryTab] = useState('watched');
   const [isDataOpen, setIsDataOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const [toast, setToast] = useState(null);
   const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("All");
+
+  // Show cold-start wake-up message if request takes longer than 2.5s (free-tier spinup)
+  useEffect(() => {
+    let timer;
+    if (loading) {
+      timer = setTimeout(() => {
+        setSlowNotice(true);
+      }, 2500);
+    } else {
+      setSlowNotice(false);
+    }
+    return () => clearTimeout(timer);
+  }, [loading]);
+
+  const handleOpenLibrary = (tab = 'watched') => {
+    setLibraryTab(tab);
+    setIsWatchedOpen(true);
+  };
 
   // Fetch recommendation feed whenever user state or media category changes
   const loadFeed = async () => {
@@ -79,7 +99,7 @@ export default function App() {
       {/* Navigation */}
       <Navbar
         onSelectMovie={(m) => setSelectedMovie(m)}
-        onOpenWatched={() => setIsWatchedOpen(true)}
+        onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
         onOpenDataModal={() => setIsDataOpen(true)}
         onOpenAuthModal={() => setIsAuthOpen(true)}
         onOpenSwipe={() => setIsSwipeOpen(true)}
@@ -208,17 +228,27 @@ export default function App() {
 
         {/* Dynamic Recommendation Sections */}
         {loading ? (
-          <div className="space-y-10">
-            {[1, 2, 3].map((row) => (
-              <div key={row} className="space-y-4">
-                <div className="h-6 w-48 bg-zinc-800/60 rounded-md animate-pulse" />
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="aspect-[2/3] bg-zinc-800/40 rounded-xl animate-pulse" />
-                  ))}
-                </div>
+          <div className="space-y-6">
+            {slowNotice && (
+              <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-950/30 border border-amber-800/40 text-amber-200 text-xs animate-in fade-in duration-300">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
+                <p>
+                  <strong className="font-semibold text-amber-300">Waking up API engine:</strong> Free hosting spins down when idle. Initial wake-up takes ~30 seconds, then subsequent browsing and queries will be lightning fast!
+                </p>
               </div>
-            ))}
+            )}
+            <div className="space-y-10">
+              {[1, 2, 3].map((row) => (
+                <div key={row} className="space-y-4">
+                  <div className="h-6 w-48 bg-zinc-800/60 rounded-md animate-pulse" />
+                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="aspect-[2/3] bg-zinc-800/40 rounded-xl animate-pulse" />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : feed?.sections && feed.sections.length > 0 ? (
           feed.sections.map((section, idx) => {
@@ -320,6 +350,7 @@ export default function App() {
         onClose={() => setIsWatchedOpen(false)}
         onSelectMovie={(m) => setSelectedMovie(m)}
         onOpenDataModal={() => setIsDataOpen(true)}
+        initialTab={libraryTab}
       />
 
       <DataModal
@@ -344,7 +375,11 @@ export default function App() {
         toast={toast}
         onUndo={() => {
           if (toast?.movie) {
-            useAuth().toggleWatched(toast.movie);
+            if (toast.message?.includes('Watchlist')) {
+              toggleWatchlist(toast.movie);
+            } else {
+              toggleWatched(toast.movie);
+            }
             setToast(null);
           }
         }}

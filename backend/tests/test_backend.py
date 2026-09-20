@@ -167,4 +167,42 @@ def test_kdrama_recommendation_strict_guard(client):
         f"K-Drama section must not be shown to non-K-Drama viewers! Found: {section_titles}"
     )
 
+def test_user_watchlist_and_auto_move_to_watched(client):
+    headers = {"Authorization": "Bearer test_token_watchlist_fan"}
+    movie_item = {
+        "id": 157336,
+        "title": "Interstellar",
+        "year": "2014",
+        "vote_average": 8.6,
+        "genres": ["Adventure", "Drama", "Science Fiction"],
+        "media_type": "movie"
+    }
+
+    # 1. Add Interstellar to watchlist
+    add_res = client.post("/api/users/watchlist", json={"movie": movie_item}, headers=headers)
+    assert add_res.status_code == 200
+    assert add_res.json()["status"] == "success"
+
+    # 2. Verify it is present in watchlist
+    get_res = client.get("/api/users/watchlist", headers=headers)
+    assert get_res.status_code == 200
+    watchlist_items = get_res.json()
+    assert any(m["id"] == 157336 for m in watchlist_items)
+
+    # 3. Mark Interstellar as watched
+    watched_res = client.post("/api/users/watched", json={"movie": movie_item, "rating": 9.5}, headers=headers)
+    assert watched_res.status_code == 200
+
+    # 4. Verify it was automatically removed from watchlist when watched!
+    get_res2 = client.get("/api/users/watchlist", headers=headers)
+    assert get_res2.status_code == 200
+    watchlist_items2 = get_res2.json()
+    assert all(m["id"] != 157336 for m in watchlist_items2), "Movie must be automatically removed from watchlist when watched!"
+
+    # 5. Verify it is in watched list
+    watched_list_res = client.get("/api/users/watched", headers=headers)
+    assert watched_list_res.status_code == 200
+    assert any(m["id"] == 157336 for m in watched_list_res.json())
+
+
 
