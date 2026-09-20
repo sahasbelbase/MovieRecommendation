@@ -474,7 +474,8 @@ export default function MovieNightModal({
 
       <button
        onClick={onClose}
-       className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+       aria-label="Close modal"
+       className="p-1.5 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
        title="Close (Esc)"
       >
        <X className="w-5 h-5" />
