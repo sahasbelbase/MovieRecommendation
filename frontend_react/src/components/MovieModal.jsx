@@ -383,23 +383,61 @@ export default function MovieModal({ isVip, onActivateVip, movie, onClose, onSel
          {/* Stream Player */}
          <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
           {!user ? (
-           <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center">
-            <div className="w-16 h-16 rounded-full bg-rose-500/20 flex items-center justify-center mb-4 border border-rose-500/30">
-             <span className="text-2xl">🔒</span>
+           <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center z-20">
+            <div className="w-16 h-16 rounded-full bg-rose-500/20 flex items-center justify-center mb-4 border border-rose-500/30 text-rose-400">
+             <Lock className="w-7 h-7" />
             </div>
-            <h3 className="text-lg font-bold text-white mb-2">Sign in to Watch Free</h3>
+            <h3 className="text-lg font-bold text-white mb-2 font-mono">Sign In Required</h3>
             <p className="text-sm text-zinc-400 max-w-md mb-6">
-             Create a free account or sign in to access full movies and TV shows, join watch parties, and more.
+             Please sign in to your account first, then enter your VIP passcode to stream full movies & TV series.
             </p>
             <button
              onClick={() => {
               if (onRequireAuth) onRequireAuth();
-              if (onShowToast) onShowToast({ message: 'Please sign in to stream content 🍿' });
+              if (onShowToast) onShowToast({ message: 'Please sign in' });
              }}
-             className="px-6 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold shadow-lg transition-transform active:scale-95"
+             className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 text-white font-bold text-sm shadow-lg transition-transform active:scale-95"
             >
              Sign In Now
             </button>
+           </div>
+          ) : !isVip ? (
+           <div className="absolute inset-0 flex flex-col items-center justify-center bg-zinc-950 p-6 text-center z-20">
+            <div className="w-16 h-16 rounded-full bg-purple-500/20 flex items-center justify-center mb-4 border border-purple-500/30 text-purple-400">
+             <Lock className="w-7 h-7" />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2 font-mono">VIP Passcode Required</h3>
+            <p className="text-sm text-zinc-400 max-w-md mb-6">
+             You are signed in as <span className="text-zinc-200 font-semibold">{user.displayName || user.email}</span>. Enter secret access code (e.g. 9999) to unlock streaming.
+            </p>
+            <form
+             onSubmit={(e) => {
+              e.preventDefault();
+              const code = e.target.elements.streamPasscode.value.trim();
+              if (code === '9999') {
+               if (onActivateVip) onActivateVip();
+               if (onShowToast) onShowToast({ message: 'VIP Stream Access Unlocked 🤫' });
+              } else {
+               alert('Incorrect passcode');
+              }
+             }}
+             className="flex items-center gap-2 w-full max-w-xs"
+            >
+             <input
+              name="streamPasscode"
+              type="text"
+              maxLength={4}
+              placeholder="Passcode..."
+              autoFocus
+              className="flex-1 px-4 py-2.5 bg-zinc-900 border border-zinc-700 rounded-xl text-sm font-mono text-white text-center focus:outline-none focus:border-purple-500 uppercase tracking-widest"
+             />
+             <button
+              type="submit"
+              className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-sm transition-colors shadow-md shrink-0"
+             >
+              Unlock
+             </button>
+            </form>
            </div>
           ) : (
            <iframe
