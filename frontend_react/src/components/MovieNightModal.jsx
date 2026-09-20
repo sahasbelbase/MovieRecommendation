@@ -246,15 +246,36 @@ export default function MovieNightModal({
     }
   };
 
-  // Copy shareable join link
-  const handleCopyLink = () => {
+  // Copy or natively share join link
+  const handleCopyLink = async () => {
     if (!currentRoom?.code) return;
     const shareUrl = `${window.location.origin}/?room=${currentRoom.code}`;
-    navigator.clipboard.writeText(shareUrl);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2500);
-    if (onShowToast) {
-      onShowToast({ message: `Share link copied: ${shareUrl}` });
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: `Join Movie Night (Room ${currentRoom.code})`,
+          text: `🍿 Join our Movie Night on Cinematch! Swipe movies together and find a match in Room ${currentRoom.code}:`,
+          url: shareUrl,
+        });
+        if (onShowToast) {
+          onShowToast({ message: "Invitation sent! 🍿" });
+        }
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+      }
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+      if (onShowToast) {
+        onShowToast({ message: `Share link copied: ${shareUrl}` });
+      }
+    } catch (_) {
+      if (onShowToast) {
+        onShowToast({ message: `Room link: ${shareUrl}` });
+      }
     }
   };
 

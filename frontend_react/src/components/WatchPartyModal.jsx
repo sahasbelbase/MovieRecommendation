@@ -30,9 +30,37 @@ export default function WatchPartyModal({
 }) {
   const { user } = useAuth();
 
-  // User identity strictly requires authenticated user
-  const myUserId = user?.uid || '';
-  const myUserName = user?.displayName || user?.email?.split('@')[0] || 'Cinephile';
+  // Guest identity & Join status
+  const [guestName, setGuestName] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('cinematch_guest_name') || '';
+    }
+    return '';
+  });
+
+  const [hasJoined, setHasJoined] = useState(() => {
+    return Boolean(user) || (typeof window !== 'undefined' && Boolean(localStorage.getItem('cinematch_guest_name')));
+  });
+
+  const [myGuestId] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('cinematch_theater_uid');
+      if (stored) return stored;
+      const newId = `guest_${Math.random().toString(36).substring(2, 9)}`;
+      localStorage.setItem('cinematch_theater_uid', newId);
+      return newId;
+    }
+    return `guest_${Math.random().toString(36).substring(2, 9)}`;
+  });
+
+  const myUserId = user?.uid || myGuestId;
+  const myUserName = user?.displayName || user?.email?.split('@')[0] || guestName || 'Friend';
+
+  useEffect(() => {
+    if (user) {
+      setHasJoined(true);
+    }
+  }, [user]);
 
   // Room & theater state
   const [roomCode, setRoomCode] = useState(propRoomCode ? propRoomCode.toUpperCase() : '');
@@ -260,7 +288,7 @@ export default function WatchPartyModal({
 
   // 2. Connect WebSocket for real-time synchronization
   useEffect(() => {
-    if (!isOpen || !roomCode || !user) return;
+    if (!isOpen || !roomCode || !hasJoined) return;
 
     initTheater();
 
@@ -305,7 +333,7 @@ export default function WatchPartyModal({
       Object.values(peerConnectionsRef.current).forEach((pc) => pc.close());
       peerConnectionsRef.current = {};
     };
-  }, [isOpen, roomCode, user?.uid, myUserId, myUserName]);
+  }, [isOpen, roomCode, hasJoined, myUserId, myUserName]);
 
   // 3. Handle incoming WebSocket events
   const handleServerEvent = async (data) => {
@@ -918,13 +946,37 @@ export default function WatchPartyModal({
     }, 1000);
   };
 
-  // Copy share party link
-  const copyPartyLink = () => {
+  // Mobile Native Share or Desktop Clipboard Copy
+  const handleShareParty = async () => {
     const url = `${window.location.origin}/?party=${roomCode}`;
-    navigator.clipboard?.writeText(url);
-    setCopiedLink(true);
-    setTimeout(() => setCopiedLink(false), 2500);
-    if (onShowToast) onShowToast({ message: 'Watch Party link copied to clipboard!' });
+    const shareData = {
+      title: `Cinematch Watch Party (Room ${roomCode})`,
+      text: `🍿 Join my Watch Party on Cinematch (Room: ${roomCode})! Watch live screen share and chat with me:`,
+      url: url,
+    };
+
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share(shareData);
+        if (onShowToast) onShowToast({ message: 'Invitation sent! 🍿' });
+        return;
+      } catch (err) {
+        if (err.name !== 'AbortError') {
+          console.warn('Native share error:', err);
+        } else {
+          return;
+        }
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+      if (onShowToast) onShowToast({ message: 'Watch Party link copied to clipboard! 📋' });
+    } catch (_) {
+      if (onShowToast) onShowToast({ message: `Room link: ${url}` });
+    }
   };
 
   // Format seconds to mm:ss
@@ -937,10 +989,10 @@ export default function WatchPartyModal({
 
   if (!isOpen) return null;
 
-  if (!user) {
+  if (!hasJoined && !user) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-fade-in select-none">
-        <div className="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-2xl">
+        <div className="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 text-center space-y-5 shadow-2xl">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-all"
@@ -954,36 +1006,72 @@ export default function WatchPartyModal({
             </div>
           </div>
 
-          <div className="space-y-2">
-            <h3 className="text-xl font-bold text-white flex items-center justify-center gap-2">
-              <Lock className="w-5 h-5 text-amber-400" />
-              <span>Sign In Required</span>
+          <div className="space-y-1.5">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-mono font-bold">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+              <span>LIVE WATCH PARTY</span>
+            </div>
+            <h3 className="text-xl font-bold text-white">
+              Join Room {roomCode}
             </h3>
-            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
-              Watch Party rooms feature synchronized video playback, live chat, and reaction cannons. Please sign in with your Cinematch account to join {roomCode ? <strong className="text-amber-400 font-mono">room {roomCode}</strong> : 'the party'}!
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Watch movies, live stream screens, chat in real-time, and react together!
             </p>
           </div>
 
-          <div className="pt-2 flex flex-col gap-3">
+          {/* Fast Guest Nickname Join */}
+          <div className="space-y-3 pt-1 text-left">
+            <div>
+              <label className="block text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mb-1.5 font-mono">
+                Your Nickname
+              </label>
+              <input
+                type="text"
+                value={guestName}
+                maxLength={20}
+                onChange={(e) => setGuestName(e.target.value)}
+                placeholder="e.g. Alex or MovieBuff"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    const name = guestName.trim() || 'Cinephile';
+                    setGuestName(name);
+                    if (typeof window !== 'undefined') localStorage.setItem('cinematch_guest_name', name);
+                    setHasJoined(true);
+                  }
+                }}
+                className="w-full px-4 py-3 rounded-xl bg-zinc-900 border border-zinc-800 focus:border-rose-500 text-white text-sm outline-none transition-all placeholder:text-zinc-600"
+              />
+            </div>
+
             <button
               onClick={() => {
-                if (onRequireAuth) {
-                  onRequireAuth();
-                } else {
-                  onClose();
-                }
+                const name = guestName.trim() || 'Cinephile';
+                setGuestName(name);
+                if (typeof window !== 'undefined') localStorage.setItem('cinematch_guest_name', name);
+                setHasJoined(true);
               }}
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-rose-950/60 transition-all active:scale-95"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-rose-950/60 transition-all active:scale-95 flex items-center justify-center gap-2"
             >
-              Sign In to Join Watch Party
-            </button>
-            <button
-              onClick={onClose}
-              className="w-full py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold transition-all"
-            >
-              Cancel
+              <span>Join Watch Party Now</span>
+              <span>🍿</span>
             </button>
           </div>
+
+          {/* Divider */}
+          <div className="relative flex items-center justify-center">
+            <div className="border-t border-zinc-800 w-full" />
+            <span className="bg-zinc-950 px-3 text-[11px] font-mono text-zinc-500 uppercase tracking-wider">or</span>
+          </div>
+
+          {/* Google Sign In option */}
+          <button
+            onClick={() => {
+              if (onRequireAuth) onRequireAuth();
+            }}
+            className="w-full py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-xs font-semibold text-zinc-300 hover:text-white transition-all flex items-center justify-center gap-2"
+          >
+            <span>Sign In with Google</span>
+          </button>
         </div>
       </div>
     );
@@ -1032,12 +1120,12 @@ export default function WatchPartyModal({
           {/* Action buttons */}
           <div className="flex items-center gap-2">
             <button
-              onClick={copyPartyLink}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-xs font-semibold text-zinc-200 transition-all active:scale-95"
-              title="Copy share link"
+              onClick={handleShareParty}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-xs font-bold text-white shadow-md shadow-rose-950/40 transition-all active:scale-95"
+              title="Share party invitation via WhatsApp, Instagram, iMessage, etc."
             >
-              {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-              <span className="hidden sm:inline">{copiedLink ? 'Copied!' : 'Invite Friends'}</span>
+              {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Share2 className="w-3.5 h-3.5" />}
+              <span>{copiedLink ? 'Copied!' : 'Share Party'}</span>
             </button>
 
             {/* Chat toggle button */}

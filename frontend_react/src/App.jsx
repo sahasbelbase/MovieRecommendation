@@ -42,13 +42,26 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
   const [isTop250Open, setIsTop250Open] = useState(false);
-  const [isMovieNightOpen, setIsMovieNightOpen] = useState(false);
-  const [initialRoomCode, setInitialRoomCode] = useState('');
-  const [watchPartyData, setWatchPartyData] = useState({
-    isOpen: false,
-    roomCode: '',
-    movie: null,
-    videoSource: null,
+  const [initialRoomCode, setInitialRoomCode] = useState(() => {
+    if (typeof window === 'undefined') return '';
+    return (new URLSearchParams(window.location.search).get('room') || '').toUpperCase();
+  });
+  const [isMovieNightOpen, setIsMovieNightOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return Boolean(new URLSearchParams(window.location.search).get('room'));
+  });
+  const [watchPartyData, setWatchPartyData] = useState(() => {
+    if (typeof window === 'undefined') {
+      return { isOpen: false, roomCode: '', movie: null, videoSource: null };
+    }
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('party') || params.get('theater');
+    return {
+      isOpen: Boolean(code),
+      roomCode: code ? code.toUpperCase() : '',
+      movie: null,
+      videoSource: null,
+    };
   });
   const [pendingPartyCode, setPendingPartyCode] = useState(null);
 
@@ -148,7 +161,6 @@ export default function App() {
 
   // Handle direct share link: ?room=CODE or ?party=CODE
   useEffect(() => {
-    if (authLoading) return;
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
     const partyParam = params.get('party') || params.get('theater');
@@ -159,16 +171,11 @@ export default function App() {
         isOpen: true,
         roomCode: code,
       }));
-      if (!user) {
-        setPendingPartyCode({ code, movie: null });
-        setIsAuthOpen(true);
-        showToast({ message: 'Please sign in to join the Watch Party! 🍿' });
-      }
     } else if (roomParam) {
       setInitialRoomCode(roomParam.toUpperCase());
       setIsMovieNightOpen(true);
     }
-  }, [authLoading, user]);
+  }, []);
 
   // Toast helper
   const showToast = (toastObj) => {
