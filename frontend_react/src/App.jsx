@@ -14,613 +14,600 @@ import WatchlistShelf from './components/WatchlistShelf';
 import Top250Modal from './components/Top250Modal';
 import MovieNightModal from './components/MovieNightModal';
 import WatchPartyModal, { StandaloneChatCompanion } from './components/WatchPartyModal';
+import Footer from './components/Footer';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
-  { id: "all", label: "All Entertainment", shortLabel: "All" },
-  { id: "movie", label: "Movies", shortLabel: "Movies" },
-  { id: "tv", label: "TV Series", shortLabel: "TV" },
-  { id: "anime", label: "Anime", shortLabel: "Anime" }
+ { id: "all", label: "All Entertainment", shortLabel: "All" },
+ { id: "movie", label: "Movies", shortLabel: "Movies" },
+ { id: "tv", label: "TV Series", shortLabel: "TV" },
+ { id: "anime", label: "Anime", shortLabel: "Anime" }
 ];
 
 const GENRES = [
-  "All", "Action", "Drama", "Crime", "Sci-Fi", "Comedy", "Thriller", "Romance", "Animation", "Horror", "Mystery"
+ "All", "Action", "Drama", "Crime", "Sci-Fi", "Comedy", "Thriller", "Romance", "Animation", "Horror", "Mystery"
 ];
 
 export default function App() {
-  const { user, loading: authLoading, watchedMovies, watchlistMovies, notInterestedMovies, toggleWatched, toggleWatchlist } = useAuth();
+ const { user, loading: authLoading, watchedMovies, watchlistMovies, notInterestedMovies, toggleWatched, toggleWatchlist } = useAuth();
 
-  const [feed, setFeed] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [slowNotice, setSlowNotice] = useState(false);
-  const [selectedMovie, setSelectedMovie] = useState(null);
-  const [selectedActor, setSelectedActor] = useState(null);
-  const [isWatchedOpen, setIsWatchedOpen] = useState(false);
-  const [libraryTab, setLibraryTab] = useState('watched');
-  const [isWatchlistShelfOpen, setIsWatchlistShelfOpen] = useState(false);
-  const [isDataOpen, setIsDataOpen] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isSwipeOpen, setIsSwipeOpen] = useState(false);
-  const [isTop250Open, setIsTop250Open] = useState(false);
-  const [initialRoomCode, setInitialRoomCode] = useState(() => {
-    if (typeof window === 'undefined') return '';
-    return (new URLSearchParams(window.location.search).get('room') || '').toUpperCase();
-  });
-  const [isMovieNightOpen, setIsMovieNightOpen] = useState(() => {
-    if (typeof window === 'undefined') return false;
-    return Boolean(new URLSearchParams(window.location.search).get('room'));
-  });
-  const [watchPartyData, setWatchPartyData] = useState(() => {
-    if (typeof window === 'undefined') {
-      return { isOpen: false, roomCode: '', movie: null, videoSource: null };
-    }
-    const params = new URLSearchParams(window.location.search);
-    const code = params.get('party') || params.get('theater');
-    return {
-      isOpen: Boolean(code),
-      roomCode: code ? code.toUpperCase() : '',
-      movie: null,
-      videoSource: null,
-    };
-  });
-  const [pendingPartyCode, setPendingPartyCode] = useState(null);
-
-  const handleStartWatchParty = (movie, roomCode = null) => {
-    const code = roomCode || Math.random().toString(36).substring(2, 6).toUpperCase();
-    setWatchPartyData({
-      isOpen: true,
-      roomCode: code,
-      movie: movie || null,
-      videoSource: null,
-    });
-    if (!user) {
-      setPendingPartyCode({ code, movie });
-      showToast({ message: 'Please sign in to join or host a Watch Party 🍿' });
-      return;
-    }
-  };
-
-  // Resume pending watch party after user signs in
-  useEffect(() => {
-    if (user && pendingPartyCode) {
-      setWatchPartyData({
-        isOpen: true,
-        roomCode: pendingPartyCode.code,
-        movie: pendingPartyCode.movie || null,
-        videoSource: null,
-      });
-      setPendingPartyCode(null);
-    }
-  }, [user, pendingPartyCode]);
-  const [toast, setToast] = useState(null);
-  const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
-  const [selectedGenre, setSelectedGenre] = useState("All");
-
-  // Efficient lookup set of all excluded IDs (watched + watchlist + not interested)
-  const excludedIds = useMemo(() => {
-    const ids = new Set();
-    (watchedMovies || []).forEach(m => ids.add(Number(m.id)));
-    (watchlistMovies || []).forEach(m => ids.add(Number(m.id)));
-    (notInterestedMovies || []).forEach(m => ids.add(Number(m.id)));
-    return ids;
-  }, [watchedMovies, watchlistMovies, notInterestedMovies]);
-
-  // Show cold-start wake-up message if request takes longer than 2.5s (free-tier spinup)
-  useEffect(() => {
-    let timer;
-    if (loading) {
-      timer = setTimeout(() => {
-        setSlowNotice(true);
-      }, 2500);
-    } else {
-      setSlowNotice(false);
-    }
-    return () => clearTimeout(timer);
-  }, [loading]);
-
-  const handleOpenLibrary = (tab = 'watched') => {
-    setLibraryTab(tab);
-    setIsWatchedOpen(true);
-  };
-
-  // Fetch recommendation feed whenever user state, media category, or genre changes
-  const loadFeed = async () => {
-    setLoading(true);
-    try {
-      const genreParam = selectedGenre && selectedGenre !== "All" ? `&genre=${encodeURIComponent(selectedGenre)}` : '';
-      const url = `/recommendations/feed?media_type=${selectedMediaCategory}${genreParam}`;
-      const res = await api.get(url);
-      setFeed(res.data);
-    } catch (err) {
-      console.error("Failed to load recommendation feed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadFeed();
-  }, [user, selectedMediaCategory, selectedGenre]);
-
-  // Auto-open taste calibration swipe deck when user logs in for the first time (skip if joining party/room)
-  useEffect(() => {
-    if (user?.uid) {
-      const params = new URLSearchParams(window.location.search);
-      const isDirectInvite = params.get('party') || params.get('theater') || params.get('room');
-      if (isDirectInvite || pendingPartyCode || watchPartyData.isOpen || isMovieNightOpen) {
-        return;
-      }
-      const onboardingKey = `has_seen_calibration_${user.uid}`;
-      const hasSeen = localStorage.getItem(onboardingKey);
-      if (!hasSeen) {
-        setIsSwipeOpen(true);
-        localStorage.setItem(onboardingKey, 'true');
-      }
-    }
-  }, [user?.uid, pendingPartyCode, watchPartyData.isOpen, isMovieNightOpen]);
-
-  // Handle direct share link: ?room=CODE or ?party=CODE
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const roomParam = params.get('room');
-    const partyParam = params.get('party') || params.get('theater');
-    if (partyParam) {
-      const code = partyParam.toUpperCase();
-      setWatchPartyData((prev) => ({
-        ...prev,
-        isOpen: true,
-        roomCode: code,
-      }));
-    } else if (roomParam) {
-      setInitialRoomCode(roomParam.toUpperCase());
-      setIsMovieNightOpen(true);
-    }
-  }, []);
-
-  // Toast helper
-  const showToast = (toastObj) => {
-    setToast(toastObj);
-    setTimeout(() => {
-      setToast(null);
-    }, 4000);
-  };
-
-  const isCompanionView = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'chat';
-  const companionRoom = typeof window !== 'undefined' && (new URLSearchParams(window.location.search).get('party') || new URLSearchParams(window.location.search).get('theater'));
-
-  if (isCompanionView && companionRoom) {
-    return <StandaloneChatCompanion roomCode={companionRoom.toUpperCase()} />;
+ const [feed, setFeed] = useState(null);
+ const [loading, setLoading] = useState(true);
+ const [slowNotice, setSlowNotice] = useState(false);
+ const [selectedMovie, setSelectedMovie] = useState(null);
+ const [selectedActor, setSelectedActor] = useState(null);
+ const [isWatchedOpen, setIsWatchedOpen] = useState(false);
+ const [libraryTab, setLibraryTab] = useState('watched');
+ const [isWatchlistShelfOpen, setIsWatchlistShelfOpen] = useState(false);
+ const [isDataOpen, setIsDataOpen] = useState(false);
+ const [isAuthOpen, setIsAuthOpen] = useState(false);
+ const [isSwipeOpen, setIsSwipeOpen] = useState(false);
+ const [isTop250Open, setIsTop250Open] = useState(false);
+ const [initialRoomCode, setInitialRoomCode] = useState(() => {
+  if (typeof window === 'undefined') return '';
+  return (new URLSearchParams(window.location.search).get('room') || '').toUpperCase();
+ });
+ const [isMovieNightOpen, setIsMovieNightOpen] = useState(() => {
+  if (typeof window === 'undefined') return false;
+  return Boolean(new URLSearchParams(window.location.search).get('room'));
+ });
+ const [watchPartyData, setWatchPartyData] = useState(() => {
+  if (typeof window === 'undefined') {
+   return { isOpen: false, roomCode: '', movie: null, videoSource: null };
   }
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('party') || params.get('theater');
+  return {
+   isOpen: Boolean(code),
+   roomCode: code ? code.toUpperCase() : '',
+   movie: null,
+   videoSource: null,
+  };
+ });
+ const [pendingPartyCode, setPendingPartyCode] = useState(null);
 
-  return (
-    <div className="min-h-screen bg-canvas text-zinc-100 flex flex-col font-sans">
-      {/* Navigation */}
-      <Navbar
-        onSelectMovie={(m) => setSelectedMovie(m)}
-        onSelectActor={(a) => setSelectedActor(a)}
-        onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
-        onOpenDataModal={() => setIsDataOpen(true)}
-        onOpenAuthModal={() => setIsAuthOpen(true)}
-        onOpenSwipe={() => setIsSwipeOpen(true)}
-        onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev => !prev)}
-        onOpenTop250={() => setIsTop250Open(true)}
-        onOpenMovieNight={() => setIsMovieNightOpen(true)}
-      />
+ const handleStartWatchParty = (movie, roomCode = null) => {
+  const code = roomCode || Math.random().toString(36).substring(2, 6).toUpperCase();
+  setWatchPartyData({
+   isOpen: true,
+   roomCode: code,
+   movie: movie || null,
+   videoSource: null,
+  });
+  if (!user) {
+   setPendingPartyCode({ code, movie });
+   showToast({ message: 'Please sign in to join or host a Watch Party ' });
+   return;
+  }
+ };
 
-      {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
-      <WatchlistShelf
-        isExpanded={isWatchlistShelfOpen}
-        onToggleExpand={() => setIsWatchlistShelfOpen(prev => !prev)}
-        onSelectMovie={(m) => setSelectedMovie(m)}
-        onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
-        onShowToast={showToast}
-      />
+ // Resume pending watch party after user signs in
+ useEffect(() => {
+  if (user && pendingPartyCode) {
+   setWatchPartyData({
+    isOpen: true,
+    roomCode: pendingPartyCode.code,
+    movie: pendingPartyCode.movie || null,
+    videoSource: null,
+   });
+   setPendingPartyCode(null);
+  }
+ }, [user, pendingPartyCode]);
+ const [toast, setToast] = useState(null);
+ const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
+ const [selectedGenre, setSelectedGenre] = useState("All");
 
-      {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 pb-24 md:pb-8 space-y-6 sm:space-y-8">
-        {/* Onboarding Taste Calibration Banner for Signed-In Users */}
-        {user && watchedMovies.length < 5 && (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-950/60 via-zinc-900 to-zinc-900 border border-rose-800/40 gap-3.5 sm:gap-4 shadow-xl">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">🔥</span>
-                <h2 className="text-sm sm:text-base font-bold text-white">
-                  Calibrate Your For You Page ({watchedMovies.length}/5 titles rated)
-                </h2>
-                <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-rose-900/60 text-rose-300 border border-rose-700/50">
-                  Swipe Mode
-                </span>
-              </div>
-              <p className="text-xs text-zinc-300">
-                Swipe right on titles you've watched, or swipe left to skip. Unwatched titles are tracked so they won't repeat!
-              </p>
-            </div>
-            <button
-              onClick={() => setIsSwipeOpen(true)}
-              className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/50 transition-all self-stretch sm:self-auto active:scale-95"
-            >
-              Open Swipe Mode
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        )}
+ // Efficient lookup set of all excluded IDs (watched watchlist not interested)
+ const excludedIds = useMemo(() => {
+  const ids = new Set();
+  (watchedMovies || []).forEach(m => ids.add(Number(m.id)));
+  (watchlistMovies || []).forEach(m => ids.add(Number(m.id)));
+  (notInterestedMovies || []).forEach(m => ids.add(Number(m.id)));
+  return ids;
+ }, [watchedMovies, watchlistMovies, notInterestedMovies]);
 
-        {/* Banner: Guest invitation vs Authenticated summary */}
-        {user ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-surface border border-border-subtle gap-3.5 sm:gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
-                  Welcome back, {user.displayName}
-                </h1>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  Tailored Mode
-                </span>
-              </div>
-              <p className="text-xs text-zinc-400">
-                Your recommendation engine has analyzed your taste across movies, TV shows, and anime and strictly excluded your{' '}
-                <strong className="text-zinc-200">{watchedMovies.length} watched titles</strong>.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 xs:flex xs:items-center gap-2 w-full xs:w-auto">
-              <button
-                onClick={() => setIsMovieNightOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
-              >
-                <span>🍿 Movie Night</span>
-              </button>
-              <button
-                onClick={() => setIsSwipeOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 hover:from-rose-600/30 hover:to-orange-600/30 text-xs font-semibold text-rose-300 border border-rose-500/40 transition-all active:scale-95"
-              >
-                <span>🔥 Swipe FYP</span>
-              </button>
-              <button
-                onClick={loadFeed}
-                className="col-span-2 xs:col-span-1 flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-zinc-200 border border-zinc-700 transition-all active:scale-95"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                Refresh
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 gap-3.5 sm:gap-4">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <h1 className="text-base sm:text-lg font-bold text-white">Movies, TV Series & Anime Discovery</h1>
-                <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
-                  Guest Mode
-                </span>
-              </div>
-              <p className="text-xs text-zinc-400">
-                Sign in to save your watched history permanently and unlock a tailored taste profile across all media.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 xs:flex xs:items-center gap-2 w-full xs:w-auto">
-              <button
-                onClick={() => setIsMovieNightOpen(true)}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
-              >
-                <span>🍿 Movie Night</span>
-              </button>
-              <button
-                onClick={() => setIsAuthOpen(true)}
-                className="flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/40 transition-all active:scale-95"
-              >
-                <span>Sign In</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        )}
+ // Show cold-start wake-up message if request takes longer than 2.5s (free-tier spinup)
+ useEffect(() => {
+  let timer;
+  if (loading) {
+   timer = setTimeout(() => {
+    setSlowNotice(true);
+   }, 2500);
+  } else {
+   setSlowNotice(false);
+  }
+  return () => clearTimeout(timer);
+ }, [loading]);
 
-        {/* Your Watchlist - Card Carousel View Below Main Picture/Banner */}
-        {watchlistMovies && watchlistMovies.length > 0 && (
-          <section className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800/80">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/30">
-                  <Bookmark className="w-4 h-4 fill-amber-400" />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">Your Watchlist</h2>
-                    <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                      {watchlistMovies.length} saved
-                    </span>
-                  </div>
-                  <p className="text-xs text-zinc-400 hidden sm:block">Titles queued for later — ready to watch</p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleOpenLibrary('watchlist')}
-                className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1"
-              >
-                View in Drawer →
-              </button>
-            </div>
-            <div className="flex gap-2.5 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
-              {watchlistMovies.map((movie) => (
-                <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
-                  <MovieCard
-                    movie={movie}
-                    onSelect={(m) => setSelectedMovie(m)}
-                    onShowToast={showToast}
-                  />
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+ const handleOpenLibrary = (tab = 'watched') => {
+  setLibraryTab(tab);
+  setIsWatchedOpen(true);
+ };
 
-        {/* Media Category Switcher Tabs & Top 250 Launcher */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-zinc-800/80 pb-4">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
-            <div className="flex items-center gap-1 xs:gap-2 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800 shrink-0">
-              {MEDIA_CATEGORIES.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedMediaCategory(cat.id)}
-                  className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
-                    selectedMediaCategory === cat.id
-                      ? 'bg-zinc-800 text-white shadow font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  <span className="xs:hidden">{cat.shortLabel || cat.label}</span>
-                  <span className="hidden xs:inline">{cat.label}</span>
-                </button>
-              ))}
-            </div>
+ // Fetch recommendation feed whenever user state, media category, or genre changes
+ const loadFeed = async () => {
+  setLoading(true);
+  try {
+   const genreParam = selectedGenre && selectedGenre!== "All" ? `&genre=${encodeURIComponent(selectedGenre)}` : '';
+   const url = `/recommendations/feed?media_type=${selectedMediaCategory}${genreParam}`;
+   const res = await api.get(url);
+   setFeed(res.data);
+  } catch (err) {
+   console.error("Failed to load recommendation feed:", err);
+  } finally {
+   setLoading(false);
+  }
+ };
 
-            <button
-              onClick={() => setIsTop250Open(true)}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-orange-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-500/60 hover:from-amber-500/25 hover:to-orange-500/30 transition-all shadow-sm active:scale-95 shrink-0"
-              title="Explore Top 250 Movies, TV Series & Anime of All Time"
-            >
-              <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-              <span className="hidden xs:inline">Top 250 All-Time</span>
-              <span className="xs:hidden">Top 250</span>
-            </button>
-          </div>
+ useEffect(() => {
+  loadFeed();
+ }, [user, selectedMediaCategory, selectedGenre]);
 
-          {/* Genre Filter Chips */}
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
-            {GENRES.map((genre) => (
-              <button
-                key={genre}
-                onClick={() => setSelectedGenre(genre)}
-                className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
-                  selectedGenre === genre
-                    ? 'bg-rose-600/20 text-rose-300 border border-rose-500/40 font-semibold'
-                    : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
-                }`}
-              >
-                {genre}
-              </button>
-            ))}
-          </div>
+ // Auto-open taste calibration swipe deck when user logs in for the first time (skip if joining party/room)
+ useEffect(() => {
+  if (user?.uid) {
+   const params = new URLSearchParams(window.location.search);
+   const isDirectInvite = params.get('party') || params.get('theater') || params.get('room');
+   if (isDirectInvite || pendingPartyCode || watchPartyData.isOpen || isMovieNightOpen) {
+    return;
+   }
+   const onboardingKey = `has_seen_calibration_${user.uid}`;
+   const hasSeen = localStorage.getItem(onboardingKey);
+   if (!hasSeen) {
+    setIsSwipeOpen(true);
+    localStorage.setItem(onboardingKey, 'true');
+   }
+  }
+ }, [user?.uid, pendingPartyCode, watchPartyData.isOpen, isMovieNightOpen]);
+
+ // Handle direct share link: ?room=CODE or ?party=CODE
+ useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  const roomParam = params.get('room');
+  const partyParam = params.get('party') || params.get('theater');
+  if (partyParam) {
+   const code = partyParam.toUpperCase();
+   setWatchPartyData((prev) => ({
+    ...prev,
+    isOpen: true,
+    roomCode: code,
+   }));
+  } else if (roomParam) {
+   setInitialRoomCode(roomParam.toUpperCase());
+   setIsMovieNightOpen(true);
+  }
+ }, []);
+
+ // Toast helper
+ const showToast = (toastObj) => {
+  setToast(toastObj);
+  setTimeout(() => {
+   setToast(null);
+  }, 4000);
+ };
+
+ const isCompanionView = typeof window!== 'undefined' && new URLSearchParams(window.location.search).get('view') === 'chat';
+ const companionRoom = typeof window!== 'undefined' && (new URLSearchParams(window.location.search).get('party') || new URLSearchParams(window.location.search).get('theater'));
+
+ if (isCompanionView && companionRoom) {
+  return <StandaloneChatCompanion roomCode={companionRoom.toUpperCase()} />;
+ }
+
+ return (
+  <div className="min-h-screen bg-canvas text-zinc-100 flex flex-col md:flex-row font-sans">
+   {/* Navigation */}
+   <Navbar
+    onSelectMovie={(m) => setSelectedMovie(m)}
+    onSelectActor={(a) => setSelectedActor(a)}
+    onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
+    onOpenDataModal={() => setIsDataOpen(true)}
+    onOpenAuthModal={() => setIsAuthOpen(true)}
+    onOpenSwipe={() => setIsSwipeOpen(true)}
+    onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev =>!prev)}
+    onOpenTop250={() => setIsTop250Open(true)}
+    onOpenMovieNight={() => setIsMovieNightOpen(true)}
+   />
+
+   {/* Content Area */}
+   <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden">
+    {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
+    <WatchlistShelf
+     isExpanded={isWatchlistShelfOpen}
+     onToggleExpand={() => setIsWatchlistShelfOpen(prev =>!prev)}
+     onSelectMovie={(m) => setSelectedMovie(m)}
+     onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
+     onShowToast={showToast}
+    />
+
+    {/* Main Container */}
+    <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 pb-24 md:pb-8 space-y-6 sm:space-y-8">
+     {/* Onboarding Taste Calibration Banner for Signed-In Users */}
+     {user && watchedMovies.length < 5 && (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-950/60 via-zinc-900 to-zinc-900 border border-rose-800/40 gap-3.5 sm:gap-4 shadow-xl">
+       <div className="space-y-1">
+        <div className="flex items-center gap-2">
+         <span className="text-xl"></span>
+         <h2 className="text-sm sm:text-base font-bold text-white">
+          Calibrate Your For You Page ({watchedMovies.length}/5 titles rated)
+         </h2>
+         <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-rose-900/60 text-rose-300 border border-rose-700/50">
+          Swipe Mode
+         </span>
         </div>
-
-        {/* Dynamic Recommendation Sections */}
-        {loading ? (
-          <div className="space-y-6">
-            {slowNotice && (
-              <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-950/30 border border-amber-800/40 text-amber-200 text-xs animate-in fade-in duration-300">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
-                <p>
-                  <strong className="font-semibold text-amber-300">Waking up API engine:</strong> Free hosting spins down when idle. Initial wake-up takes ~30 seconds, then subsequent browsing and queries will be lightning fast!
-                </p>
-              </div>
-            )}
-            <div className="space-y-10">
-              {[1, 2, 3].map((row) => (
-                <div key={row} className="space-y-4">
-                  <div className="h-6 w-48 bg-zinc-800/60 rounded-md animate-pulse" />
-                  <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
-                      <div key={i} className="aspect-[2/3] bg-zinc-800/40 rounded-xl animate-pulse" />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : feed?.sections && feed.sections.length > 0 ? (
-          feed.sections.map((section, idx) => {
-            // Filter section items: strictly exclude any watched or watchlist titles, plus active category/genre
-            const movies = (section.movies || []).filter((m) => {
-              // Strictly exclude any title already in watched list or watchlist
-              if (excludedIds.has(Number(m.id))) {
-                return false;
-              }
-
-              // 1. Strict category filter
-              if (selectedMediaCategory !== "all") {
-                const mType = m.media_type || "movie";
-                if (selectedMediaCategory === "anime" && mType !== "anime") return false;
-                if (selectedMediaCategory === "tv" && mType !== "tv" && mType !== "kdrama") return false;
-                if (selectedMediaCategory === "movie" && mType !== "movie") return false;
-              }
-
-              // 2. Genre matching: if user selected a genre, backend returned dedicated discovery sections
-              if (selectedGenre !== "All") {
-                if (section.title?.toLowerCase().includes(selectedGenre.toLowerCase())) {
-                  return true;
-                }
-                if (m.genres && m.genres.length > 0) {
-                  return m.genres.some((g) =>
-                    g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
-                    selectedGenre.toLowerCase().includes(g.toLowerCase())
-                  );
-                }
-                return true;
-              }
-
-              return true;
-            });
-
-            if (movies.length === 0) return null;
-
-            return (
-              <section key={idx} className="space-y-4">
-                <div className="flex items-baseline justify-between">
-                  <div>
-                    <h2 className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
-                      {section.title}
-                    </h2>
-                    {section.subtitle && (
-                      <p className="text-xs text-zinc-400 mt-0.5">{section.subtitle}</p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Media Grid */}
-                <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
-                  {movies.map((movie) => (
-                    <MovieCard
-                      key={`${movie.media_type || 'movie'}_${movie.id}`}
-                      movie={movie}
-                      onSelect={(m) => setSelectedMovie(m)}
-                      onShowToast={showToast}
-                    />
-                  ))}
-                </div>
-              </section>
-            );
-          })
-        ) : (
-          <div className="h-64 flex flex-col items-center justify-center text-center space-y-3">
-            <Film className="w-10 h-10 text-zinc-600 stroke-1" />
-            <p className="text-sm font-medium text-zinc-300">No titles found for this category.</p>
-          </div>
-        )}
-      </main>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-zinc-900 bg-zinc-950 py-8 pb-24 md:pb-8 px-4 text-center text-xs text-zinc-400 space-y-4">
-        <div className="flex items-center justify-center gap-4 sm:gap-6">
-          <a
-            href="https://github.com/sahasbelbase"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors py-1.5 px-3.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800"
-          >
-            <Github className="w-4 h-4" />
-            <span className="font-medium text-xs">GitHub</span>
-          </a>
-          <a
-            href="https://www.linkedin.com/in/sahasbelbase/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-zinc-400 hover:text-sky-400 transition-colors py-1.5 px-3.5 rounded-lg bg-zinc-900/50 hover:bg-zinc-900 border border-zinc-800"
-          >
-            <Linkedin className="w-4 h-4" />
-            <span className="font-medium text-xs">LinkedIn</span>
-          </a>
-        </div>
-        <p className="text-zinc-500 text-[11px]">
-          Movie Recommendation Engine &bull; Curated Cinema &amp; Streaming Discovery
+        <p className="text-xs text-zinc-300">
+         Swipe right on titles you've watched, or swipe left to skip. Unwatched titles are tracked so they won't repeat!
         </p>
-      </footer>
+       </div>
+       <button
+        onClick={() => setIsSwipeOpen(true)}
+        className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-600 to-orange-600 hover:from-rose-500 hover:to-orange-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/50 transition-all self-stretch sm:self-auto active:scale-95"
+       >
+        Open Swipe Mode
+        <ChevronRight className="w-4 h-4" />
+       </button>
+      </div>
+     )}
 
-      {/* Modals and Overlays */}
-      {selectedMovie && (
-        <MovieModal
-          movie={selectedMovie}
-          onClose={() => setSelectedMovie(null)}
-          onSelectMovie={(m) => setSelectedMovie(m)}
-          onSelectActor={(a) => setSelectedActor(a)}
-          onShowToast={showToast}
-          onStartWatchParty={(m) => handleStartWatchParty(m)}
-        />
-      )}
+     {/* Banner: Guest invitation vs Authenticated summary */}
+     {user ? (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-surface border border-border-subtle gap-3.5 sm:gap-4">
+       <div className="space-y-1">
+        <div className="flex items-center gap-2">
+         <h1 className="text-lg sm:text-xl font-bold tracking-tight text-white">
+          Welcome back, {user.displayName}
+         </h1>
+         <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          Tailored Mode
+         </span>
+        </div>
+        <p className="text-xs text-zinc-400">
+         Your recommendation engine has analyzed your taste across movies, TV shows, and anime and strictly excluded your{' '}
+         <strong className="text-zinc-200">{watchedMovies.length} watched titles</strong>.
+        </p>
+       </div>
+       <div className="grid grid-cols-2 xs:flex xs:items-center gap-2 w-full xs:w-auto">
+        <button
+         onClick={() => setIsMovieNightOpen(true)}
+         className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
+        >
+         <span> Movie Night</span>
+        </button>
+        <button
+         onClick={() => setIsSwipeOpen(true)}
+         className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-rose-600/20 to-orange-600/20 hover:from-rose-600/30 hover:to-orange-600/30 text-xs font-semibold text-rose-300 border border-rose-500/40 transition-all active:scale-95"
+        >
+         <span> Swipe FYP</span>
+        </button>
+        <button
+         onClick={loadFeed}
+         className="col-span-2 xs:col-span-1 flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-medium text-zinc-200 border border-zinc-700 transition-all active:scale-95"
+        >
+         <RefreshCw className="w-3.5 h-3.5" />
+         Refresh
+        </button>
+       </div>
+      </div>
+     ) : (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-zinc-900/60 border border-zinc-800 gap-3.5 sm:gap-4">
+       <div className="space-y-1">
+        <div className="flex items-center gap-2">
+         <h1 className="text-base sm:text-lg font-bold text-white">Movies, TV Series & Anime Discovery</h1>
+         <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-zinc-800 text-zinc-400 border border-zinc-700">
+          Guest Mode
+         </span>
+        </div>
+        <p className="text-xs text-zinc-400">
+         Sign in to save your watched history permanently and unlock a tailored taste profile across all media.
+        </p>
+       </div>
+       <div className="grid grid-cols-2 xs:flex xs:items-center gap-2 w-full xs:w-auto">
+        <button
+         onClick={() => setIsMovieNightOpen(true)}
+         className="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-amber-500/15 to-orange-500/20 hover:from-amber-500/25 hover:to-orange-500/30 text-xs font-semibold text-amber-300 border border-amber-500/40 transition-all active:scale-95"
+        >
+         <span> Movie Night</span>
+        </button>
+        <button
+         onClick={() => setIsAuthOpen(true)}
+         className="flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-xs font-semibold text-white shadow-lg shadow-rose-950/40 transition-all active:scale-95"
+        >
+         <span>Sign In</span>
+         <ChevronRight className="w-4 h-4" />
+        </button>
+       </div>
+      </div>
+     )}
 
-      {selectedActor && (
-        <ActorModal
-          person={selectedActor}
-          onClose={() => setSelectedActor(null)}
-          onSelectMovie={(m) => setSelectedMovie(m)}
-          onShowToast={showToast}
-        />
-      )}
+     {/* Your Watchlist - Card Carousel View Below Main Picture/Banner */}
+     {watchlistMovies && watchlistMovies.length > 0 && (
+      <section className="space-y-3 p-4 sm:p-5 rounded-2xl bg-zinc-900/40 border border-zinc-800/80">
+       <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+         <div className="p-1.5 rounded-lg bg-amber-500/15 text-amber-400 border border-amber-500/30">
+          <Bookmark className="w-4 h-4 fill-amber-400" />
+         </div>
+         <div>
+          <div className="flex items-center gap-2">
+           <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">Your Watchlist</h2>
+           <span className="px-2 py-0.5 rounded-full text-xs font-mono font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+            {watchlistMovies.length} saved
+           </span>
+          </div>
+          <p className="text-xs text-zinc-400 hidden sm:block">Titles queued for later — ready to watch</p>
+         </div>
+        </div>
+        <button
+         onClick={() => handleOpenLibrary('watchlist')}
+         className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1"
+        >
+         View in Drawer →
+        </button>
+       </div>
+       <div className="flex gap-2.5 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+        {watchlistMovies.map((movie) => (
+         <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
+          <MovieCard
+           movie={movie}
+           onSelect={(m) => setSelectedMovie(m)}
+           onShowToast={showToast}
+          />
+         </div>
+        ))}
+       </div>
+      </section>
+     )}
 
-      <WatchedDrawer
-        isOpen={isWatchedOpen}
-        onClose={() => setIsWatchedOpen(false)}
-        onSelectMovie={(m) => setSelectedMovie(m)}
-        onOpenDataModal={() => setIsDataOpen(true)}
-        initialTab={libraryTab}
-      />
+     {/* Media Category Switcher Tabs & Top 250 Launcher */}
+     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-zinc-800/80 pb-4">
+      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+       <div className="flex items-center gap-1 xs:gap-2 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800 shrink-0">
+        {MEDIA_CATEGORIES.map((cat) => (
+         <button
+          key={cat.id}
+          onClick={() => setSelectedMediaCategory(cat.id)}
+          className={`px-3 sm:px-4 py-1.5 rounded-lg text-xs font-medium transition-all shrink-0 ${
+           selectedMediaCategory === cat.id
+            ? 'bg-zinc-800 text-white shadow font-semibold'
+            : 'text-zinc-400 hover:text-zinc-200'
+          }`}
+         >
+          <span className="xs:hidden">{cat.shortLabel || cat.label}</span>
+          <span className="hidden xs:inline">{cat.label}</span>
+         </button>
+        ))}
+       </div>
 
-      <DataModal
-        isOpen={isDataOpen}
-        onClose={() => setIsDataOpen(false)}
-        onShowToast={showToast}
-      />
+       <button
+        onClick={() => setIsTop250Open(true)}
+        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-orange-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-500/60 hover:from-amber-500/25 hover:to-orange-500/30 transition-all shadow-sm active:scale-95 shrink-0"
+        title="Explore Top 250 Movies, TV Series & Anime of All Time"
+       >
+        <Trophy className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+        <span className="hidden xs:inline">Top 250 All-Time</span>
+        <span className="xs:hidden">Top 250</span>
+       </button>
+      </div>
 
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-      />
+      {/* Genre Filter Chips */}
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+       {GENRES.map((genre) => (
+        <button
+         key={genre}
+         onClick={() => setSelectedGenre(genre)}
+         className={`px-2.5 sm:px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition-all shrink-0 ${
+          selectedGenre === genre
+           ? 'bg-rose-600/20 text-rose-300 border border-rose-500/40 font-semibold'
+           : 'bg-zinc-900 text-zinc-400 hover:text-zinc-200 border border-zinc-800'
+         }`}
+        >
+         {genre}
+        </button>
+       ))}
+      </div>
+     </div>
 
-      <SwipeDeckModal
-        isOpen={isSwipeOpen}
-        onClose={() => setIsSwipeOpen(false)}
-        onCompleteCalibration={loadFeed}
-        onShowToast={showToast}
-      />
+     {/* Dynamic Recommendation Sections */}
+     {loading ? (
+      <div className="space-y-6">
+       {slowNotice && (
+        <div className="flex items-center gap-3 p-3.5 rounded-xl bg-amber-950/30 border border-amber-800/40 text-amber-200 text-xs animate-in fade-in duration-300">
+         <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping shrink-0" />
+         <p>
+          <strong className="font-semibold text-amber-300">Waking up API engine:</strong> Free hosting spins down when idle. Initial wake-up takes ~30 seconds, then subsequent browsing and queries will be lightning fast!
+         </p>
+        </div>
+       )}
+       <div className="space-y-10">
+        {[1, 2, 3].map((row) => (
+         <div key={row} className="space-y-4">
+          <div className="h-6 w-48 bg-zinc-800/60 rounded-md animate-pulse" />
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
+           {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="aspect-[2/3] bg-zinc-800/40 rounded-xl animate-pulse" />
+           ))}
+          </div>
+         </div>
+        ))}
+       </div>
+      </div>
+     ) : feed?.sections && feed.sections.length > 0 ? (
+      feed.sections.map((section, idx) => {
+       // Filter section items: strictly exclude any watched or watchlist titles, plus active category/genre
+       const movies = (section.movies || []).filter((m) => {
+        // Strictly exclude any title already in watched list or watchlist
+        if (excludedIds.has(Number(m.id))) {
+         return false;
+        }
 
-      <Top250Modal
-        isOpen={isTop250Open}
-        onClose={() => setIsTop250Open(false)}
-        onSelectMovie={(m) => setSelectedMovie(m)}
-        onShowToast={showToast}
-      />
+        // 1. Strict category filter
+        if (selectedMediaCategory!== "all") {
+         const mType = m.media_type || "movie";
+         if (selectedMediaCategory === "anime" && mType!== "anime") return false;
+         if (selectedMediaCategory === "tv" && mType!== "tv" && mType!== "kdrama") return false;
+         if (selectedMediaCategory === "movie" && mType!== "movie") return false;
+        }
 
-      <MovieNightModal
-        isOpen={isMovieNightOpen}
-        onClose={() => setIsMovieNightOpen(false)}
-        initialRoomCode={initialRoomCode}
-        onShowToast={showToast}
-        onSelectMovie={(m) => setSelectedMovie(m)}
-        onStartWatchParty={(m, code) => handleStartWatchParty(m, code)}
-      />
+        // 2. Genre matching: if user selected a genre, backend returned dedicated discovery sections
+        if (selectedGenre!== "All") {
+         if (section.title?.toLowerCase().includes(selectedGenre.toLowerCase())) {
+          return true;
+         }
+         if (m.genres && m.genres.length > 0) {
+          return m.genres.some((g) =>
+           g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
+           selectedGenre.toLowerCase().includes(g.toLowerCase())
+          );
+         }
+         return true;
+        }
 
-      <WatchPartyModal
-        isOpen={watchPartyData.isOpen}
-        onClose={() => {
-          setWatchPartyData((prev) => ({ ...prev, isOpen: false }));
-          setPendingPartyCode(null);
-          const url = new URL(window.location);
-          if (url.searchParams.has('party') || url.searchParams.has('theater')) {
-            url.searchParams.delete('party');
-            url.searchParams.delete('theater');
-            window.history.replaceState({}, '', url.pathname + (url.search ? url.search : ''));
-          }
-        }}
-        roomCode={watchPartyData.roomCode}
-        movie={watchPartyData.movie}
-        initialVideoSource={watchPartyData.videoSource}
-        onShowToast={showToast}
-        onRequireAuth={() => setIsAuthOpen(true)}
-      />
+        return true;
+       });
 
-      <Toast
-        toast={toast}
-        onUndo={() => {
-          if (toast?.movie) {
-            if (toast.message?.includes('Watchlist')) {
-              toggleWatchlist(toast.movie);
-            } else {
-              toggleWatched(toast.movie);
-            }
-            setToast(null);
-          }
-        }}
-        onClose={() => setToast(null)}
-      />
-    </div>
-  );
+       if (movies.length === 0) return null;
+
+       return (
+        <section key={idx} className="space-y-4">
+         <div className="flex items-baseline justify-between">
+          <div>
+           <h2 className="text-base sm:text-lg font-bold tracking-tight text-white flex items-center gap-2">
+            {section.title}
+           </h2>
+           {section.subtitle && (
+            <p className="text-xs text-zinc-400 mt-0.5">{section.subtitle}</p>
+           )}
+          </div>
+         </div>
+
+         {/* Media Grid */}
+         <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
+          {movies.map((movie) => (
+           <MovieCard
+            key={`${movie.media_type || 'movie'}_${movie.id}`}
+            movie={movie}
+            onSelect={(m) => setSelectedMovie(m)}
+            onShowToast={showToast}
+           />
+          ))}
+         </div>
+        </section>
+       );
+      })
+     ) : (
+      <div className="h-64 flex flex-col items-center justify-center text-center space-y-3">
+       <Film className="w-10 h-10 text-zinc-600 stroke-1" />
+       <p className="text-sm font-medium text-zinc-300">No titles found for this category.</p>
+      </div>
+     )}
+    </main>
+
+    {/* Interactive Social Footer */}
+    <Footer
+     onShowToast={showToast}
+     onStartWatchParty={(m) => handleStartWatchParty(m)}
+     onOpenMovieNight={() => setIsMovieNightOpen(true)}
+    />
+   </div>
+
+   {/* Modals and Overlays */}
+   {selectedMovie && (
+    <MovieModal
+     movie={selectedMovie}
+     onClose={() => setSelectedMovie(null)}
+     onSelectMovie={(m) => setSelectedMovie(m)}
+     onSelectActor={(a) => setSelectedActor(a)}
+     onShowToast={showToast}
+     onStartWatchParty={(m) => handleStartWatchParty(m)}
+    />
+   )}
+
+   {selectedActor && (
+    <ActorModal
+     person={selectedActor}
+     onClose={() => setSelectedActor(null)}
+     onSelectMovie={(m) => setSelectedMovie(m)}
+     onShowToast={showToast}
+    />
+   )}
+
+   <WatchedDrawer
+    isOpen={isWatchedOpen}
+    onClose={() => setIsWatchedOpen(false)}
+    onSelectMovie={(m) => setSelectedMovie(m)}
+    onOpenDataModal={() => setIsDataOpen(true)}
+    initialTab={libraryTab}
+   />
+
+   <DataModal
+    isOpen={isDataOpen}
+    onClose={() => setIsDataOpen(false)}
+    onShowToast={showToast}
+   />
+
+   <AuthModal
+    isOpen={isAuthOpen}
+    onClose={() => setIsAuthOpen(false)}
+   />
+
+   <SwipeDeckModal
+    isOpen={isSwipeOpen}
+    onClose={() => setIsSwipeOpen(false)}
+    onCompleteCalibration={loadFeed}
+    onShowToast={showToast}
+   />
+
+   <Top250Modal
+    isOpen={isTop250Open}
+    onClose={() => setIsTop250Open(false)}
+    onSelectMovie={(m) => setSelectedMovie(m)}
+    onShowToast={showToast}
+   />
+
+   <MovieNightModal
+    isOpen={isMovieNightOpen}
+    onClose={() => setIsMovieNightOpen(false)}
+    initialRoomCode={initialRoomCode}
+    onShowToast={showToast}
+    onSelectMovie={(m) => setSelectedMovie(m)}
+    onStartWatchParty={(m, code) => {
+     setIsMovieNightOpen(false);
+     handleStartWatchParty(m, code);
+    }}
+   />
+
+   <WatchPartyModal
+    isOpen={watchPartyData.isOpen}
+    onClose={() => {
+     setWatchPartyData((prev) => ({...prev, isOpen: false }));
+     setPendingPartyCode(null);
+     const url = new URL(window.location);
+     if (url.searchParams.has('party') || url.searchParams.has('theater')) {
+      url.searchParams.delete('party');
+      url.searchParams.delete('theater');
+      window.history.replaceState({}, '', url.pathname (url.search ? url.search : ''));
+     }
+    }}
+    roomCode={watchPartyData.roomCode}
+    movie={watchPartyData.movie}
+    initialVideoSource={watchPartyData.videoSource}
+    onShowToast={showToast}
+    onRequireAuth={() => setIsAuthOpen(true)}
+   />
+
+   <Toast
+    toast={toast}
+    onUndo={() => {
+     if (toast?.movie) {
+      if (toast.message?.includes('Watchlist')) {
+       toggleWatchlist(toast.movie);
+      } else {
+       toggleWatched(toast.movie);
+      }
+      setToast(null);
+     }
+    }}
+    onClose={() => setToast(null)}
+   />
+  </div>
+ );
 }
