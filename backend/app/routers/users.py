@@ -9,6 +9,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 class MarkWatchedRequest(BaseModel):
     movie: dict
     rating: Optional[float] = None
+    review: Optional[str] = None
 
 @router.get("/watched")
 async def get_user_watched(user: dict = Depends(get_current_user_required)):
@@ -16,7 +17,7 @@ async def get_user_watched(user: dict = Depends(get_current_user_required)):
 
 @router.post("/watched")
 async def mark_movie_watched(payload: MarkWatchedRequest, user: dict = Depends(get_current_user_required)):
-    record = await user_data_service.mark_watched(user["uid"], payload.movie, rating=payload.rating)
+    record = await user_data_service.mark_watched(user["uid"], payload.movie, rating=payload.rating, review=payload.review)
     return {"status": "success", "record": record}
 
 @router.delete("/watched/{movie_id}")
@@ -43,6 +44,27 @@ async def add_to_watchlist(payload: WatchlistRequest, user: dict = Depends(get_c
 async def remove_from_watchlist(movie_id: int, user: dict = Depends(get_current_user_required)):
     """Removes a movie from the user's Watchlist"""
     success = await user_data_service.remove_from_watchlist(user["uid"], movie_id)
+    return {"status": "success" if success else "not_found"}
+
+# "Not Interested" Endpoints (Strict Exclusion)
+class NotInterestedRequest(BaseModel):
+    movie: dict
+
+@router.get("/not-interested")
+async def get_user_not_interested(user: dict = Depends(get_current_user_required)):
+    """Returns list of movies the user marked as Not Interested"""
+    return await user_data_service.get_not_interested_list(user["uid"])
+
+@router.post("/not-interested")
+async def mark_not_interested(payload: NotInterestedRequest, user: dict = Depends(get_current_user_required)):
+    """Marks a movie as Not Interested so it is never shown again in recommendations or decks"""
+    record = await user_data_service.mark_not_interested(user["uid"], payload.movie)
+    return {"status": "success", "record": record}
+
+@router.delete("/not-interested/{movie_id}")
+async def unmark_not_interested(movie_id: int, user: dict = Depends(get_current_user_required)):
+    """Removes a movie from the Not Interested list (undo)"""
+    success = await user_data_service.unmark_not_interested(user["uid"], movie_id)
     return {"status": "success" if success else "not_found"}
 
 @router.get("/unwatched")

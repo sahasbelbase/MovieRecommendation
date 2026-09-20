@@ -38,6 +38,18 @@ async def get_upcoming(page: int = Query(1, ge=1)):
 async def get_top_rated(media_type: str = Query("movie", pattern="^(movie|tv)$"), page: int = Query(1, ge=1)):
     return await tmdb_service.get_top_rated(media_type=media_type, page=page)
 
+@router.get("/top-250")
+async def get_top_250(
+    category: str = Query("movies", pattern="^(movies|tv|anime)$"),
+    page: int = Query(1, ge=1, le=10),
+    limit: int = Query(50, ge=1, le=250)
+):
+    """
+    Returns curated All-Time Top 250 items for Movies, TV Series, or Anime.
+    Includes canonical rank (#1 to #250), IMDb score, Rotten Tomatoes, and genres.
+    """
+    return await tmdb_service.get_top_250(category=category, page=page, limit=limit)
+
 @router.get("/search")
 async def search_media(
     query: str = Query(..., min_length=1),

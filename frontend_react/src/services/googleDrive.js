@@ -109,7 +109,7 @@ export async function loadFromGoogleDrive(token) {
 /**
  * Saves movie library directly to the user's Google Drive.
  */
-export async function saveToGoogleDrive(token, { watched = [], watchlist = [], unwatched = [] }) {
+export async function saveToGoogleDrive(token, { watched = [], watchlist = [], unwatched = [], not_interested = [] }) {
   if (!token || sessionStorage.getItem(DISABLED_KEY) === 'true') return false;
 
   const payload = {
@@ -118,7 +118,8 @@ export async function saveToGoogleDrive(token, { watched = [], watchlist = [], u
     updated_at: Date.now(),
     watched,
     watchlist,
-    unwatched
+    unwatched,
+    not_interested
   };
 
   try {

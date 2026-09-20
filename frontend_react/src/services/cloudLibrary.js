@@ -30,7 +30,7 @@ export function setStoredLibraryId(id) {
  * Saves watched movies, watchlist, and skipped items permanently to Google Cloud Firestore.
  * This guarantees zero data loss on commits, Render restarts, or browser refreshes.
  */
-export async function saveLibraryToCloud(libraryId, { watched = [], watchlist = [], unwatched = [] }) {
+export async function saveLibraryToCloud(libraryId, { watched = [], watchlist = [], unwatched = [], notInterested = [] }) {
   if (!libraryId || !db) return false;
 
   try {
@@ -49,6 +49,7 @@ export async function saveLibraryToCloud(libraryId, { watched = [], watchlist = 
         media_type: m.media_type || 'movie',
         watched_at: m.watched_at || Date.now() / 1000,
         rating: m.rating || null,
+        review: m.review || null,
       })),
       watchlist: watchlist.map(m => ({
         id: m.id,
@@ -66,6 +67,16 @@ export async function saveLibraryToCloud(libraryId, { watched = [], watchlist = 
         id: m.id,
         title: m.title || '',
         skipped_at: m.skipped_at || Date.now() / 1000,
+      })),
+      not_interested: (notInterested || []).map(m => ({
+        id: m.id,
+        title: m.title || 'Untitled',
+        poster_url: m.poster_url || null,
+        year: m.year || '',
+        vote_average: m.vote_average || 0.0,
+        genres: m.genres || [],
+        media_type: m.media_type || 'movie',
+        marked_at: m.marked_at || Date.now() / 1000,
       }))
     });
     return true;

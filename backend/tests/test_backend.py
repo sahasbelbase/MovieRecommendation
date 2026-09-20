@@ -257,6 +257,93 @@ def test_watchlist_exclusion_from_feed_and_recommendations(client):
         for m in section.get("movies", []):
             assert m["id"] != 550, f"Movie in watchlist ({m['id']}) must not appear in feed section '{section.get('title')}'"
 
+def test_not_interested_tracking_and_exclusion(client):
+    headers = {"Authorization": "Bearer test_not_interested_user"}
+    user_id = "test_not_interested_user"
+
+    # Mark a movie as Not Interested (e.g., ID 680 = Pulp Fiction)
+    movie = {"id": 680, "title": "Pulp Fiction", "media_type": "movie"}
+    res = client.post("/api/users/not-interested", json={"movie": movie}, headers=headers)
+    assert res.status_code == 200
+    assert res.json()["status"] == "success"
+
+    # Verify get_not_interested list
+    ni_res = client.get("/api/users/not-interested", headers=headers)
+    assert ni_res.status_code == 200
+    ni_items = ni_res.json()
+    assert any(m["id"] == 680 for m in ni_items)
+
+    # Verify that get_all_excluded_ids includes movie ID 680
+    import asyncio
+    from backend.app.core.auth import decode_token_payload
+    from backend.app.services.user_data import user_data_service
+    uid = decode_token_payload("test_not_interested_user")["uid"]
+    excluded = asyncio.run(user_data_service.get_all_excluded_ids(uid))
+    assert 680 in excluded, "Not Interested item ID must be included in get_all_excluded_ids"
+
+    # Verify unmarking works (undo)
+    del_res = client.delete("/api/users/not-interested/680", headers=headers)
+    assert del_res.status_code == 200
+    assert del_res.json()["status"] == "success"
+
+    # Re-check excluded IDs
+    excluded_after = asyncio.run(user_data_service.get_all_excluded_ids(uid))
+    assert 680 not in excluded_after, "Unmarked Not Interested item must not be in excluded IDs"
+
+def test_mark_watched_with_rating_and_review(client):
+    headers = {"Authorization": "Bearer test_review_user"}
+
+    movie = {"id": 278, "title": "The Shawshank Redemption", "media_type": "movie"}
+    res = client.post("/api/users/watched", json={
+        "movie": movie,
+        "rating": 9.5,
+        "review": "An absolute cinematic masterpiece with unforgettable performances."
+    }, headers=headers)
+    assert res.status_code == 200
+    data = res.json()
+    assert data["status"] == "success"
+    record = data["record"]
+    assert record["id"] == 278
+    assert record["rating"] == 9.5
+    assert record["review"] == "An absolute cinematic masterpiece with unforgettable performances."
+
+    # Verify retrieve list includes rating & review
+    watched_res = client.get("/api/users/watched", headers=headers)
+    assert watched_res.status_code == 200
+    watched_list = watched_res.json()
+    matched = next((m for m in watched_list if m["id"] == 278), None)
+    assert matched is not None
+    assert matched.get("rating") == 9.5
+    assert matched.get("review") == "An absolute cinematic masterpiece with unforgettable performances."
+
+def test_top_250_rankings(client):
+    # 1. Test Top 250 Movies
+    res_m = client.get("/api/movies/top-250?category=movies&page=1&limit=10")
+    assert res_m.status_code == 200
+    data_m = res_m.json()
+    assert data_m["category"] == "movies"
+    assert len(data_m["items"]) > 0
+    assert data_m["items"][0]["rank"] == 1
+    assert "title" in data_m["items"][0]
+
+    # 2. Test Top 250 TV Series
+    res_tv = client.get("/api/movies/top-250?category=tv&page=1&limit=10")
+    assert res_tv.status_code == 200
+    data_tv = res_tv.json()
+    assert data_tv["category"] == "tv"
+    assert len(data_tv["items"]) > 0
+    assert data_tv["items"][0]["rank"] == 1
+
+    # 3. Test Top Anime
+    res_anime = client.get("/api/movies/top-250?category=anime&page=1&limit=10")
+    assert res_anime.status_code == 200
+    data_anime = res_anime.json()
+    assert data_anime["category"] == "anime"
+    assert len(data_anime["items"]) > 0
+    assert data_anime["items"][0]["rank"] == 1
+
+
+
 
 
 

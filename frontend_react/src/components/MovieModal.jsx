@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe } from 'lucide-react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
@@ -18,7 +18,16 @@ const COUNTRY_OPTIONS = [
 ];
 
 export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor }) {
-  const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist } = useAuth();
+  const {
+    watchedIds,
+    watchedMovies,
+    toggleWatched,
+    watchlistIds,
+    toggleWatchlist,
+    notInterestedIds,
+    toggleNotInterested,
+    saveReview
+  } = useAuth();
   const [details, setDetails] = useState(null);
   const [credits, setCredits] = useState(null);
   const [trailers, setTrailers] = useState([]);
@@ -29,9 +38,67 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
   const [showTrailerPlayer, setShowTrailerPlayer] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const watchedRecord = watchedMovies.find(m => m.id === movie.id);
   const isWatched = watchedIds.has(movie.id);
   const isWatchlist = watchlistIds.has(movie.id);
+  const isNotInterested = notInterestedIds?.has(movie.id);
   const mediaType = movie.media_type || 'movie';
+
+  const [userRating, setUserRating] = useState(watchedRecord?.rating || 0);
+  const [userReview, setUserReview] = useState(watchedRecord?.review || '');
+  const [hoverRating, setHoverRating] = useState(0);
+  const [isReviewSaved, setIsReviewSaved] = useState(false);
+  const [showReviewInput, setShowReviewInput] = useState(Boolean(watchedRecord?.review));
+
+  useEffect(() => {
+    if (watchedRecord) {
+      setUserRating(watchedRecord.rating || 0);
+      setUserReview(watchedRecord.review || '');
+      if (watchedRecord.review) setShowReviewInput(true);
+    } else {
+      setUserRating(0);
+      setUserReview('');
+      setShowReviewInput(false);
+    }
+  }, [watchedRecord]);
+
+  const handleRatingClick = async (score) => {
+    setUserRating(score);
+    await saveReview(movie, score, userReview);
+    setIsReviewSaved(true);
+    setTimeout(() => setIsReviewSaved(false), 2500);
+    if (onShowToast) {
+      onShowToast({
+        message: `Rated "${movie.title}" ★ ${score}/10`,
+        movie
+      });
+    }
+  };
+
+  const handleSaveReview = async () => {
+    await saveReview(movie, userRating, userReview);
+    setIsReviewSaved(true);
+    setTimeout(() => setIsReviewSaved(false), 2500);
+    if (onShowToast) {
+      onShowToast({
+        message: `Saved review for "${movie.title}"`,
+        movie
+      });
+    }
+  };
+
+  const handleNotInterestedToggle = async () => {
+    const nowNotInterested = await toggleNotInterested(movie);
+    if (onShowToast) {
+      onShowToast({
+        message: nowNotInterested ? `Marked "${movie.title}" as Not Interested` : `Restored "${movie.title}"`,
+        movie
+      });
+    }
+    if (nowNotInterested) {
+      onClose();
+    }
+  };
 
   // Keyboard shortcut: Escape to close
   useEffect(() => {
@@ -248,11 +315,24 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
                 </div>
               </div>
 
-              {/* Watchlist & Watched Actions */}
+              {/* Watchlist, Watched & Not Interested Actions */}
               <div className="flex flex-wrap items-center gap-2.5">
                 <button
+                  onClick={handleNotInterestedToggle}
+                  className={`flex items-center justify-center gap-2 px-3.5 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
+                    isNotInterested
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/50 hover:bg-rose-500/30'
+                      : 'bg-zinc-900 text-zinc-400 hover:text-rose-400 hover:bg-zinc-800 border border-zinc-700'
+                  }`}
+                  title={isNotInterested ? "Remove from Not Interested" : "Not Interested (Hide everywhere)"}
+                >
+                  <EyeOff className={`w-4 h-4 ${isNotInterested ? 'text-rose-400' : ''}`} />
+                  <span>{isNotInterested ? 'Not Interested' : 'Not Interested'}</span>
+                </button>
+
+                <button
                   onClick={handleWatchlistToggle}
-                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 ${
+                  className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
                     isWatchlist
                       ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 hover:bg-amber-500/30'
                       : 'bg-zinc-900 text-zinc-300 hover:bg-zinc-800 border border-zinc-700'
@@ -260,20 +340,139 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
                   title={isWatchlist ? "Remove from Watchlist" : "Add to Watchlist"}
                 >
                   <Bookmark className={`w-4 h-4 ${isWatchlist ? 'fill-amber-400 text-amber-400' : ''}`} />
-                  {isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+                  <span>{isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}</span>
                 </button>
 
                 <button
                   onClick={handleWatchedToggle}
-                  className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-sm transition-all active:scale-95 ${
+                  className={`flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-medium text-xs sm:text-sm transition-all active:scale-95 ${
                     isWatched
                       ? 'bg-emerald-600/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-600/30'
                       : 'bg-zinc-800 text-zinc-200 hover:bg-zinc-700 border border-zinc-700'
                   }`}
                 >
                   <Check className={`w-4 h-4 stroke-[2.5] ${isWatched ? 'text-emerald-400' : ''}`} />
-                  {isWatched ? 'Watched' : 'Mark as Watched'}
+                  <span>{isWatched ? 'Watched' : 'Mark as Watched'}</span>
                 </button>
+              </div>
+            </div>
+
+            {/* Rate & Review Hub (In-App Rating + External IMDb & Letterboxd Review Portals) */}
+            <div className="rounded-2xl bg-gradient-to-r from-zinc-900/90 via-zinc-900/60 to-zinc-900/90 border border-zinc-800 p-4 sm:p-5 space-y-4 shadow-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <h3 className="text-sm font-bold text-white tracking-wide">
+                      {isWatched ? 'Your Review & Rating' : 'Leave a Review & Rate'}
+                    </h3>
+                    {userRating > 0 && (
+                      <span className="font-mono text-xs px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-semibold">
+                        ★ {userRating} / 10
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-zinc-400">
+                    Rate here or publish your review directly to IMDb and Letterboxd.
+                  </p>
+                </div>
+
+                {/* External Review Platforms */}
+                <div className="flex items-center gap-2">
+                  <a
+                    href={`https://letterboxd.com/search/${encodeURIComponent(movie.title || details?.title || '')}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#202830] hover:bg-[#2c3742] text-white text-xs font-semibold border border-[#3b4c5e] transition-all hover:scale-105 active:scale-95 shadow-sm"
+                    title="Open on Letterboxd to log & review"
+                  >
+                    <span className="inline-block w-2.5 h-2.5 rounded-full bg-gradient-to-r from-emerald-400 via-orange-400 to-blue-400" />
+                    <span>Letterboxd</span>
+                    <ExternalLink className="w-3 h-3 text-zinc-400" />
+                  </a>
+
+                  <a
+                    href={
+                      details?.imdb_id || movie.imdb_id
+                        ? `https://www.imdb.com/title/${details?.imdb_id || movie.imdb_id}/reviews`
+                        : `https://www.imdb.com/find/?q=${encodeURIComponent(movie.title || details?.title || '')}&s=tt`
+                    }
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5C518] hover:bg-[#e0b414] text-black text-xs font-bold transition-all hover:scale-105 active:scale-95 shadow-sm"
+                    title="Open on IMDb to write a review"
+                  >
+                    <span>IMDb Reviews</span>
+                    <ExternalLink className="w-3 h-3 text-black/70" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Interactive 1 to 10 Star Rating Selector */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-zinc-400">
+                  <span>Score this title (1 to 10):</span>
+                  {hoverRating > 0 ? (
+                    <span className="text-amber-300 font-mono font-semibold">★ {hoverRating} / 10</span>
+                  ) : userRating > 0 ? (
+                    <span className="text-amber-400 font-mono font-semibold">★ {userRating} / 10</span>
+                  ) : (
+                    <span className="text-zinc-500">Tap a score</span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => handleRatingClick(star)}
+                      onMouseEnter={() => setHoverRating(star)}
+                      onMouseLeave={() => setHoverRating(0)}
+                      className={`flex-1 min-w-[28px] py-1.5 px-1 rounded-lg text-xs font-mono font-bold transition-all active:scale-90 text-center ${
+                        (hoverRating || userRating) >= star
+                          ? 'bg-amber-500 text-black shadow-md shadow-amber-950/50'
+                          : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'
+                      }`}
+                      title={`Rate ${star}/10`}
+                    >
+                      {star}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* In-App Personal Review Notes Field */}
+              <div className="space-y-2 pt-1">
+                {!showReviewInput && !userReview ? (
+                  <button
+                    onClick={() => setShowReviewInput(true)}
+                    className="text-xs text-zinc-400 hover:text-amber-300 flex items-center gap-1.5 transition-colors"
+                  >
+                    <span>+ Write a review or add personal notes</span>
+                  </button>
+                ) : (
+                  <div className="space-y-2">
+                    <textarea
+                      value={userReview}
+                      onChange={(e) => setUserReview(e.target.value)}
+                      placeholder="Write your review, memorable quotes, or personal notes here..."
+                      rows={3}
+                      className="w-full rounded-xl bg-zinc-950 border border-zinc-800 p-3 text-xs sm:text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50 resize-none transition-all"
+                    />
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] text-zinc-500">
+                        {isReviewSaved ? '✓ Saved to your library & Google Drive' : 'Syncs automatically across devices & cloud'}
+                      </span>
+                      <button
+                        onClick={handleSaveReview}
+                        className="px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold transition-all active:scale-95 shadow"
+                      >
+                        {isReviewSaved ? 'Saved!' : 'Save Review'}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

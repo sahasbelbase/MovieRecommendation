@@ -10,6 +10,9 @@ The **Movie Recommendation Engine** is an intelligent, high-performance media di
 5. **A vector-based hybrid recommendation system** featuring franchise anti-clustering and strict candidate exclusions.
 6. **100% private user data storage in Google Drive** (`appDataFolder`) paired with Cloud Firestore fallback synchronization.
 7. **A direct-launch "Where to Stream & Watch Now" hub** supporting multiple regions including Nepal (🇳🇵).
+8. **Discreet "Not Interested" Engine**: Zero navigation bar clutter with strict, permanent exclusion across recommendations, swipe decks, and category feeds.
+9. **Rate & Review Hub**: Top-of-modal personal rating (1-10 stars), private review journaling, and direct 1-click launch links to write reviews on IMDb and Letterboxd.
+10. **All-Time Top 250 Media Rankings**: Dedicated rankings for Top 250 Movies, Top 250 TV Series, and Top 250 Anime of All Time with #1..#250 podium badges, watch progress tracking, and 24-hr caching.
 
 ---
 
@@ -24,13 +27,15 @@ flowchart TD
         SwipeUI["Swipe Mode Deck & Controls"]
         StreamHub["Where to Stream Modal"]
         ActorDrawer["Actor Filmography Drawer"]
+        Top250Modal["Top 250 Hall of Fame Modal"]
+        ReviewHub["Rate & Review Hub (IMDb / Letterboxd)"]
         MovieGrid["Dynamic FYP & Category Rows"]
     end
 
     subgraph APILayer["FastAPI Gateway (Asynchronous Python 3.11)"]
         RouterRec["/api/recommendations/*"]
-        RouterMovies["/api/movies/* (Catalog & Actor Credits)"]
-        RouterUsers["/api/users/* (Watched, Watchlist, Export)"]
+        RouterMovies["/api/movies/* (Catalog, Credits, Top 250)"]
+        RouterUsers["/api/users/* (Watched, Watchlist, Not-Interested, Export)"]
         AuthMiddleware["Firebase Auth & Token Verifier"]
     end
 
@@ -38,8 +43,9 @@ flowchart TD
         RecEngine["Hybrid Recommender Service"]
         VectorStore["TF-IDF Vector Store (10k Catalog)"]
         FranchiseEngine["Franchise Satiation & Diversity Re-Ranker"]
-        ExclusionFilter["Exclusion Guard (Watched ∪ Unwatched ∪ Watchlist)"]
+        ExclusionFilter["Exclusion Guard (Watched ∪ Unwatched ∪ Watchlist ∪ Not-Interested)"]
         GenreGuards["Format & Strict K-Drama Guards"]
+        Top250Engine["Top 250 Engine (24-hr Multi-Page TMDB Cache)"]
     end
 
     subgraph StorageLayer["Data & Persistence Layers"]
@@ -51,10 +57,11 @@ flowchart TD
     end
 
     subgraph ExternalAPIs["External Services"]
-        TMDB["TMDB API v3 (Live Streaming & Person Credits)"]
+        TMDB["TMDB API v3 (Live Streaming, Credits, Top 250)"]
         OMDb["OMDb API (Rotten Tomatoes & IMDb)"]
         FirebaseSSO["Firebase Google SSO"]
         GDriveAPI["Google Drive v3 REST API"]
+        ExtReview["IMDb & Letterboxd Review Portals"]
     end
 
     %% Client Layer Internal Flows
@@ -63,7 +70,9 @@ flowchart TD
     UI --> SwipeUI
     UI --> StreamHub
     UI --> ActorDrawer
+    UI --> Top250Modal
     UI --> MovieGrid
+    MovieGrid --> ReviewHub
     AuthCtx <--> LocalStorage
     AuthCtx <--> FirebaseSSO
     AuthCtx <--> GDriveAPI
@@ -73,8 +82,10 @@ flowchart TD
     MovieGrid -->|Get FYP Feed| RouterRec
     ActorDrawer -->|Fetch Credits| RouterMovies
     StreamHub -->|Fetch Providers| RouterMovies
+    Top250Modal -->|Fetch Top 250| RouterMovies
     WatchlistShelf -->|Toggle Watchlist| RouterUsers
     AuthCtx -->|Sync Records| RouterUsers
+    ReviewHub -->|1-Click Deep Links| ExtReview
 
     %% Gateway to Middleware & Services
     RouterRec --> AuthMiddleware
@@ -82,6 +93,7 @@ flowchart TD
     RouterRec --> RecEngine
     RouterMovies --> TMDB
     RouterMovies --> OMDb
+    RouterMovies --> Top250Engine
 
     %% Core Engine Pipeline
     RecEngine --> VectorStore
@@ -89,6 +101,7 @@ flowchart TD
     RecEngine --> ExclusionFilter
     RecEngine --> GenreGuards
     VectorStore --> DatasetCSV
+    Top250Engine --> TMDB
 
     %% Engine to External & Persistence
     RecEngine --> TMDB
@@ -107,12 +120,13 @@ flowchart TD
 * **Framework**: React 18 with Vite for rapid Hot Module Replacement (HMR) and sub-second asset bundling.
 * **Styling**: Tailwind CSS adhering to [`STYLE_GUIDE.md`](./STYLE_GUIDE.md) — deep cinema carbon (`#09090b`), clean zinc borders (`#27272a`), amber star badges, and zero distracting neon elements.
 * **Component Architecture**:
-  * `Navbar.jsx`: Global search with typeahead matching movies, shows, anime, and actors; format filters; direct links to Swipe Mode, Watchlist shelf, and Watched drawer.
+  * `Navbar.jsx`: Global search with typeahead matching movies, shows, anime, and actors; format filters; direct links to Swipe Mode, Watchlist shelf, Watched drawer, and the All-Time Top 250 Hall of Fame. Zero navbar pollution from "Not Interested" filters.
+  * `Top250Modal.jsx`: Hall of Fame modal featuring Top 250 Movies, Top 250 TV Series, and Top 250 Anime of All Time. Includes podium badges (#1 👑, #2 🥈, #3 🥉, #4..#250), live watch progress bar ("Watched X of 250"), search filter, and category tab switching.
   * `WatchlistShelf.jsx`: Interactive sub-navigation shelf docked directly below the header. Supports smooth scrolling, quick-view, one-click watch toggle, and removal.
-  * `SwipeDeckModal.jsx`: Gestural card swiping (mouse/trackpad), clickable floating arrow buttons, and full keyboard navigation (<kbd>←</kbd> Skip, <kbd>→</kbd> Watched, <kbd>↑</kbd>/<kbd>↓</kbd> Genre cycling, <kbd>Esc</kbd> Close).
-  * `MovieCard.jsx`: High-resolution poster rendering, format badges, Rotten Tomatoes 🍅 Tomatometer, IMDb ⭐ scores, and one-click Watchlist / Watched buttons.
-  * `MovieModal.jsx`: Detailed metadata, YouTube trailer embed, director/cast list, and **Where to Stream** hub.
-  * `WatchedDrawer.jsx`: Slide-out panel for browsing watched titles and queued watchlist, updating personal ratings, inspecting sync status, and exporting watch history to JSON/CSV.
+  * `SwipeDeckModal.jsx`: Gestural card swiping (mouse/trackpad), clickable floating arrow buttons, and full keyboard navigation (<kbd>←</kbd> Skip, <kbd>→</kbd> Watched, <kbd>↑</kbd>/<kbd>↓</kbd> Genre cycling, <kbd>Esc</kbd> Close). Automatically excludes all watched, saved, and not-interested titles.
+  * `MovieCard.jsx`: High-resolution poster rendering, format badges, Rotten Tomatoes 🍅 Tomatometer, IMDb ⭐ scores, one-click Watchlist / Watched buttons, and discreet `EyeOff` "Not Interested" quick action.
+  * `MovieModal.jsx`: Detailed metadata, YouTube trailer embed, director/cast list, **Where to Stream** hub, and top-docked **Rate & Review Hub** with personal 1-10 star rating, review notes, direct launch to IMDb/Letterboxd, and "Not Interested" action.
+  * `WatchedDrawer.jsx`: Slide-out panel for browsing watched titles and queued watchlist, updating personal ratings and reviews, inspecting sync status, and exporting watch history to JSON/CSV.
   * `AuthModal.jsx`: Consumer-friendly Google SSO dialog clearly explaining the private Google Drive storage permission.
 
 ---
@@ -235,6 +249,50 @@ This guarantees that watched movies, skipped movies, and saved watchlist movies 
 
 ---
 
+### 3.7 Discreet "Not Interested" Engine & Permanent Suppression
+
+To maintain an uncluttered discovery experience without annoying the user with repetitive suggestions:
+* **Zero Navigation Clutter**: Strictly obeys UI design constraints by avoiding any "Not Interested" tab, badge, or button in the top navigation bar.
+* **Discreet Interaction**: Users can mark titles as "Not Interested" via the subtle `EyeOff` quick-action icon on `MovieCard` or the secondary action button in `MovieModal`.
+* **Universal Candidate Suppression**:
+  * Added to `get_all_excluded_ids(user_id)`:
+    $$\mathcal{C}_{final} = \mathcal{M}_{catalog} \setminus \left( \mathcal{W}_{watched} \cup \mathcal{U}_{unwatched} \cup \mathcal{L}_{watchlist} \cup \mathcal{N}_{not\_interested} \right)$$
+  * Any title in $\mathcal{N}_{not\_interested}$ is immediately stripped from FYP feeds, category carousels, genre recommendations, and the Swipe Mode deck.
+* **CRUD Endpoints**:
+  * `GET /api/users/not-interested`
+  * `POST /api/users/not-interested`
+  * `DELETE /api/users/not-interested/{movie_id}`
+* **Multi-Layer Synchronization**: Persisted across browser `localStorage`, Cloud Firestore, and Google Drive `appDataFolder`.
+
+---
+
+### 3.8 Rate & Review Hub with Direct IMDb & Letterboxd Launch
+
+To streamline personal logging and community reviewing:
+* **Top-of-Modal Placement**: Positioned at the very top of `MovieModal` above cast and trailers so users can immediately rate and journal thoughts.
+* **Interactive 1-10 Star Rating**: High-precision 10-star rating bar with hover highlights and clear score displays.
+* **Personal Review Journaling**: Inline textarea for personal commentary and reviews, stored directly in the watched record (`review: Optional[str]`).
+* **Direct 1-Click External Platform Launchers**:
+  * **IMDb Reviews**: Automatically navigates to `https://www.imdb.com/title/{imdb_id}/reviews` (falling back to direct search).
+  * **Letterboxd**: Direct title query deep-link to `https://letterboxd.com/search/{encoded_title}/` for rapid logging on the social movie community.
+* **Watched Drawer Snippet**: Personal review quotes appear directly under watched titles in `WatchedDrawer.jsx`.
+
+---
+
+### 3.9 All-Time Top 250 Media Rankings Engine
+
+A dedicated Hall of Fame browsing engine for curated, all-time prestige media:
+* **Endpoint**: `GET /api/movies/top-250?category=movies|tv|anime&page=1&limit=50`
+* **Categories Supported**:
+  1. **Top 250 Movies of All Time**: TMDB Top Rated Feature Films.
+  2. **Top 250 TV Series of All Time**: TMDB Top Rated Television & Limited Series.
+  3. **Top 250 Anime of All Time**: Japanese Animation series and films (`with_genres=16`, `with_original_language=ja`).
+* **Rankings & Badging**: Dynamic rank calculation (`#1` to `#250`), with Olympic podium badges for `#1` 👑 (Gold), `#2` 🥈 (Silver), `#3` 🥉 (Bronze), and slate badges for `#4` through `#250`.
+* **Personal Progress Tracker**: Calculates completion percentage in real time (`Watched X of 250 titles`) against the user's watched collection with an animated progress bar.
+* **High-Efficiency Caching**: Concurrently fetches pages 1–13 from TMDB and caches the compiled 250 entries in-memory for 24 hours (86,400s TTL) with offline fallback data.
+
+---
+
 ## 4. Data Models & Schemas
 
 ### 4.1 Watched Record Schema
@@ -248,7 +306,8 @@ This guarantees that watched movies, skipped movies, and saved watchlist movies 
   "genres": ["Action", "Crime", "Drama", "Thriller"],
   "media_type": "movie",
   "watched_at": 1726678900.0,
-  "rating": 9.5
+  "rating": 9.5,
+  "review": "A masterpiece in modern superhero cinema. Ledger's performance is legendary."
 }
 ```
 
@@ -269,15 +328,29 @@ This guarantees that watched movies, skipped movies, and saved watchlist movies 
 }
 ```
 
-### 4.3 Google Drive Storage Payload (`cinematch_movie_library.json`)
+### 4.3 Not Interested Record Schema
+```json
+{
+  "id": 105,
+  "title": "Back to the Future Part II",
+  "poster_url": "https://image.tmdb.org/t/p/w500/yrn3rV4bZ4vDq590oQoO7Ue0aB7.jpg",
+  "year": "1989",
+  "genres": ["Adventure", "Comedy", "Science Fiction"],
+  "media_type": "movie",
+  "marked_at": 1726680500.0
+}
+```
+
+### 4.4 Google Drive Storage Payload (`cinematch_movie_library.json`)
 ```json
 {
   "app": "MovieRecommendation",
   "version": "1.0",
   "updated_at": 1726680000000,
-  "watched": [ /* array of watched records */ ],
+  "watched": [ /* array of watched records with ratings and reviews */ ],
   "watchlist": [ /* array of watchlist records */ ],
-  "unwatched": [ /* array of skipped records */ ]
+  "unwatched": [ /* array of skipped records */ ],
+  "not_interested": [ /* array of not-interested records */ ]
 }
 ```
 
@@ -287,7 +360,7 @@ This guarantees that watched movies, skipped movies, and saved watchlist movies 
 
 1. **Google Drive Permission Scoping**: Requests only `drive.appdata` (private folder) and `drive.file` (app-created files). The application can never read or access the user's personal documents, photos, or spreadsheets.
 2. **Bearer Token Authentication**: All user-specific backend endpoints require a valid Firebase ID token in the `Authorization: Bearer <token>` header.
-3. **Internal Unwatched Security**: Unwatched/skipped titles are never shared publicly or displayed in the user's visible library.
+3. **Internal Unwatched & Not Interested Security**: Skipped and suppressed titles are never shared publicly or displayed in the user's visible library.
 4. **CORS Hardening**: Strict origin whitelisting (`movierecommendation.pages.dev`, `localhost:5173`).
 5. **No Media Piracy**: The system does not stream or host copyrighted media files; it acts purely as a discovery, scoring, and deep-linking platform.
 
@@ -295,7 +368,7 @@ This guarantees that watched movies, skipped movies, and saved watchlist movies 
 
 ## 6. Automated Verification & Testing Suite
 
-All 12 backend test suites pass in [`backend/tests/test_backend.py`](file:///Users/sahas/Documents/Projects/MovieRecommendation/backend/tests/test_backend.py):
+All 15 backend test suites pass in [`backend/tests/test_backend.py`](file:///Users/sahas/Documents/Projects/MovieRecommendation/backend/tests/test_backend.py):
 
 | Test Name | Architectural Verification | Status |
 |---|---|---|
@@ -311,3 +384,7 @@ All 12 backend test suites pass in [`backend/tests/test_backend.py`](file:///Use
 | `test_user_watchlist_and_auto_move_to_watched` | Verifies adding to Watchlist and automatic removal upon marking as watched. | ✅ Passed |
 | `test_actor_search_and_filmography` | Verifies actor credit retrieval (`/movies/person/{id}/credits`) and filmography listing. | ✅ Passed |
 | `test_watchlist_exclusion_from_feed_and_recommendations` | Enforces that Watchlist items are strictly excluded from recommendation feeds. | ✅ Passed |
+| `test_not_interested_tracking_and_exclusion` | Enforces marking titles as Not Interested, backend CRUD, and permanent exclusion from recommendations. | ✅ Passed |
+| `test_mark_watched_with_rating_and_review` | Validates saving watched items with custom 1-10 star rating and personal review notes. | ✅ Passed |
+| `test_top_250_rankings` | Verifies Top 250 endpoint across Movies, TV Series, and Anime with rank annotations #1..#250. | ✅ Passed |
+

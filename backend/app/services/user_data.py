@@ -61,7 +61,7 @@ class UserDataService:
         movies = await self.get_watched_list(user_id)
         return [int(m["id"]) for m in movies if "id" in m]
 
-    async def mark_watched(self, user_id: str, movie: dict, rating: Optional[float] = None) -> dict:
+    async def mark_watched(self, user_id: str, movie: dict, rating: Optional[float] = None, review: Optional[str] = None) -> dict:
         """Saves a movie to the user's watched list"""
         movie_id = int(movie["id"])
         record = {
@@ -74,30 +74,34 @@ class UserDataService:
             "media_type": movie.get("media_type", "movie"),
             "watched_at": time.time(),
             "rating": rating,
+            "review": review,
         }
 
         if self.db:
             try:
                 doc_ref = self.db.collection("users").document(user_id).collection("watched").document(str(movie_id))
                 doc_ref.set(record)
-                # If it was previously in unwatched or watchlist, remove from them
+                # If it was previously in unwatched, watchlist, or not_interested, remove from them
                 self.db.collection("users").document(user_id).collection("unwatched").document(str(movie_id)).delete()
                 self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id)).delete()
+                self.db.collection("users").document(user_id).collection("not_interested").document(str(movie_id)).delete()
                 return record
             except Exception as e:
                 logger.error(f"Firestore mark_watched error: {e}")
 
         store = self._read_dev_store()
         if user_id not in store:
-            store[user_id] = {"watched": {}, "unwatched": {}, "watchlist": {}}
+            store[user_id] = {"watched": {}, "unwatched": {}, "watchlist": {}, "not_interested": {}}
         if "watched" not in store[user_id]:
             store[user_id]["watched"] = {}
         store[user_id]["watched"][str(movie_id)] = record
-        # Remove from unwatched and watchlist if present
+        # Remove from unwatched, watchlist, and not_interested if present
         if "unwatched" in store[user_id] and str(movie_id) in store[user_id]["unwatched"]:
             del store[user_id]["unwatched"][str(movie_id)]
         if "watchlist" in store[user_id] and str(movie_id) in store[user_id]["watchlist"]:
             del store[user_id]["watchlist"][str(movie_id)]
+        if "not_interested" in store[user_id] and str(movie_id) in store[user_id]["not_interested"]:
+            del store[user_id]["not_interested"][str(movie_id)]
         self._write_dev_store(store)
         return record
 
@@ -165,13 +169,15 @@ class UserDataService:
 
     async def get_all_excluded_ids(self, user_id: str) -> List[int]:
         """
-        Returns the union of watched movie IDs, skipped/unwatched movie IDs, and watchlist IDs.
+        Returns the union of watched movie IDs, skipped/unwatched movie IDs, watchlist IDs,
+        and not-interested movie IDs.
         Used to ensure titles are never repeatedly shown in Swipe Mode or recommendation cards.
         """
         watched = await self.get_watched_ids(user_id)
         unwatched = await self.get_unwatched_ids(user_id)
         watchlist = await self.get_watchlist_ids(user_id)
-        return list(set(watched + unwatched + watchlist))
+        not_interested = await self.get_not_interested_ids(user_id)
+        return list(set(watched + unwatched + watchlist + not_interested))
 
     async def unmark_watched(self, user_id: str, movie_id: int) -> bool:
         """Removes a movie from the user's watched list"""
@@ -257,6 +263,87 @@ class UserDataService:
         if user_id in store and "watchlist" in store[user_id]:
             if str(movie_id) in store[user_id]["watchlist"]:
                 del store[user_id]["watchlist"][str(movie_id)]
+                self._write_dev_store(store)
+                return True
+        return False
+
+    async def get_not_interested_list(self, user_id: str) -> List[dict]:
+        """Returns list of movies the user marked as Not Interested"""
+        if self.db:
+            try:
+                docs = self.db.collection("users").document(user_id).collection("not_interested").order_by("marked_at", direction="DESCENDING").stream()
+                return [doc.to_dict() for doc in docs]
+            except Exception as e:
+                logger.error(f"Firestore get_not_interested_list error: {e}")
+
+        store = self._read_dev_store()
+        user_ni = store.get(user_id, {}).get("not_interested", {})
+        movies = list(user_ni.values())
+        movies.sort(key=lambda x: x.get("marked_at", 0), reverse=True)
+        return movies
+
+    async def get_not_interested_ids(self, user_id: str) -> List[int]:
+        """Returns just the list of movie IDs marked as Not Interested"""
+        if self.db:
+            try:
+                docs = self.db.collection("users").document(user_id).collection("not_interested").stream()
+                return [int(doc.id) for doc in docs]
+            except Exception as e:
+                logger.error(f"Firestore get_not_interested_ids error: {e}")
+
+        store = self._read_dev_store()
+        user_ni = store.get(user_id, {}).get("not_interested", {})
+        return [int(k) for k in user_ni.keys()]
+
+    async def mark_not_interested(self, user_id: str, movie: dict) -> dict:
+        """Marks a movie as Not Interested, removing from watchlist/watched if present"""
+        movie_id = int(movie["id"])
+        record = {
+            "id": movie_id,
+            "title": movie.get("title", "Untitled"),
+            "poster_url": movie.get("poster_url"),
+            "backdrop_url": movie.get("backdrop_url"),
+            "year": movie.get("year", ""),
+            "vote_average": movie.get("vote_average", 0.0),
+            "genres": movie.get("genres", []),
+            "media_type": movie.get("media_type", "movie"),
+            "marked_at": time.time(),
+        }
+
+        if self.db:
+            try:
+                doc_ref = self.db.collection("users").document(user_id).collection("not_interested").document(str(movie_id))
+                doc_ref.set(record)
+                # Remove from watchlist if present
+                self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id)).delete()
+                return record
+            except Exception as e:
+                logger.error(f"Firestore mark_not_interested error: {e}")
+
+        store = self._read_dev_store()
+        if user_id not in store:
+            store[user_id] = {"watched": {}, "unwatched": {}, "watchlist": {}, "not_interested": {}}
+        if "not_interested" not in store[user_id]:
+            store[user_id]["not_interested"] = {}
+        store[user_id]["not_interested"][str(movie_id)] = record
+        if "watchlist" in store[user_id] and str(movie_id) in store[user_id]["watchlist"]:
+            del store[user_id]["watchlist"][str(movie_id)]
+        self._write_dev_store(store)
+        return record
+
+    async def unmark_not_interested(self, user_id: str, movie_id: int) -> bool:
+        """Removes a movie from the user's Not Interested list (undo)"""
+        if self.db:
+            try:
+                self.db.collection("users").document(user_id).collection("not_interested").document(str(movie_id)).delete()
+                return True
+            except Exception as e:
+                logger.error(f"Firestore unmark_not_interested error: {e}")
+
+        store = self._read_dev_store()
+        if user_id in store and "not_interested" in store[user_id]:
+            if str(movie_id) in store[user_id]["not_interested"]:
+                del store[user_id]["not_interested"][str(movie_id)]
                 self._write_dev_store(store)
                 return True
         return False

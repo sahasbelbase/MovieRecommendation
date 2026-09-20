@@ -88,13 +88,33 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  // Load guest watched, unwatched, and watchlist from localStorage & Firestore on mount
+  const [notInterestedMovies, setNotInterestedMovies] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_not_interested') || localStorage.getItem('cinematch_guest_not_interested');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [notInterestedIds, setNotInterestedIds] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_not_interested') || localStorage.getItem('cinematch_guest_not_interested');
+      const list = cached ? JSON.parse(cached) : [];
+      return new Set(list.map(m => m.id));
+    } catch {
+      return new Set();
+    }
+  });
+
+  // Load guest watched, unwatched, watchlist, and not-interested from localStorage & Firestore on mount
   useEffect(() => {
     const initStorageAndCloud = async () => {
       // 1. Instant local read for zero-latency UI
       let localWatched = [];
       let localWatchlist = [];
       let localUnwatched = [];
+      let localNotInterested = [];
       try {
         const savedWatched = localStorage.getItem('cinematch_cached_watched') || localStorage.getItem('cinematch_guest_watched');
         if (savedWatched) {
@@ -114,6 +134,12 @@ export const AuthProvider = ({ children }) => {
           setWatchlistMovies(localWatchlist);
           setWatchlistIds(new Set(localWatchlist.map(m => m.id)));
         }
+        const savedNotInterested = localStorage.getItem('cinematch_cached_not_interested') || localStorage.getItem('cinematch_guest_not_interested');
+        if (savedNotInterested) {
+          localNotInterested = JSON.parse(savedNotInterested);
+          setNotInterestedMovies(localNotInterested);
+          setNotInterestedIds(new Set(localNotInterested.map(m => m.id)));
+        }
       } catch (e) {
         console.error("Failed to load local data:", e);
       }
@@ -127,31 +153,36 @@ export const AuthProvider = ({ children }) => {
           const cloudWatched = cloudData.watched || [];
           const cloudWatchlist = cloudData.watchlist || [];
           const cloudUnwatched = cloudData.unwatched || [];
+          const cloudNotInterested = cloudData.not_interested || [];
 
           // Merge: use cloud data if it has entries or merge unique items
-          if (cloudWatched.length > 0 || cloudWatchlist.length > 0) {
+          if (cloudWatched.length > 0 || cloudWatchlist.length > 0 || cloudNotInterested.length > 0) {
             setWatchedMovies(cloudWatched);
             setWatchedIds(new Set(cloudWatched.map(m => m.id)));
             setWatchlistMovies(cloudWatchlist);
             setWatchlistIds(new Set(cloudWatchlist.map(m => m.id)));
             setUnwatchedMovies(cloudUnwatched);
             setUnwatchedIds(new Set(cloudUnwatched.map(m => m.id)));
+            setNotInterestedMovies(cloudNotInterested);
+            setNotInterestedIds(new Set(cloudNotInterested.map(m => m.id)));
             setIsCloudSynced(true);
-          } else if (localWatched.length > 0 || localWatchlist.length > 0) {
+          } else if (localWatched.length > 0 || localWatchlist.length > 0 || localNotInterested.length > 0) {
             // First time cloud sync: persist local data to Firestore
             await saveLibraryToCloud(activeId, {
               watched: localWatched,
               watchlist: localWatchlist,
-              unwatched: localUnwatched
+              unwatched: localUnwatched,
+              notInterested: localNotInterested
             });
             setIsCloudSynced(true);
           }
-        } else if (localWatched.length > 0 || localWatchlist.length > 0) {
+        } else if (localWatched.length > 0 || localWatchlist.length > 0 || localNotInterested.length > 0) {
           // No cloud record yet: upload local state
           await saveLibraryToCloud(activeId, {
             watched: localWatched,
             watchlist: localWatchlist,
-            unwatched: localUnwatched
+            unwatched: localUnwatched,
+            notInterested: localNotInterested
           });
           setIsCloudSynced(true);
         }
@@ -175,15 +206,18 @@ export const AuthProvider = ({ children }) => {
       let apiWatched = [];
       let apiWatchlist = [];
       let apiUnwatched = [];
+      let apiNotInterested = [];
       try {
-        const [wRes, wlRes, uwRes] = await Promise.all([
+        const [wRes, wlRes, uwRes, niRes] = await Promise.all([
           api.get('/users/watched').catch(() => ({ data: [] })),
           api.get('/users/watchlist').catch(() => ({ data: [] })),
-          api.get('/users/unwatched').catch(() => ({ data: [] }))
+          api.get('/users/unwatched').catch(() => ({ data: [] })),
+          api.get('/users/not-interested').catch(() => ({ data: [] }))
         ]);
         apiWatched = Array.isArray(wRes.data) ? wRes.data : [];
         apiWatchlist = Array.isArray(wlRes.data) ? wlRes.data : [];
         apiUnwatched = Array.isArray(uwRes.data) ? uwRes.data : [];
+        apiNotInterested = Array.isArray(niRes.data) ? niRes.data : [];
       } catch (err) {
         console.warn("Backend library fetch notice:", err);
       }
@@ -205,6 +239,7 @@ export const AuthProvider = ({ children }) => {
       let localCachedWatched = [];
       let localCachedWatchlist = [];
       let localCachedUnwatched = [];
+      let localCachedNotInterested = [];
       try {
         const sW = localStorage.getItem('cinematch_cached_watched') || localStorage.getItem('cinematch_guest_watched');
         if (sW) localCachedWatched = JSON.parse(sW);
@@ -212,6 +247,8 @@ export const AuthProvider = ({ children }) => {
         if (sWl) localCachedWatchlist = JSON.parse(sWl);
         const sUw = localStorage.getItem('cinematch_cached_unwatched') || localStorage.getItem('cinematch_guest_unwatched');
         if (sUw) localCachedUnwatched = JSON.parse(sUw);
+        const sNi = localStorage.getItem('cinematch_cached_not_interested') || localStorage.getItem('cinematch_guest_not_interested');
+        if (sNi) localCachedNotInterested = JSON.parse(sNi);
       } catch (e) {}
 
       // Combine unique watched across ALL sources: Backend API + Drive + Firestore + Local
@@ -235,9 +272,17 @@ export const AuthProvider = ({ children }) => {
       (cloudData?.unwatched || []).forEach(m => unwatchedMap.set(m.id, m));
       localCachedUnwatched.forEach(m => unwatchedMap.set(m.id, m));
 
+      // Combine unique not-interested
+      const notInterestedMap = new Map();
+      apiNotInterested.forEach(m => notInterestedMap.set(m.id, m));
+      (driveData?.not_interested || []).forEach(m => notInterestedMap.set(m.id, m));
+      (cloudData?.not_interested || []).forEach(m => notInterestedMap.set(m.id, m));
+      localCachedNotInterested.forEach(m => notInterestedMap.set(m.id, m));
+
       const mergedWatched = Array.from(watchedMap.values());
       const mergedWatchlist = Array.from(watchlistMap.values());
       const mergedUnwatched = Array.from(unwatchedMap.values());
+      const mergedNotInterested = Array.from(notInterestedMap.values());
 
       setWatchedMovies(mergedWatched);
       setWatchedIds(new Set(mergedWatched.map(m => m.id)));
@@ -245,6 +290,8 @@ export const AuthProvider = ({ children }) => {
       setWatchlistIds(new Set(mergedWatchlist.map(m => m.id)));
       setUnwatchedMovies(mergedUnwatched);
       setUnwatchedIds(new Set(mergedUnwatched.map(m => m.id)));
+      setNotInterestedMovies(mergedNotInterested);
+      setNotInterestedIds(new Set(mergedNotInterested.map(m => m.id)));
       setIsCloudSynced(true);
 
       // Save to local cache so next refresh is instantaneous
@@ -252,13 +299,14 @@ export const AuthProvider = ({ children }) => {
         localStorage.setItem('cinematch_cached_watched', JSON.stringify(mergedWatched));
         localStorage.setItem('cinematch_cached_watchlist', JSON.stringify(mergedWatchlist));
         localStorage.setItem('cinematch_cached_unwatched', JSON.stringify(mergedUnwatched));
+        localStorage.setItem('cinematch_cached_not_interested', JSON.stringify(mergedNotInterested));
       } catch (e) {}
 
       // Forward any local items that aren't yet on the backend server
       const backendWatchedIds = new Set(apiWatched.map(m => m.id));
       for (const item of mergedWatched) {
         if (!backendWatchedIds.has(item.id)) {
-          api.post('/users/watched', { movie: item, rating: item.rating || 8.0 }).catch(() => {});
+          api.post('/users/watched', { movie: item, rating: item.rating || 8.0, review: item.review }).catch(() => {});
         }
       }
 
@@ -269,19 +317,28 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
+      const backendNotInterestedIds = new Set(apiNotInterested.map(m => m.id));
+      for (const item of mergedNotInterested) {
+        if (!backendNotInterestedIds.has(item.id)) {
+          api.post('/users/not-interested', { movie: item }).catch(() => {});
+        }
+      }
+
       // Save merged state to Firestore and Drive (only if there are items to prevent accidental wiping)
-      if (mergedWatched.length > 0 || mergedWatchlist.length > 0 || mergedUnwatched.length > 0) {
+      if (mergedWatched.length > 0 || mergedWatchlist.length > 0 || mergedUnwatched.length > 0 || mergedNotInterested.length > 0) {
         await saveLibraryToCloud(activeLibId, {
           watched: mergedWatched,
           watchlist: mergedWatchlist,
-          unwatched: mergedUnwatched
+          unwatched: mergedUnwatched,
+          notInterested: mergedNotInterested
         });
 
         if (driveToken) {
           saveToGoogleDrive(driveToken, {
             watched: mergedWatched,
             watchlist: mergedWatchlist,
-            unwatched: mergedUnwatched
+            unwatched: mergedUnwatched,
+            not_interested: mergedNotInterested
           }).catch(() => {});
         }
       }
@@ -386,9 +443,11 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('cinematch_cached_watched');
     localStorage.removeItem('cinematch_cached_watchlist');
     localStorage.removeItem('cinematch_cached_unwatched');
+    localStorage.removeItem('cinematch_cached_not_interested');
     localStorage.removeItem('cinematch_guest_watched');
     localStorage.removeItem('cinematch_guest_unwatched');
     localStorage.removeItem('cinematch_guest_watchlist');
+    localStorage.removeItem('cinematch_guest_not_interested');
     setStoredDriveToken(null);
     setUser(null);
     const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -401,6 +460,8 @@ export const AuthProvider = ({ children }) => {
     setUnwatchedIds(new Set());
     setWatchlistMovies([]);
     setWatchlistIds(new Set());
+    setNotInterestedMovies([]);
+    setNotInterestedIds(new Set());
   };
 
   // Restore Library by ID (works across incognito, devices, sessions)
@@ -420,6 +481,7 @@ export const AuthProvider = ({ children }) => {
       const loadedWatched = cloudData.watched || [];
       const loadedWatchlist = cloudData.watchlist || [];
       const loadedUnwatched = cloudData.unwatched || [];
+      const loadedNotInterested = cloudData.not_interested || [];
 
       setWatchedMovies(loadedWatched);
       setWatchedIds(new Set(loadedWatched.map(m => m.id)));
@@ -427,14 +489,20 @@ export const AuthProvider = ({ children }) => {
       setWatchlistIds(new Set(loadedWatchlist.map(m => m.id)));
       setUnwatchedMovies(loadedUnwatched);
       setUnwatchedIds(new Set(loadedUnwatched.map(m => m.id)));
+      setNotInterestedMovies(loadedNotInterested);
+      setNotInterestedIds(new Set(loadedNotInterested.map(m => m.id)));
 
       const finalId = cloudData.id || cleanId;
       setLibraryId(finalId);
       setStoredLibraryId(finalId);
       localStorage.setItem('cinematch_cached_watched', JSON.stringify(loadedWatched));
       localStorage.setItem('cinematch_cached_watchlist', JSON.stringify(loadedWatchlist));
+      localStorage.setItem('cinematch_cached_unwatched', JSON.stringify(loadedUnwatched));
+      localStorage.setItem('cinematch_cached_not_interested', JSON.stringify(loadedNotInterested));
       localStorage.setItem('cinematch_guest_watched', JSON.stringify(loadedWatched));
       localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(loadedWatchlist));
+      localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(loadedUnwatched));
+      localStorage.setItem('cinematch_guest_not_interested', JSON.stringify(loadedNotInterested));
       setIsCloudSynced(true);
 
       return {
@@ -450,31 +518,33 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Seamlessly persist to Local Cache, Google Cloud Firestore, and User's Google Drive
-  const persistLibrary = (libId, { watched, watchlist, unwatched }) => {
+  const persistLibrary = (libId, { watched, watchlist, unwatched, notInterested = [] }) => {
     // 1. Instant local persistence for zero-latency across refresh
     try {
       localStorage.setItem('cinematch_cached_watched', JSON.stringify(watched));
       localStorage.setItem('cinematch_cached_watchlist', JSON.stringify(watchlist));
       localStorage.setItem('cinematch_cached_unwatched', JSON.stringify(unwatched));
+      localStorage.setItem('cinematch_cached_not_interested', JSON.stringify(notInterested));
       localStorage.setItem('cinematch_guest_watched', JSON.stringify(watched));
       localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(watchlist));
       localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(unwatched));
+      localStorage.setItem('cinematch_guest_not_interested', JSON.stringify(notInterested));
     } catch (e) {}
 
     // 2. Google Cloud Firestore
-    saveLibraryToCloud(libId, { watched, watchlist, unwatched });
+    saveLibraryToCloud(libId, { watched, watchlist, unwatched, notInterested });
 
     // 3. Personal Google Drive (if authorized and enabled)
     const driveToken = getStoredDriveToken();
     if (driveToken) {
-      saveToGoogleDrive(driveToken, { watched, watchlist, unwatched }).catch(e => {
+      saveToGoogleDrive(driveToken, { watched, watchlist, unwatched, not_interested: notInterested }).catch(e => {
         console.warn("Notice saving to Google Drive:", e);
       });
     }
   };
 
   // Toggle Watched status with optimistic UI updates & Firestore cloud persistence
-  const toggleWatched = async (movie, rating = null) => {
+  const toggleWatched = async (movie, rating = null, review = null) => {
     const movieId = movie.id;
     const isWatched = watchedIds.has(movieId);
     const activeLibId = libraryId || getOrCreateLibraryId(user);
@@ -491,7 +561,8 @@ export const AuthProvider = ({ children }) => {
       persistLibrary(activeLibId, {
         watched: nextMovies,
         watchlist: watchlistMovies,
-        unwatched: unwatchedMovies
+        unwatched: unwatchedMovies,
+        notInterested: notInterestedMovies
       });
 
       if (user) {
@@ -514,7 +585,8 @@ export const AuthProvider = ({ children }) => {
         vote_average: movie.vote_average,
         genres: movie.genres,
         watched_at: Date.now() / 1000,
-        rating: rating
+        rating: rating,
+        review: review
       };
 
       const nextIds = new Set(watchedIds);
@@ -536,16 +608,27 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
+      // Auto-remove from Not Interested if present
+      let nextNiMovies = notInterestedMovies;
+      if (notInterestedIds.has(movieId)) {
+        const nextNiIds = new Set(notInterestedIds);
+        nextNiIds.delete(movieId);
+        setNotInterestedIds(nextNiIds);
+        nextNiMovies = notInterestedMovies.filter(m => m.id !== movieId);
+        setNotInterestedMovies(nextNiMovies);
+      }
+
       // Save to Cloud Firestore & Google Drive
       persistLibrary(activeLibId, {
         watched: nextMovies,
         watchlist: nextWlMovies,
-        unwatched: unwatchedMovies
+        unwatched: unwatchedMovies,
+        notInterested: nextNiMovies
       });
 
       if (user) {
         try {
-          await api.post('/users/watched', { movie: record, rating });
+          await api.post('/users/watched', { movie: record, rating, review });
         } catch (e) {
           console.error("Failed to mark watched on server:", e);
         }
@@ -554,6 +637,69 @@ export const AuthProvider = ({ children }) => {
       }
       return true;
     }
+  };
+
+  // Save or update Rating and Review for a movie
+  const saveReview = async (movie, rating = null, review = null) => {
+    if (!movie?.id) return null;
+    const movieId = movie.id;
+    const activeLibId = libraryId || getOrCreateLibraryId(user);
+    const existing = watchedMovies.find(m => m.id === movieId);
+    const record = {
+      ...(existing || movie),
+      id: movieId,
+      title: movie.title || existing?.title || "Untitled",
+      poster_url: movie.poster_url || existing?.poster_url,
+      year: movie.year || existing?.year,
+      vote_average: movie.vote_average || existing?.vote_average,
+      genres: movie.genres || existing?.genres,
+      media_type: movie.media_type || existing?.media_type || "movie",
+      watched_at: existing?.watched_at || (Date.now() / 1000),
+      rating: rating !== undefined ? rating : (existing?.rating || null),
+      review: review !== undefined ? review : (existing?.review || null),
+    };
+
+    const nextIds = new Set(watchedIds);
+    nextIds.add(movieId);
+    setWatchedIds(nextIds);
+    const nextMovies = [record, ...watchedMovies.filter(m => m.id !== movieId)];
+    setWatchedMovies(nextMovies);
+
+    // Auto-remove from Watchlist if present
+    let nextWlMovies = watchlistMovies;
+    if (watchlistIds.has(movieId)) {
+      const nextWlIds = new Set(watchlistIds);
+      nextWlIds.delete(movieId);
+      setWatchlistIds(nextWlIds);
+      nextWlMovies = watchlistMovies.filter(m => m.id !== movieId);
+      setWatchlistMovies(nextWlMovies);
+    }
+
+    // Auto-remove from Not Interested if present
+    let nextNiMovies = notInterestedMovies;
+    if (notInterestedIds.has(movieId)) {
+      const nextNiIds = new Set(notInterestedIds);
+      nextNiIds.delete(movieId);
+      setNotInterestedIds(nextNiIds);
+      nextNiMovies = notInterestedMovies.filter(m => m.id !== movieId);
+      setNotInterestedMovies(nextNiMovies);
+    }
+
+    persistLibrary(activeLibId, {
+      watched: nextMovies,
+      watchlist: nextWlMovies,
+      unwatched: unwatchedMovies,
+      notInterested: nextNiMovies
+    });
+
+    if (user) {
+      try {
+        await api.post('/users/watched', { movie: record, rating: record.rating, review: record.review });
+      } catch (e) {
+        console.error("Failed to save review on server:", e);
+      }
+    }
+    return record;
   };
 
   // Toggle Watchlist ("Want to Watch" / "Watch Later")
@@ -575,7 +721,8 @@ export const AuthProvider = ({ children }) => {
       persistLibrary(activeLibId, {
         watched: watchedMovies,
         watchlist: nextMovies,
-        unwatched: unwatchedMovies
+        unwatched: unwatchedMovies,
+        notInterested: notInterestedMovies
       });
 
       if (user) {
@@ -614,7 +761,8 @@ export const AuthProvider = ({ children }) => {
       persistLibrary(activeLibId, {
         watched: watchedMovies,
         watchlist: nextMovies,
-        unwatched: unwatchedMovies
+        unwatched: unwatchedMovies,
+        notInterested: notInterestedMovies
       });
 
       if (user) {
@@ -625,6 +773,87 @@ export const AuthProvider = ({ children }) => {
         }
       } else {
         localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(nextMovies));
+      }
+      return true;
+    }
+  };
+
+  // Toggle "Not Interested" - hides the movie everywhere and records preference
+  const toggleNotInterested = async (movie) => {
+    if (!movie?.id) return false;
+    const movieId = movie.id;
+    const isNI = notInterestedIds.has(movieId);
+    const activeLibId = libraryId || getOrCreateLibraryId(user);
+
+    if (isNI) {
+      // Remove from not interested (Undo)
+      const nextIds = new Set(notInterestedIds);
+      nextIds.delete(movieId);
+      setNotInterestedIds(nextIds);
+      const nextMovies = notInterestedMovies.filter(m => m.id !== movieId);
+      setNotInterestedMovies(nextMovies);
+
+      persistLibrary(activeLibId, {
+        watched: watchedMovies,
+        watchlist: watchlistMovies,
+        unwatched: unwatchedMovies,
+        notInterested: nextMovies
+      });
+
+      if (user) {
+        try {
+          await api.delete(`/users/not-interested/${movieId}`);
+        } catch (e) {
+          console.error("Failed to unmark not-interested on server:", e);
+        }
+      }
+      return false;
+    } else {
+      // Mark as not interested
+      const record = {
+        id: movieId,
+        title: movie.title || "Untitled",
+        poster_url: movie.poster_url,
+        backdrop_url: movie.backdrop_url,
+        year: movie.year,
+        vote_average: movie.vote_average,
+        genres: movie.genres,
+        media_type: movie.media_type || "movie",
+        marked_at: Date.now() / 1000
+      };
+
+      const nextIds = new Set(notInterestedIds);
+      nextIds.add(movieId);
+      setNotInterestedIds(nextIds);
+      const nextMovies = [record, ...notInterestedMovies.filter(m => m.id !== movieId)];
+      setNotInterestedMovies(nextMovies);
+
+      // Auto-remove from watchlist if present
+      let nextWlMovies = watchlistMovies;
+      if (watchlistIds.has(movieId)) {
+        const nextWlIds = new Set(watchlistIds);
+        nextWlIds.delete(movieId);
+        setWatchlistIds(nextWlIds);
+        nextWlMovies = watchlistMovies.filter(m => m.id !== movieId);
+        setWatchlistMovies(nextWlMovies);
+        if (!user) {
+          localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(nextWlMovies));
+        }
+      }
+
+      persistLibrary(activeLibId, {
+        watched: watchedMovies,
+        watchlist: nextWlMovies,
+        unwatched: unwatchedMovies,
+        notInterested: nextMovies
+      });
+
+      if (user) {
+        try {
+          await api.post('/users/not-interested', { movie: record });
+        } catch (e) {
+          console.error("Failed to mark not-interested on server:", e);
+        }
       }
       return true;
     }
@@ -655,7 +884,8 @@ export const AuthProvider = ({ children }) => {
     persistLibrary(activeLibId, {
       watched: watchedMovies,
       watchlist: watchlistMovies,
-      unwatched: nextList
+      unwatched: nextList,
+      notInterested: notInterestedMovies
     });
 
     if (user) {
@@ -689,8 +919,12 @@ export const AuthProvider = ({ children }) => {
       unwatchedMovies,
       watchlistIds,
       watchlistMovies,
+      notInterestedIds,
+      notInterestedMovies,
       toggleWatched,
       toggleWatchlist,
+      toggleNotInterested,
+      saveReview,
       markUnwatched,
       refreshWatchedList: async () => {
         if (user) {
@@ -704,6 +938,9 @@ export const AuthProvider = ({ children }) => {
             const watchlistRes = await api.get('/users/watchlist');
             setWatchlistMovies(watchlistRes.data);
             setWatchlistIds(new Set(watchlistRes.data.map(m => m.id)));
+            const notInterestedRes = await api.get('/users/not-interested');
+            setNotInterestedMovies(notInterestedRes.data);
+            setNotInterestedIds(new Set(notInterestedRes.data.map(m => m.id)));
           } catch (e) {}
         }
       }

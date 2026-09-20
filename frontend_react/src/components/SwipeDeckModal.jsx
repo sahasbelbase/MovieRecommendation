@@ -6,7 +6,7 @@ import api from '../api/client';
 const SWIPE_GENRES = ["All", "Anime", "Action", "Drama", "Sci-Fi", "Comedy", "Thriller", "K-Drama"];
 
 export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration, onShowToast }) {
-  const { user, toggleWatched, markUnwatched, watchedIds, unwatchedIds } = useAuth();
+  const { user, toggleWatched, markUnwatched, watchedIds, unwatchedIds, notInterestedIds } = useAuth();
   const [deck, setDeck] = useState([]);
   const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -30,9 +30,9 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
       try {
         const genreParam = selectedGenre !== "All" ? `&genre=${encodeURIComponent(selectedGenre)}` : '';
         const res = await api.get(`/recommendations/swipe-deck?limit=30${genreParam}`);
-        // Filter out any titles already watched or marked unwatched/skipped
+        // Filter out any titles already watched, marked unwatched/skipped, or not-interested
         const filtered = (res.data || []).filter(
-          (m) => !watchedIds?.has(m.id) && !unwatchedIds?.has(m.id)
+          (m) => !watchedIds?.has(m.id) && !unwatchedIds?.has(m.id) && !notInterestedIds?.has(m.id)
         );
         setDeck(filtered);
       } catch (err) {
@@ -43,7 +43,7 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
     };
 
     fetchDeck();
-  }, [isOpen, user, selectedGenre, watchedIds, unwatchedIds]);
+  }, [isOpen, user, selectedGenre, watchedIds, unwatchedIds, notInterestedIds]);
 
   const currentCard = deck[currentIndex];
 

@@ -10,6 +10,20 @@ Powered by a **FastAPI** backend with vector similarity & franchise anti-cluster
 
 ## ✨ Key Features
 
+* **🏆 All-Time Top 250 Hall of Fame (Movies, TV Series, Anime)**:
+  * Curated **Top 250 Movies of All Time**, **Top 250 TV Series of All Time**, and **Top 250 Anime of All Time**.
+  * Dynamic rank badges with Gold 🥇, Silver 🥈, and Bronze 🥉 podium distinctions.
+  * **Personal Completion Tracker**: Live progress bar calculating how many titles of the 250 you've completed (e.g. *"You've watched 18 of 250 titles (7.2%)"*).
+  * Filter by text search or watch status (*All*, *Unwatched Only*, *Watched Only*).
+* **⭐ In-App Rate & Review Hub + Direct IMDb & Letterboxd Portals**:
+  * **Interactive 1 to 10 Star Rating**: Directly rate titles with live score hover and one-tap save.
+  * **Personal Notes & Reviews**: Add your personal viewing thoughts, memorable quotes, and commentary stored directly in your library and synced to Google Drive.
+  * **1-Click External Review Portals**: Direct deep-links to write and publish your reviews on **Letterboxd** and **IMDb Reviews** with the exact movie already loaded.
+* **🚫 "Not Interested" Feature (Strict Feed Exclusion)**:
+  * Discreet action button on movie cards and detail modals to mark titles you are not interested in.
+  * **Clean UI Guarantee**: No cluttering buttons in the top navigation bar.
+  * **Strict Multi-Layer Filtering**: Titles marked Not Interested are immediately excluded from recommendation feeds, category grids, and Swipe Mode decks.
+  * Preserved permanently across FastAPI backend, Firestore, Google Drive, and local cache.
 * **Sub-Navigation Watchlist Shelf ("Want to Watch" / "Watch Later")**:
   * Persistent shelf docked directly below navigation with smooth scrolling.
   * Quick one-click toggle from any card or movie detail modal.
@@ -20,7 +34,7 @@ Powered by a **FastAPI** backend with vector similarity & franchise anti-cluster
   * Clicking an actor displays their headshot, biography, and interactive filmography drawer showing all movies and TV shows they appeared in with release years and ratings.
   * One-click from the actor's credits launches the complete streaming and detail modal.
 * **🔒 Private Google Drive Library Storage & Transparent OAuth Consent**:
-  * **100% User Data Ownership**: Your personal movie library (Watched list and Watchlist) is saved directly into your personal Google Drive (`cinematch_movie_library.json` inside private AppData storage).
+  * **100% User Data Ownership**: Your personal movie library (Watched list, Watchlist, and Not Interested preferences) is saved directly into your personal Google Drive (`cinematch_movie_library.json` inside private AppData storage).
   * **Seamless Google Consent**: Google OAuth prompts for app storage permissions directly during standard 1-click Google sign-in.
   * **Zero Developer Jargon**: Completely eliminates raw database UIDs, manual copy-paste sync codes, or technical clutter for a clean, consumer-grade experience (like Netflix or Spotify).
   * **Dual-Layer Resilience**: Backed by Google Cloud Firestore and local storage caches so your library recovers instantaneously across new tabs, devices, or incognito sessions.

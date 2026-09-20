@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
@@ -11,6 +11,7 @@ export default function Navbar({
   onOpenAuthModal,
   onOpenSwipe,
   onToggleWatchlistShelf,
+  onOpenTop250,
 }) {
   const { user, logout, watchedMovies, watchlistMovies } = useAuth();
   const [query, setQuery] = useState('');
@@ -363,6 +364,16 @@ export default function Navbar({
 
         {/* Right Actions */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Top 250 Hall of Fame Button */}
+          <button
+            onClick={onOpenTop250}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs font-semibold text-amber-300 hover:bg-amber-500/20 hover:border-amber-500/50 transition-all shadow-sm active:scale-95"
+            title="Explore Top 250 Movies, TV Series & Anime of All Time"
+          >
+            <Trophy className="w-3.5 h-3.5 text-amber-400" />
+            <span className="hidden sm:inline">Top 250</span>
+          </button>
+
           {/* Swipe Mode Button (Signed-In Only) */}
           {user && (
             <button

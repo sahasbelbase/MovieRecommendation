@@ -220,6 +220,11 @@ export default function WatchedDrawer({
                           ) : m.vote_average ? (
                             <span className="text-zinc-500 font-mono text-[11px]">★ {m.vote_average}</span>
                           ) : null}
+                          {m.review && (
+                            <span className="text-zinc-400 italic text-[11px] truncate max-w-[140px]" title={m.review}>
+                              "{m.review}"
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>

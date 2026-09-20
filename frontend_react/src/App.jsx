@@ -11,7 +11,8 @@ import AuthModal from './components/AuthModal';
 import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
-import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin } from 'lucide-react';
+import Top250Modal from './components/Top250Modal';
+import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
   { id: "all", label: "All Entertainment" },
@@ -25,7 +26,7 @@ const GENRES = [
 ];
 
 export default function App() {
-  const { user, watchedMovies, watchlistMovies, toggleWatched, toggleWatchlist } = useAuth();
+  const { user, watchedMovies, watchlistMovies, notInterestedMovies, toggleWatched, toggleWatchlist } = useAuth();
 
   const [feed, setFeed] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -38,17 +39,19 @@ export default function App() {
   const [isDataOpen, setIsDataOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isSwipeOpen, setIsSwipeOpen] = useState(false);
+  const [isTop250Open, setIsTop250Open] = useState(false);
   const [toast, setToast] = useState(null);
   const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  // Efficient lookup set of all excluded IDs (watched + watchlist)
+  // Efficient lookup set of all excluded IDs (watched + watchlist + not interested)
   const excludedIds = useMemo(() => {
     const ids = new Set();
     (watchedMovies || []).forEach(m => ids.add(Number(m.id)));
     (watchlistMovies || []).forEach(m => ids.add(Number(m.id)));
+    (notInterestedMovies || []).forEach(m => ids.add(Number(m.id)));
     return ids;
-  }, [watchedMovies, watchlistMovies]);
+  }, [watchedMovies, watchlistMovies, notInterestedMovies]);
 
   // Show cold-start wake-up message if request takes longer than 2.5s (free-tier spinup)
   useEffect(() => {
@@ -117,6 +120,7 @@ export default function App() {
         onOpenAuthModal={() => setIsAuthOpen(true)}
         onOpenSwipe={() => setIsSwipeOpen(true)}
         onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev => !prev)}
+        onOpenTop250={() => setIsTop250Open(true)}
       />
 
       {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
@@ -213,22 +217,33 @@ export default function App() {
           </div>
         )}
 
-        {/* Media Category Switcher Tabs */}
+        {/* Media Category Switcher Tabs & Top 250 Launcher */}
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-zinc-800/80 pb-4">
-          <div className="flex items-center gap-2 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800">
-            {MEDIA_CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedMediaCategory(cat.id)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                  selectedMediaCategory === cat.id
-                    ? 'bg-zinc-800 text-white shadow font-semibold'
-                    : 'text-zinc-400 hover:text-zinc-200'
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <div className="flex items-center gap-2 bg-zinc-900/80 p-1 rounded-xl border border-zinc-800">
+              {MEDIA_CATEGORIES.map((cat) => (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedMediaCategory(cat.id)}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    selectedMediaCategory === cat.id
+                      ? 'bg-zinc-800 text-white shadow font-semibold'
+                      : 'text-zinc-400 hover:text-zinc-200'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={() => setIsTop250Open(true)}
+              className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500/15 via-amber-500/25 to-orange-500/20 text-amber-300 border border-amber-500/40 hover:border-amber-500/60 hover:from-amber-500/25 hover:to-orange-500/30 transition-all shadow-sm active:scale-95"
+              title="Explore Top 250 Movies, TV Series & Anime of All Time"
+            >
+              <Trophy className="w-3.5 h-3.5 text-amber-400" />
+              <span>Top 250 All-Time</span>
+            </button>
           </div>
 
           {/* Genre Filter Chips */}
@@ -406,6 +421,13 @@ export default function App() {
         isOpen={isSwipeOpen}
         onClose={() => setIsSwipeOpen(false)}
         onCompleteCalibration={loadFeed}
+        onShowToast={showToast}
+      />
+
+      <Top250Modal
+        isOpen={isTop250Open}
+        onClose={() => setIsTop250Open(false)}
+        onSelectMovie={(m) => setSelectedMovie(m)}
         onShowToast={showToast}
       />
 

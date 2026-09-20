@@ -1,11 +1,12 @@
 import React from 'react';
-import { Star, Check, Bookmark, Film, Tv } from 'lucide-react';
+import { Star, Check, Bookmark, Film, Tv, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function MovieCard({ movie, onSelect, onShowToast }) {
-  const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist } = useAuth();
+  const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist, notInterestedIds, toggleNotInterested } = useAuth();
   const isWatched = watchedIds.has(movie.id);
   const isWatchlist = watchlistIds.has(movie.id);
+  const isNotInterested = notInterestedIds?.has(movie.id);
 
   const handleWatchedClick = async (e) => {
     e.stopPropagation();
@@ -28,6 +29,19 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
         message: nowInWatchlist
           ? `Added "${movie.title}" to Watchlist`
           : `Removed "${movie.title}" from Watchlist`,
+        movie,
+      });
+    }
+  };
+
+  const handleNotInterestedClick = async (e) => {
+    e.stopPropagation();
+    const nowNotInterested = await toggleNotInterested(movie);
+    if (onShowToast) {
+      onShowToast({
+        message: nowNotInterested
+          ? `Marked "${movie.title}" as Not Interested`
+          : `Restored "${movie.title}"`,
         movie,
       });
     }
@@ -56,8 +70,17 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
           </div>
         )}
 
-        {/* Quick Actions: Watchlist & Watched */}
+        {/* Quick Actions: Not Interested, Watchlist & Watched */}
         <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+          <button
+            onClick={handleNotInterestedClick}
+            aria-label="Not interested"
+            className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100"
+            title="Not interested (Hide permanently)"
+          >
+            <EyeOff className="w-3.5 h-3.5" />
+          </button>
+
           <button
             onClick={handleWatchlistClick}
             aria-label={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
