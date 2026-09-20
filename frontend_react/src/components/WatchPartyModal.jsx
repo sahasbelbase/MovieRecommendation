@@ -67,6 +67,7 @@ export default function WatchPartyModal({
  const [movie, setMovie] = useState(propMovie || null);
  const [videoSource, setVideoSource] = useState(initialVideoSource || null);
  const [hostId, setHostId] = useState('');
+ const isHost = myUserId === hostId;
  const [hostName, setHostName] = useState('');
  const [participants, setParticipants] = useState([]);
  const [chatMessages, setChatMessages] = useState([]);
@@ -220,7 +221,6 @@ export default function WatchPartyModal({
  const pendingIceCandidatesRef = useRef({}); // userId -> Array of ICE candidates
  const handleServerEventRef = useRef(null);
  const chatScrollRef = useRef(null);
- const isHost = myUserId === hostId;
  const lastSyncTimeRef = useRef(0);
  const isSeekingRef = useRef(false);
 
