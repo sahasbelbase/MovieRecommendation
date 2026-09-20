@@ -12,6 +12,13 @@ const FILE_NAME = 'cinematch_movie_library.json';
 const TOKEN_KEY = 'cinematch_gdrive_token';
 const DISABLED_KEY = 'cinematch_gdrive_disabled';
 
+// Reset temporary circuit-breaker on page load so newly enabled APIs connect immediately
+if (typeof window !== 'undefined') {
+  try {
+    sessionStorage.removeItem(DISABLED_KEY);
+  } catch (e) {}
+}
+
 export function setStoredDriveToken(token) {
   if (token) {
     sessionStorage.setItem(TOKEN_KEY, token);
