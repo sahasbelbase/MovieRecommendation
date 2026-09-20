@@ -1,0 +1,4380 @@
+[
+  {
+    "id": 278,
+    "imdb_id": "tt0111161",
+    "rank": 1,
+    "title": "The Shawshank Redemption",
+    "year": "1994",
+    "vote_average": 9.3,
+    "imdb_rating": "9.3",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9cqNxx0GxF0bflZmeSMuL5tnGzr.jpg",
+    "overview": "Imprisoned in the 1940s for the double murder of his wife and her lover, upstanding banker Andy Dufresne begins a new life at the Shawshank prison, where he puts his accounting skills to work for an amoral warden. During his long stretch in prison, Dufresne comes to be admired by the other inmates -- including an older prisoner named Red -- for his integrity and unquenchable sense of hope."
+  },
+  {
+    "id": 238,
+    "imdb_id": "tt0068646",
+    "rank": 2,
+    "title": "The Godfather",
+    "year": "1972",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3bhkrj58Vtu7enYsRolD1fZdja1.jpg",
+    "overview": "Spanning the years 1945 to 1955, a chronicle of the fictional Italian-American Corleone crime family. When organized crime family patriarch, Vito Corleone barely survives an attempt on his life, his youngest son, Michael steps in to take care of the would-be killers, launching a campaign of bloody revenge."
+  },
+  {
+    "id": 155,
+    "imdb_id": "tt0468569",
+    "rank": 3,
+    "title": "The Dark Knight",
+    "year": "2008",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qJ2tW6WMUDux911r6m7haRef0WH.jpg",
+    "overview": "Batman raises the stakes in his war on crime. With the help of Lt. Jim Gordon and District Attorney Harvey Dent, Batman sets out to dismantle the remaining criminal organizations that plague the streets. The partnership proves to be effective, but they soon find themselves prey to a reign of chaos unleashed by a rising criminal mastermind known to the terrified citizens of Gotham as the Joker."
+  },
+  {
+    "id": 240,
+    "imdb_id": "tt0071562",
+    "rank": 4,
+    "title": "The Godfather Part II",
+    "year": "1974",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8a1lJs7mFyGhGhZZDT1azJUoQiZ.jpg",
+    "overview": "In the continuing saga of the Corleone crime family, a young Vito Corleone grows up in Sicily and in 1910s New York. In the 1950s, Michael Corleone attempts to expand the family business into Las Vegas, Hollywood and Cuba."
+  },
+  {
+    "id": 122,
+    "imdb_id": "tt0167260",
+    "rank": 5,
+    "title": "The Lord of the Rings: The Return of the King",
+    "year": "2003",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rCzpDGLbOoPwLjy3OAm5NUPOTrC.jpg",
+    "overview": "As armies mass for a final battle that will decide the fate of the world--and powerful, ancient forces of Light and Dark compete to determine the outcome--one member of the Fellowship of the Ring is revealed as the noble heir to the throne of the Kings of Men. Yet, the sole hope for triumph over evil lies with a brave hobbit, Frodo, who, accompanied by his loyal friend Sam and the hideous, wretched Gollum, ventures deep into the very dark heart of Mordor on his seemingly impossible quest to destroy the Ring of Power.\u200b"
+  },
+  {
+    "id": 389,
+    "imdb_id": "tt0050083",
+    "rank": 6,
+    "title": "12 Angry Men",
+    "year": "1957",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zhG3vKWyDRaZYoaww1UVAi29T9h.jpg",
+    "overview": "The defense and the prosecution have rested and the jury is filing into the jury room to decide if a young Spanish-American is guilty or innocent of murdering his father. What begins as an open and shut case soon becomes a mini-drama of each of the jurors' prejudices and preconceptions about the trial, the accused, and each other."
+  },
+  {
+    "id": 424,
+    "imdb_id": "tt0108052",
+    "rank": 7,
+    "title": "Schindler&apos;s List",
+    "year": "1993",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sF1U4EUQS8YHUYjNl3pMGNIQyr0.jpg",
+    "overview": "The true story of how businessman Oskar Schindler saved over a thousand Jewish lives from the Nazis while they worked as slaves in his factory during World War II."
+  },
+  {
+    "id": 120,
+    "imdb_id": "tt0120737",
+    "rank": 8,
+    "title": "The Lord of the Rings: The Fellowship of the Ring",
+    "year": "2001",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg",
+    "overview": "Young hobbit Frodo Baggins, after inheriting a mysterious ring from his uncle Bilbo, must leave his home in order to keep it from falling into the hands of its evil creator. Along the way, a fellowship is formed to protect the ringbearer and make sure that the ring arrives at its final destination: Mt. Doom, the only place where it can be destroyed."
+  },
+  {
+    "id": 680,
+    "imdb_id": "tt0110912",
+    "rank": 9,
+    "title": "Pulp Fiction",
+    "year": "1994",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vQWk5YBFWF4bZaofAbv0tShwBvQ.jpg",
+    "overview": "A burger-loving hit man, his philosophical partner, a drug-addled gangster's moll and a washed-up boxer converge in this sprawling, comedic crime caper. Their adventures unfurl in three stories that ingeniously trip back and forth in time."
+  },
+  {
+    "id": 121,
+    "imdb_id": "tt0167261",
+    "rank": 10,
+    "title": "The Lord of the Rings: The Two Towers",
+    "year": "2002",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5VTN0pR8gcqV3EPUHHfMGnJYN9L.jpg",
+    "overview": "Frodo Baggins and the other members of the Fellowship continue on their sacred quest to destroy the One Ring--but on separate paths. Their destinies lie at two towers--Orthanc Tower in Isengard, where the corrupt wizard Saruman awaits, and Sauron's fortress at Barad-dur, deep within the dark lands of Mordor."
+  },
+  {
+    "id": 429,
+    "imdb_id": "tt0060196",
+    "rank": 11,
+    "title": "Il buono, il brutto, il cattivo",
+    "year": "1966",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Western"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bX2xnavhMYjWDoZp1VM6VnU1xwe.jpg",
+    "overview": "While the Civil War rages on between the Union and the Confederacy, three men \u2013 a quiet loner, a ruthless hitman, and a Mexican bandit \u2013 comb the American Southwest in search of a strongbox containing $200,000 in stolen gold."
+  },
+  {
+    "id": 13,
+    "imdb_id": "tt0109830",
+    "rank": 12,
+    "title": "Forrest Gump",
+    "year": "1994",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/Cw4hIUIAmSYfK9QfaUW5igp9La.jpg",
+    "overview": "A man with a low IQ has accomplished great things in his life and been present during significant historic events\u2014in each case, far exceeding what anyone imagined he could do. But despite all he has achieved, his one true love eludes him."
+  },
+  {
+    "id": 550,
+    "imdb_id": "tt0137523",
+    "rank": 13,
+    "title": "Fight Club",
+    "year": "1999",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jSziioSwPVrOy9Yow3XhWIBDjq1.jpg",
+    "overview": "A ticking-time-bomb insomniac and a slippery soap salesman channel primal male aggression into a shocking new form of therapy. Their concept catches on, with underground \"fight clubs\" forming in every town, until an eccentric gets in the way and ignites an out-of-control spiral toward oblivion."
+  },
+  {
+    "id": 27205,
+    "imdb_id": "tt1375666",
+    "rank": 14,
+    "title": "Inception",
+    "year": "2010",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Adventure",
+      "Sci-Fi",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xlaY2zyzMfkhk0HSC5VUwzoZPU1.jpg",
+    "overview": "Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: \"inception\", the implantation of another person's idea into a target's subconscious."
+  },
+  {
+    "id": 1891,
+    "imdb_id": "tt0080684",
+    "rank": 15,
+    "title": "Star Wars: Episode V - The Empire Strikes Back",
+    "year": "1980",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Adventure",
+      "Fantasy",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nNAeTmF4CtdSgMDplXTDPOpYzsX.jpg",
+    "overview": "The epic saga continues as Luke Skywalker, in hopes of defeating the evil Galactic Empire, learns the ways of the Jedi from aging master Yoda. But Darth Vader is more determined than ever to capture Luke. Meanwhile, rebel leader Princess Leia, cocky Han Solo, Chewbacca, and droids C-3PO and R2-D2 are thrown into various stages of capture, betrayal and despair."
+  },
+  {
+    "id": 603,
+    "imdb_id": "tt0133093",
+    "rank": 16,
+    "title": "The Matrix",
+    "year": "1999",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Action",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/aOIuZAjPaRIE6CMzbazvcHuHXDc.jpg",
+    "overview": "Set in the 22nd century, The Matrix tells the story of a computer hacker who joins a group of underground insurgents fighting the vast and powerful computers who now rule the earth."
+  },
+  {
+    "id": 157336,
+    "imdb_id": "tt0816692",
+    "rank": 17,
+    "title": "Interstellar",
+    "year": "2014",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yQvGrMoipbRoddT0ZR8tPoR7NfX.jpg",
+    "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage."
+  },
+  {
+    "id": 769,
+    "imdb_id": "tt0099685",
+    "rank": 18,
+    "title": "GoodFellas",
+    "year": "1990",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9OkCLM73MIU2CrKZbqiT8Ln1wY2.jpg",
+    "overview": "The true story of Henry Hill, a half-Irish, half-Sicilian Brooklyn kid who is adopted by neighbourhood gangsters at an early age and climbs the ranks of a Mafia family under the guidance of Jimmy Conway."
+  },
+  {
+    "id": 510,
+    "imdb_id": "tt0073486",
+    "rank": 19,
+    "title": "One Flew Over the Cuckoo&apos;s Nest",
+    "year": "1975",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kjWsMh72V6d8KRLV4EOoSJLT1H7.jpg",
+    "overview": "A petty criminal fakes insanity to serve his sentence in a mental ward rather than prison. He soon finds himself as a leader to the other patients\u2014and an enemy to the cruel, domineering nurse who runs the ward."
+  },
+  {
+    "id": 807,
+    "imdb_id": "tt0114369",
+    "rank": 20,
+    "title": "Se7en",
+    "year": "1995",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/191nKfP0ehp3uIvWqgPbFmI4lv9.jpg",
+    "overview": "Two homicide detectives are on a desperate hunt for a serial killer whose crimes are based on the \"seven deadly sins\" in this dark and haunting film that takes viewers from the tortured remains of one victim to the next. The seasoned Det. Somerset researches each sin in an effort to get inside the killer's mind, while his novice partner, Mills, scoffs at his efforts to unravel the case."
+  },
+  {
+    "id": 1585,
+    "imdb_id": "tt0038650",
+    "rank": 21,
+    "title": "It&apos;s a Wonderful Life",
+    "year": "1946",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Family",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bSqt9rhDZx1Q7UZ86dBPKdNomp2.jpg",
+    "overview": "George Bailey has spent his entire life giving to the people of Bedford Falls.  All that prevents rich skinflint Mr. Potter from taking over the entire town is George's modest building and loan company.  But on Christmas Eve the business's $8,000 is lost and George's troubles begin."
+  },
+  {
+    "id": 274,
+    "imdb_id": "tt0102926",
+    "rank": 22,
+    "title": "The Silence of the Lambs",
+    "year": "1991",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Horror"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uS9m8OBk1A8eM9I042bx8XXpqAq.jpg",
+    "overview": "Clarice Starling is a top student at the FBI's training academy.  Jack Crawford wants Clarice to interview Dr. Hannibal Lecter, a brilliant psychiatrist who is also a violent psychopath, serving life behind bars for various acts of murder and cannibalism.  Crawford believes that Lecter may have insight into a case and that Starling, as an attractive young woman, may be just the bait to draw him out."
+  },
+  {
+    "id": 857,
+    "imdb_id": "tt0120815",
+    "rank": 23,
+    "title": "Saving Private Ryan",
+    "year": "1998",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uqx37cS8cpHg8U35f9U5IBlrCV3.jpg",
+    "overview": "As U.S. troops storm the beaches of Normandy, three brothers lie dead on the battlefield, with a fourth trapped behind enemy lines. Ranger captain John Miller and seven men are tasked with penetrating German-held territory and bringing the boy home."
+  },
+  {
+    "id": 346,
+    "imdb_id": "tt0047478",
+    "rank": 24,
+    "title": "Shichinin no samurai",
+    "year": "1954",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lOMGc8bnSwQhS4XyE1S99uH8NXf.jpg",
+    "overview": "A samurai answers a village's request for protection after he falls on hard times. The town needs protection from bandits, so the samurai gathers six others to help him teach the people how to defend themselves, and the villagers provide the soldiers with food."
+  },
+  {
+    "id": 497,
+    "imdb_id": "tt0120689",
+    "rank": 25,
+    "title": "The Green Mile",
+    "year": "1999",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8VG8fDNiy50H4FedGwdSVUPoaJe.jpg",
+    "overview": "A supernatural tale set on death row in a Southern prison, where gentle giant John Coffey possesses the mysterious power to heal people's ailments. When the cell block's head guard, Paul Edgecomb, recognizes Coffey's miraculous gift, he tries desperately to help stave off the condemned man's execution."
+  },
+  {
+    "id": 598,
+    "imdb_id": "tt0317248",
+    "rank": 26,
+    "title": "Cidade de Deus",
+    "year": "2002",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/k7eYdWvhYQyRQoU2TB2A2Xu2TfD.jpg",
+    "overview": "In the poverty-stricken favelas of Rio de Janeiro in the 1970s, two young men choose different paths. Rocket is a budding photographer who documents the increasing drug-related violence of his neighborhood, while Jos\u00e9 \u201cZ\u00e9\u201d Pequeno is an ambitious drug dealer diving into a dangerous life of crime."
+  },
+  {
+    "id": 637,
+    "imdb_id": "tt0118799",
+    "rank": 27,
+    "title": "La vita \u00e8 bella",
+    "year": "1997",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/74hLDKjD5aGYOotO6esUVaeISa2.jpg",
+    "overview": "A touching story of an Italian book seller of Jewish ancestry who lives in his own little fairy tale. His creative and happy life would come to an abrupt halt when his entire family is deported to a concentration camp during World War II. While locked up he tries to convince his son that the whole thing is just a game."
+  },
+  {
+    "id": 280,
+    "imdb_id": "tt0103064",
+    "rank": 28,
+    "title": "Terminator 2: Judgment Day",
+    "year": "1991",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jFTVD4XoWQTcg7wdyJKa8PEds5q.jpg",
+    "overview": "Ten years after the events of the original, a reprogrammed T-800 is sent back in time to protect young John Connor from the shape-shifting T-1000. Together with his mother Sarah, he fights to stop Skynet from triggering a nuclear apocalypse."
+  },
+  {
+    "id": 105,
+    "imdb_id": "tt0088763",
+    "rank": 29,
+    "title": "Back to the Future",
+    "year": "1985",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vN5B5WgYscRGcQpVhHl6p9DDTP0.jpg",
+    "overview": "Eighties teenager Marty McFly is accidentally sent back in time to 1955, inadvertently disrupting his parents' first meeting and attracting his mother's romantic interest. Marty must repair the damage to history by rekindling his parents' romance and - with the help of his eccentric inventor friend Doc Brown - return to 1985."
+  },
+  {
+    "id": 11,
+    "imdb_id": "tt0076759",
+    "rank": 30,
+    "title": "Star Wars",
+    "year": "1977",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fai0rspsNeJCS69wHNjOdWxcI7P.jpg",
+    "overview": "Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire."
+  },
+  {
+    "id": 129,
+    "imdb_id": "tt0245429",
+    "rank": 31,
+    "title": "Sen to Chihiro no kamikakushi",
+    "year": "2001",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+    "overview": "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family."
+  },
+  {
+    "id": 98,
+    "imdb_id": "tt0172495",
+    "rank": 32,
+    "title": "Gladiator",
+    "year": "2000",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wN2xWp1eIwCKOD0BHTcErTBv1Uq.jpg",
+    "overview": "After the death of Emperor Marcus Aurelius, his devious son takes power and demotes Maximus, one of Rome's most capable generals who Marcus preferred. Eventually, Maximus is forced to become a gladiator and battle to the death against other men for the amusement of paying audiences."
+  },
+  {
+    "id": 414419,
+    "imdb_id": "tt6019206",
+    "rank": 33,
+    "title": "Kill Bill: The Whole Bloody Affair",
+    "year": "2011",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nSOJfWJCdVFZQwXQA7RXn7FIIiY.jpg",
+    "overview": "A former assassin, known simply as The Bride, wakes from a coma four years after her jealous ex-lover Bill attempts to murder her on her wedding day. Fueled by an insatiable desire for revenge, she vows to get even with every person who contributed to the loss of her unborn child, her entire wedding party, and four years of her life.  After devising a hit list, The Bride sets off on her quest, enduring unspeakable injury and unscrupulous enemies."
+  },
+  {
+    "id": 423,
+    "imdb_id": "tt0253474",
+    "rank": 34,
+    "title": "The Pianist",
+    "year": "2002",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Music"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2hFvxCCWrTmCYwfy7yum0GKRi3Y.jpg",
+    "overview": "The true story of pianist W\u0142adys\u0142aw Szpilman's experiences in Warsaw during the Nazi occupation. When the Jews of the city find themselves forced into a ghetto, Szpilman finds work playing in a caf\u00e9; and when his family is deported in 1942, he stays behind, works for a while as a laborer, and eventually goes into hiding in the ruins of the war-torn city."
+  },
+  {
+    "id": 496243,
+    "imdb_id": "tt6751668",
+    "rank": 35,
+    "title": "Gisaengchung",
+    "year": "2019",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg",
+    "overview": "All unemployed, Ki-taek's family takes peculiar interest in the wealthy and glamorous Parks for their livelihood until they get entangled in an unexpected incident."
+  },
+  {
+    "id": 12477,
+    "imdb_id": "tt0095327",
+    "rank": 36,
+    "title": "Hotaru no haka",
+    "year": "1988",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/k9tv1rXZbOhH7eiCk378x61kNQ1.jpg",
+    "overview": "In the final months of World War II, 14-year-old Seita and his sister Setsuko are orphaned when their mother is killed during an air raid in Kobe, Japan. After a falling out with their aunt, they move into an abandoned bomb shelter. With no surviving relatives and their emergency rations depleted, Seita and Setsuko struggle to survive."
+  },
+  {
+    "id": 14537,
+    "imdb_id": "tt0056058",
+    "rank": 37,
+    "title": "Seppuku",
+    "year": "1962",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3nPwMd3KviJWaHzG9fZCqlwWMas.jpg",
+    "overview": "Down-on-his-luck veteran Tsugumo Hanshir\u014d enters the courtyard of the prosperous House of Iyi. Unemployed, and with no family, he hopes to find a place to commit seppuku\u2014and a worthy second to deliver the coup de gr\u00e2ce in his suicide ritual. The senior counselor for the Iyi clan questions the ronin\u2019s resolve and integrity, suspecting Hanshir\u014d of seeking charity rather than an honorable end. What follows is a pair of interlocking stories which lay bare the difference between honor and respect, and promises to examine the legendary foundations of the Samurai code."
+  },
+  {
+    "id": 539,
+    "imdb_id": "tt0054215",
+    "rank": 38,
+    "title": "Psycho",
+    "year": "1960",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Horror",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yz4QVqPx3h1hD1DfqqQkCq3rmxW.jpg",
+    "overview": "When larcenous real estate clerk Marion Crane goes on the lam with a wad of cash and hopes of starting a new life, she ends up at the notorious Bates Motel, where manager Norman Bates cares for his housebound mother."
+  },
+  {
+    "id": 8587,
+    "imdb_id": "tt0110357",
+    "rank": 39,
+    "title": "The Lion King",
+    "year": "1994",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sKCr78MXSLixwmZ8DyJLrpMsd15.jpg",
+    "overview": "Young lion prince Simba, eager to one day become king of the Pride Lands, grows up under the watchful eye of his father Mufasa; all the while his villainous uncle Scar conspires to take the throne for himself. Amid betrayal and tragedy, Simba must confront his past and find his rightful place in the Circle of Life."
+  },
+  {
+    "id": 1422,
+    "imdb_id": "tt0407887",
+    "rank": 40,
+    "title": "The Departed",
+    "year": "2006",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nT97ifVT2J1yMQmeq20Qblg61T.jpg",
+    "overview": "To take down South Boston's Irish Mafia, the police send in one of their own to infiltrate the underworld, not realizing the syndicate has done likewise. While an undercover cop curries favor with the mob kingpin, a career criminal rises through the police ranks. But both sides soon discover there's a mole among them."
+  },
+  {
+    "id": 244786,
+    "imdb_id": "tt2582802",
+    "rank": 41,
+    "title": "Whiplash",
+    "year": "2014",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Music"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7fn624j5lj3xTme2SgiLCeuedmO.jpg",
+    "overview": "Under the direction of a ruthless instructor, a talented young drummer begins to pursue perfection at any cost, even his humanity."
+  },
+  {
+    "id": 1124,
+    "imdb_id": "tt0482571",
+    "rank": 42,
+    "title": "The Prestige",
+    "year": "2006",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/Ag2B2KHKQPukjH7WutmgnnSNurZ.jpg",
+    "overview": "A mysterious story of two magicians whose intense rivalry leads them on a life-long battle for supremacy -- full of obsession, deceit and jealousy with dangerous and deadly consequences."
+  },
+  {
+    "id": 73,
+    "imdb_id": "tt0120586",
+    "rank": 43,
+    "title": "American History X",
+    "year": "1998",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/x2drgoXYZ8484lqyDj7L1CEVR4T.jpg",
+    "overview": "Derek Vineyard is paroled after serving 3 years in prison for killing two African-American men. Through his brother, Danny Vineyard's narration, we learn that before going to prison, Derek was a skinhead and the leader of a violent white supremacist gang that committed acts of racial crime throughout L.A. and his actions greatly influenced Danny. Reformed and fresh out of prison, Derek severs contact with the gang and becomes determined to keep Danny from going down the same violent path as he did."
+  },
+  {
+    "id": 569094,
+    "imdb_id": "tt9362722",
+    "rank": 44,
+    "title": "Spider-Man: Across the Spider-Verse",
+    "year": "2023",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg",
+    "overview": "After reuniting with Gwen Stacy, Brooklyn\u2019s full-time, friendly neighborhood Spider-Man is catapulted across the Multiverse, where he encounters the Spider Society, a team of Spider-People charged with protecting the Multiverse's very existence. But when the heroes clash on how to handle a new threat, Miles finds himself pitted against the other Spiders and must set out on his own to save those he loves most."
+  },
+  {
+    "id": 101,
+    "imdb_id": "tt0110413",
+    "rank": 45,
+    "title": "L\u00e9on",
+    "year": "1994",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bxB2q91nKYp8JNzqE7t7TWBVupB.jpg",
+    "overview": "L\u00e9on, the top hit man in New York, has earned a rep as an effective \"cleaner\". But when his next-door neighbors are wiped out by a loose-cannon DEA agent, he becomes the unwilling custodian of 12-year-old Mathilda. Before long, Mathilda's thoughts turn to revenge, and she considers following in L\u00e9on's footsteps."
+  },
+  {
+    "id": 11216,
+    "imdb_id": "tt0095765",
+    "rank": 46,
+    "title": "Nuovo Cinema Paradiso",
+    "year": "1988",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9JhfVOveaY00o8njQu2Xrp4YWud.jpg",
+    "overview": "A filmmaker recalls his childhood, when he fell in love with the movies at his village's theater and formed a deep friendship with the theater's projectionist."
+  },
+  {
+    "id": 289,
+    "imdb_id": "tt0034583",
+    "rank": 47,
+    "title": "Casablanca",
+    "year": "1943",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Romance",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lGCEKlJo2CnWydQj7aamY7s1S7Q.jpg",
+    "overview": "In Casablanca, Morocco in December 1941, a cynical American expatriate meets a former lover, with unforeseen complications."
+  },
+  {
+    "id": 77338,
+    "imdb_id": "tt1675434",
+    "rank": 48,
+    "title": "Intouchables",
+    "year": "2011",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1QU7HKgsQbGpzsJbJK4pAVQV9F5.jpg",
+    "overview": "A true story of two men who should never have met \u2013 a quadriplegic aristocrat who was injured in a paragliding accident and a young man from the projects."
+  },
+  {
+    "id": 629,
+    "imdb_id": "tt0114814",
+    "rank": 49,
+    "title": "The Usual Suspects",
+    "year": "1995",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/99X2SgyFunJFXGAYnDv3sb9pnUD.jpg",
+    "overview": "Held in an L.A. interrogation room, Verbal Kint attempts to convince the feds that a mythic crime lord, Keyser Soze, not only exists, but was also responsible for drawing him and his four partners into a multi-million dollar heist that ended with an explosion in San Pedro harbor \u2013 leaving few survivors. Verbal lures his interrogators with an incredible story of the crime lord's almost supernatural prowess."
+  },
+  {
+    "id": 68718,
+    "imdb_id": "tt1853728",
+    "rank": 50,
+    "title": "Django Unchained",
+    "year": "2012",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Western"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7oWY8VDWW7thTzWh3OKYRkWUlD5.jpg",
+    "overview": "With the help of a German bounty hunter, a freed slave sets out to rescue his wife from a brutal Mississippi plantation owner."
+  },
+  {
+    "id": 348,
+    "imdb_id": "tt0078748",
+    "rank": 51,
+    "title": "Alien",
+    "year": "1979",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Horror",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vfrQk5IPloGg1v9Rzbh2Eg3VGyM.jpg",
+    "overview": "During its return to the earth, commercial spaceship Nostromo intercepts a distress signal from a distant planet. When a three-member team of the crew discovers a chamber containing thousands of eggs on the planet, a creature inside one of the eggs attacks an explorer. The entire crew is unaware of the impending nightmare set to descend upon them when the alien parasite planted inside its unfortunate host is birthed."
+  },
+  {
+    "id": 567,
+    "imdb_id": "tt0047396",
+    "rank": 52,
+    "title": "Rear Window",
+    "year": "1954",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ILVF0eJxHMddjxeQhswFtpMtqx.jpg",
+    "overview": "A wheelchair-bound photographer spies on his neighbors from his apartment window and becomes convinced one of them has committed murder."
+  },
+  {
+    "id": 3082,
+    "imdb_id": "tt0027977",
+    "rank": 53,
+    "title": "Modern Times",
+    "year": "1936",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/AthaPakkuCLROdKxtRbKWclkDBK.jpg",
+    "overview": "A bumbling tramp desires to build a home with a young woman, yet is thwarted time and time again by his lack of experience and habit of being in the wrong place at the wrong time..."
+  },
+  {
+    "id": 335,
+    "imdb_id": "tt0064116",
+    "rank": 54,
+    "title": "C&apos;era una volta il West",
+    "year": "1968",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Western"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qbYgqOczabWNn2XKwgMtVrntD6P.jpg",
+    "overview": "As the railroad builders advance unstoppably through the Arizona desert on their way to the sea, Jill arrives in the small town of Flagstone with the intention of starting a new life."
+  },
+  {
+    "id": 10681,
+    "imdb_id": "tt0910970",
+    "rank": 55,
+    "title": "WALL\u00b7E",
+    "year": "2008",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hbhFnRzzg6ZDmm8YAmxBnQpQIPh.jpg",
+    "overview": "After hundreds of years doing what he was built for, WALL\u2022E\u2014 a robot designed to clean up the earth\u2014discovers a new purpose in life when he meets a sleek search robot named EVE. EVE comes to realize that WALL\u2022E has inadvertently stumbled upon the key to the planet's future, and races back to space to report to the humans. Meanwhile, WALL\u2022E chases EVE across the galaxy and sets into motion one of the most imaginative adventures ever brought to the big screen."
+  },
+  {
+    "id": 901,
+    "imdb_id": "tt0021749",
+    "rank": 56,
+    "title": "City Lights",
+    "year": "1931",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ugmakEL5y294I5bXgiBqApuZpwc.jpg",
+    "overview": "A tramp falls in love with a beautiful blind flower girl. His on-and-off friendship with a wealthy man allows him to be the girl's benefactor and suitor."
+  },
+  {
+    "id": 28,
+    "imdb_id": "tt0078788",
+    "rank": 57,
+    "title": "Apocalypse Now",
+    "year": "1979",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gQB8Y5RCMkv2zwzFHbUJX3kAhvA.jpg",
+    "overview": "At the height of the Vietnam war, Captain Benjamin Willard is sent on a dangerous mission that, officially, \"does not exist, nor will it ever exist.\" His goal is to locate - and eliminate - a mysterious Green Beret Colonel named Walter Kurtz, who has been leading his personal army on illegal guerrilla missions into enemy territory."
+  },
+  {
+    "id": 77,
+    "imdb_id": "tt0209144",
+    "rank": 58,
+    "title": "Memento",
+    "year": "2000",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nzlv62aC0octS5AklAiWpXLX9Z0.jpg",
+    "overview": "Leonard Shelby is tracking down the man who raped and murdered his wife. The difficulty of locating his wife's killer, however, is compounded by the fact that he suffers from a rare, untreatable form of short-term memory loss. Although he can recall details of life before his accident, Leonard cannot remember what happened fifteen minutes ago, where he's going, or why."
+  },
+  {
+    "id": 299536,
+    "imdb_id": "tt4154756",
+    "rank": 59,
+    "title": "Avengers: Infinity War",
+    "year": "2018",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7WsyChQLEftFiDOVTGkv3hFpyyt.jpg",
+    "overview": "As the Avengers and their allies have continued to protect the world from threats too large for any one hero to handle, a new danger has emerged from the cosmic shadows: Thanos. A despot of intergalactic infamy, his goal is to collect all six Infinity Stones, artifacts of unimaginable power, and use them to inflict his twisted will on all of reality. Everything the Avengers have fought for has led up to this moment - the fate of Earth and existence itself has never been more uncertain."
+  },
+  {
+    "id": 693134,
+    "imdb_id": "tt15239678",
+    "rank": 60,
+    "title": "Dune: Part Two",
+    "year": "2024",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6izwz7rsy95ARzTR3poZ8H6c5pp.jpg",
+    "overview": "Follow the mythic journey of Paul Atreides as he unites with Chani and the Fremen while on a path of revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the known universe, Paul endeavors to prevent a terrible future only he can foresee."
+  },
+  {
+    "id": 1368337,
+    "imdb_id": "tt33764258",
+    "rank": 61,
+    "title": "The Odyssey",
+    "year": "2026",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5rhTDKUhPYvpdQIijFIs5VoWsON.jpg",
+    "overview": "Odysseus, the legendary King of Ithaca, embarks on a long and perilous journey home following the Trojan War. Throughout his voyage, he is forced to confront the whims of gods, mythological monsters, and trials that stretch both his cunning and his humanity to the breaking point."
+  },
+  {
+    "id": 85,
+    "imdb_id": "tt0082971",
+    "rank": 62,
+    "title": "Raiders of the Lost Ark",
+    "year": "1981",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ceG9VzoRAVGwivFU403Wc3AHRys.jpg",
+    "overview": "When Dr. Indiana Jones \u2013 the tweed-suited professor who just happens to be a celebrated archaeologist \u2013 is hired by the government to locate the legendary Ark of the Covenant, he finds himself up against the entire Nazi regime."
+  },
+  {
+    "id": 324857,
+    "imdb_id": "tt4633694",
+    "rank": 63,
+    "title": "Spider-Man: Into the Spider-Verse",
+    "year": "2018",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iiZZdoQBEYBv6id8su7ImL0oCbD.jpg",
+    "overview": "Struggling to find his place in the world while juggling school and family, Brooklyn teenager Miles Morales is unexpectedly bitten by a radioactive spider and develops unfathomable powers just like the one and only Spider-Man. While wrestling with the implications of his new abilities, Miles discovers a super collider created by the madman Wilson \"Kingpin\" Fisk, causing others from across the Spider-Verse to be inadvertently transported to his dimension."
+  },
+  {
+    "id": 582,
+    "imdb_id": "tt0405094",
+    "rank": 64,
+    "title": "Das Leben der Anderen",
+    "year": "2006",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cVUDMnskSc01rdbyH0tLATTJUdP.jpg",
+    "overview": "In 1984 East Berlin, dedicated Stasi officer Gerd Wiesler begins spying on a famous playwright and his actress-lover Christa-Maria. Wiesler becomes unexpectedly sympathetic to the couple, and faces conflicting loyalties when his superior takes a liking to Christa-Maria."
+  },
+  {
+    "id": 599,
+    "imdb_id": "tt0043014",
+    "rank": 65,
+    "title": "Sunset Blvd.",
+    "year": "1950",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Film-Noir"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zt8aQ6ksqK6p1AopC5zVTDS9pKT.jpg",
+    "overview": "A hack screenwriter writes a screenplay for a former silent film star who has faded into Hollywood obscurity."
+  },
+  {
+    "id": 37257,
+    "imdb_id": "tt0051201",
+    "rank": 66,
+    "title": "Witness for the Prosecution",
+    "year": "1957",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bCj4EfuehAlgBwVd3diyWyhuuau.jpg",
+    "overview": "An ailing barrister is thrust back into the courtroom in what becomes one of the most unusual and eventful murder cases of the lawyer's career when he finds himself defending a man being tried for the murder of a socialite."
+  },
+  {
+    "id": 975,
+    "imdb_id": "tt0050825",
+    "rank": 67,
+    "title": "Paths of Glory",
+    "year": "1957",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hGg1UCQSHlXfv2HI9bDHT2OQBam.jpg",
+    "overview": "A commanding officer defends three scapegoats on trial for a failed offensive that occurred within the French Army in 1916."
+  },
+  {
+    "id": 16869,
+    "imdb_id": "tt0361748",
+    "rank": 68,
+    "title": "Inglourious Basterds",
+    "year": "2009",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/aupnPtagH9JVBuMrGEanf4iqXEQ.jpg",
+    "overview": "In Nazi-occupied France during World War II, a group of Jewish-American soldiers known as \"The Basterds\" are chosen specifically to spread fear throughout the Third Reich by scalping and brutally killing Nazis. The Basterds, lead by Lt. Aldo Raine soon cross paths with a French-Jewish teenage girl who runs a movie theater in Paris which is targeted by the soldiers."
+  },
+  {
+    "id": 694,
+    "imdb_id": "tt0081505",
+    "rank": 69,
+    "title": "The Shining",
+    "year": "1980",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Horror"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uAR0AWqhQL1hQa69UDEbb2rE5Wx.jpg",
+    "overview": "Jack Torrance accepts a caretaker job at the Overlook Hotel, where he, along with his wife Wendy and their son Danny, must live isolated from the rest of the world for the winter. But they aren't prepared for the madness that lurks within."
+  },
+  {
+    "id": 914,
+    "imdb_id": "tt0032553",
+    "rank": 70,
+    "title": "The Great Dictator",
+    "year": "1940",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nhMXB8GTdswYMCL9nepDZymJCOr.jpg",
+    "overview": "Dictator Adenoid Hynkel tries to expand his empire while a poor Jewish barber tries to avoid persecution from Hynkel's regime."
+  },
+  {
+    "id": 679,
+    "imdb_id": "tt0090605",
+    "rank": 71,
+    "title": "Aliens",
+    "year": "1986",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Horror"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/r1x5JGpyqZU8PYhbs4UcrO1Xb6x.jpg",
+    "overview": "Ripley, the sole survivor of the Nostromo's deadly encounter with the monstrous Alien, returns to Earth after drifting through space in hypersleep for 57 years. Although her story is initially met with skepticism, she agrees to accompany a team of Colonial Marines back to LV-426."
+  },
+  {
+    "id": 1163258,
+    "imdb_id": "tt23849204",
+    "rank": 72,
+    "title": "12th Fail",
+    "year": "2023",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Biography",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/eebUPRI4Z5e1Z7Hev4JZAwMIFkX.jpg",
+    "overview": "Based on the true story of IPS officer Manoj Kumar Sharma, 12th Fail sheds limelight on fearlessly embracing the idea of restarting the academic journey despite the setbacks and challenges and reclaiming one's destiny at a place where millions of students attempt the world's toughest competitive exam: UPSC."
+  },
+  {
+    "id": 12493,
+    "imdb_id": "tt0057565",
+    "rank": 73,
+    "title": "Tengoku to jigoku",
+    "year": "1963",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tgNjemQPG96uIezpiUiXFcer5ga.jpg",
+    "overview": "A Yokohama shoe executive faces a wrenching choice when kidnappers mistakenly seize his chauffeur\u2019s son but demand the ransom anyway."
+  },
+  {
+    "id": 299534,
+    "imdb_id": "tt4154796",
+    "rank": 74,
+    "title": "Avengers: Endgame",
+    "year": "2019",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg",
+    "overview": "After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once more in order to undo Thanos' actions and restore order to the universe once and for all, no matter what consequences may be in store."
+  },
+  {
+    "id": 489,
+    "imdb_id": "tt0119217",
+    "rank": 75,
+    "title": "Good Will Hunting",
+    "year": "1997",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/z2FnLKpFi1HPO7BEJxdkv6hpJSU.jpg",
+    "overview": "Will Hunting is a headstrong, working-class genius who is failing the lessons of life. After one too many run-ins with the law, Will's last chance is a psychology professor, who might be the only man who can reach him."
+  },
+  {
+    "id": 354912,
+    "imdb_id": "tt2380307",
+    "rank": 76,
+    "title": "Coco",
+    "year": "2017",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6Ryitt95xrO8KXuqRGm1fUuNwqF.jpg",
+    "overview": "Despite his family\u2019s baffling generations-old ban on music, Miguel dreams of becoming an accomplished musician like his idol, Ernesto de la Cruz. Desperate to prove his talent, Miguel finds himself in the stunning and colorful Land of the Dead following a mysterious chain of events. Along the way, he meets charming trickster Hector, and together, they set off on an extraordinary journey to unlock the real story behind Miguel's family history."
+  },
+  {
+    "id": 862,
+    "imdb_id": "tt0114709",
+    "rank": 77,
+    "title": "Toy Story",
+    "year": "1995",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uXDfjJbdP4ijW5hWSBrPrlKpxab.jpg",
+    "overview": "Led by Woody, Andy's toys live happily in his room until Andy's birthday brings Buzz Lightyear onto the scene. Afraid of losing his place in Andy's heart, Woody plots against Buzz. But when circumstances separate Buzz and Woody from their owner, the duo eventually learns to put aside their differences."
+  },
+  {
+    "id": 49026,
+    "imdb_id": "tt1345836",
+    "rank": 78,
+    "title": "The Dark Knight Rises",
+    "year": "2012",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Crime",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hr0L2aueqlP2BYUblTTjmtn0hw4.jpg",
+    "overview": "Following the death of District Attorney Harvey Dent, Batman assumes responsibility for Dent's crimes to protect the late attorney's reputation and is subsequently hunted by the Gotham City Police Department. Eight years later, Batman encounters the mysterious Selina Kyle and the villainous Bane, a new terrorist leader who overwhelms Gotham's finest. The Dark Knight resurfaces to protect a city that has branded him an enemy."
+  },
+  {
+    "id": 279,
+    "imdb_id": "tt0086879",
+    "rank": 79,
+    "title": "Amadeus",
+    "year": "1984",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Music"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gQRfiyfGvr1az0quaYyMram3Aqt.jpg",
+    "overview": "Disciplined Italian composer Antonio Salieri becomes consumed by jealousy and resentment towards the hedonistic and remarkably talented young Salzburger composer Wolfgang Amadeus Mozart."
+  },
+  {
+    "id": 372058,
+    "imdb_id": "tt5311514",
+    "rank": 80,
+    "title": "Kimi no na wa.",
+    "year": "2016",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Animation",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vfJFJPepRKapMd5G2ro7klIRysq.jpg",
+    "overview": "High schoolers Mitsuha and Taki are complete strangers living separate lives. But one night, they suddenly switch places. Mitsuha wakes up in Taki\u2019s body, and he in hers. This bizarre occurrence continues to happen randomly, and the two must adjust their lives around each other."
+  },
+  {
+    "id": 20453,
+    "imdb_id": "tt1187043",
+    "rank": 81,
+    "title": "3 Idiots",
+    "year": "2009",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/66A9MqXOyVFCssoloscw79z8Tew.jpg",
+    "overview": "Rascal. Joker. Dreamer. Genius... You've never met a college student quite like \"Rancho.\" From the moment he arrives at India's most prestigious university, Rancho's outlandish schemes turn the campus upside down\u2014along with the lives of his two newfound best friends. Together, they make life miserable for \"Virus,\" the school\u2019s uptight and heartless dean. But when Rancho catches the eye of the dean's daughter, Virus sets his sights on flunking out the \"3 idiots\" once and for all."
+  },
+  {
+    "id": 387,
+    "imdb_id": "tt0082096",
+    "rank": 82,
+    "title": "Das Boot",
+    "year": "1981",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/u8FhQPncOAkwcei2OI9orPWhV6K.jpg",
+    "overview": "A German submarine hunts allied ships during the Second World War, but it soon becomes the hunted. The crew tries to survive below the surface, while stretching both the boat and themselves to their limits."
+  },
+  {
+    "id": 197,
+    "imdb_id": "tt0112573",
+    "rank": 83,
+    "title": "Braveheart",
+    "year": "1995",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/or1gBugydmjToAEq7OZY0owwFk.jpg",
+    "overview": "Enraged at the slaughter of Murron, his new bride and childhood love, Scottish warrior William Wallace slays a platoon of the local English lord's soldiers. This leads the village to revolt and, eventually, the entire country to rise up against English rule."
+  },
+  {
+    "id": 128,
+    "imdb_id": "tt0119698",
+    "rank": 84,
+    "title": "Mononoke-hime",
+    "year": "1997",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cMYCDADoLKLbB83g4WnJegaZimC.jpg",
+    "overview": "Ashitaka, a prince of the disappearing Emishi people, is cursed by a demonized boar god and must journey to the west to find a cure. Along the way, he encounters San, a young human woman fighting to protect the forest, and Lady Eboshi, who is trying to destroy it. Ashitaka must find a way to bring balance to this conflict."
+  },
+  {
+    "id": 670,
+    "imdb_id": "tt0364569",
+    "rank": 85,
+    "title": "Oldeuboi",
+    "year": "2003",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pWDtjs568ZfOTMbURQBYuT4Qxka.jpg",
+    "overview": "With no clue how he came to be imprisoned, drugged and tortured for 15 years, a desperate man seeks revenge on his captors."
+  },
+  {
+    "id": 935,
+    "imdb_id": "tt0057012",
+    "rank": 86,
+    "title": "Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb",
+    "year": "1964",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Comedy",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gHm96BRW4GoI339rF1vYoYTB6Qe.jpg",
+    "overview": "After the insane General Jack D. Ripper initiates a nuclear strike on the Soviet Union, a war room full of politicians, generals and a Russian diplomat all frantically try to stop it."
+  },
+  {
+    "id": 14,
+    "imdb_id": "tt0169547",
+    "rank": 87,
+    "title": "American Beauty",
+    "year": "1999",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wby9315QzVKdW9BonAefg8jGTTb.jpg",
+    "overview": "Lester Burnham, a depressed suburban father in a mid-life crisis, decides to turn his hectic life around after developing an infatuation with his daughter's attractive friend."
+  },
+  {
+    "id": 517814,
+    "imdb_id": "tt8267604",
+    "rank": 88,
+    "title": "Capharna\u00fcm",
+    "year": "2018",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mFnfTVADj8yOxwzprYOmTPselk8.jpg",
+    "overview": "After running away from his negligent parents, committing a violent crime and being sentenced to five years in jail, a hardened, streetwise 12-year-old Lebanese boy sues his parents in protest of the life they have given him."
+  },
+  {
+    "id": 872,
+    "imdb_id": "tt0045152",
+    "rank": 89,
+    "title": "Singin&apos; in the Rain",
+    "year": "1952",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Comedy",
+      "Musical",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/w03EiJVHP8Un77boQeE7hg9DVdU.jpg",
+    "overview": "In 1927 Hollywood, a silent film star falls for a chorus girl just as he and his paranoid screen partner struggle to make the difficult transition to talking pictures."
+  },
+  {
+    "id": 311,
+    "imdb_id": "tt0087843",
+    "rank": 90,
+    "title": "C&apos;era una volta in America",
+    "year": "1984",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/i0enkzsL5dPeneWnjl1fCWm6L7k.jpg",
+    "overview": "A former Prohibition-era Jewish gangster returns to the Lower East Side of Manhattan over thirty years later, where he once again must confront the ghosts and regrets of his old life."
+  },
+  {
+    "id": 475557,
+    "imdb_id": "tt7286456",
+    "rank": 91,
+    "title": "Joker",
+    "year": "2019",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg",
+    "overview": "During the 1980s, a failed stand-up comedian is driven insane and turns to a life of crime and chaos in Gotham City while becoming an infamous psychopathic crime figure."
+  },
+  {
+    "id": 10193,
+    "imdb_id": "tt0435761",
+    "rank": 92,
+    "title": "Toy Story 3",
+    "year": "2010",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/AbbXspMOwdvwWZgVN0nabZq03Ec.jpg",
+    "overview": "Woody, Buzz, and the rest of Andy's toys haven't been played with in years. With Andy about to go to college, the gang find themselves accidentally left at a nefarious day care center. The toys must band together to escape and return home to Andy."
+  },
+  {
+    "id": 1892,
+    "imdb_id": "tt0086190",
+    "rank": 93,
+    "title": "Star Wars: Episode VI - Return of the Jedi",
+    "year": "1983",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jQYlydvHm3kUix1f8prMucrplhm.jpg",
+    "overview": "Luke Skywalker leads a mission to rescue his friend Han Solo from the clutches of Jabba the Hutt, the Emperor prepares to crush the Rebellion with a more powerful Death Star, and the Rebel fleet mounts a massive attack on the space station. Luke Skywalker confronts Darth Vader in a final climactic duel before the evil Emperor."
+  },
+  {
+    "id": 1333100,
+    "imdb_id": "tt33175825",
+    "rank": 94,
+    "title": "Shingeki no Kyojin: The Last Attack",
+    "year": "2024",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wgwldDDlTDDMrluOMkpSA8lyKjv.jpg",
+    "overview": "A colossal-sized omnibus film bringing together the last two episodes of Attack on Titan in the franchise's first-ever theatrical experience. After venturing beyond the walls and separated from his comrades, Eren finds himself inspired by this new truth and plots the \"Rumbling,\" a terrifying plan to eradicate every living thing in the world. With the fate of the world hanging in the balance, a motley crew of Eren's former comrades and enemies scramble to halt his deadly mission. The only question is, can they stop him?"
+  },
+  {
+    "id": 25237,
+    "imdb_id": "tt0091251",
+    "rank": 95,
+    "title": "Idi i smotri",
+    "year": "1985",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "Thriller",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qNbMsKVzigERgJUbwf8pKyZogpb.jpg",
+    "overview": "The invasion of a village in Belarus by German forces sends young Flyora into the forest to join the weary Resistance fighters, against his family's wishes. There he meets a girl, Glasha, who accompanies him back to his village. On returning home, Flyora finds his family and fellow peasants massacred. His continued survival amidst the brutal debris of war becomes increasingly nightmarish, a battle between despair and hope."
+  },
+  {
+    "id": 641,
+    "imdb_id": "tt0180093",
+    "rank": 96,
+    "title": "Requiem for a Dream",
+    "year": "2000",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9BTwsLaMVHOGFlmsSlx5QYCaXb.jpg",
+    "overview": "The drug-induced utopias of four Coney Island residents are shattered when their addictions run deep."
+  },
+  {
+    "id": 46738,
+    "imdb_id": "tt1255953",
+    "rank": 97,
+    "title": "Incendies",
+    "year": "2010",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yH6DAQVgbyj72S66gN4WWVoTjuf.jpg",
+    "overview": "A mother's last wishes send twins Jeanne and Simon on a journey to Middle East in search of their tangled roots. Adapted from Wajdi Mouawad's acclaimed play, Incendies tells the powerful and moving tale of two young adults' voyage to the core of deep-rooted hatred, never-ending wars and enduring love."
+  },
+  {
+    "id": 3782,
+    "imdb_id": "tt0044741",
+    "rank": 98,
+    "title": "Ikiru",
+    "year": "1952",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dgNTS4EQDDVfkzJI5msKuHu2Ei3.jpg",
+    "overview": "Kanji Watanabe is a middle-aged man who has worked in the same monotonous bureaucratic position for decades. Learning he has cancer, he starts to look for the meaning of his life."
+  },
+  {
+    "id": 103663,
+    "imdb_id": "tt2106476",
+    "rank": 99,
+    "title": "Jagten",
+    "year": "2012",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jkixsXzRh28q3PCqFoWcf7unghT.jpg",
+    "overview": "A teacher lives a lonely life, all the while struggling over his son\u2019s custody. His life slowly gets better as he finds love and receives good news from his son, but his new luck is about to be brutally shattered by an innocent little lie."
+  },
+  {
+    "id": 38,
+    "imdb_id": "tt0338013",
+    "rank": 100,
+    "title": "Eternal Sunshine of the Spotless Mind",
+    "year": "2004",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "Romance",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5MwkWH9tYHv3mV9OdYTMR5qreIz.jpg",
+    "overview": "Joel Barish, heartbroken that his girlfriend underwent a procedure to erase him from her memory, decides to do the same. However, as he watches his memories of her fade away, he realises that he still loves her, and may be too late to correct his mistake."
+  },
+  {
+    "id": 284,
+    "imdb_id": "tt0053604",
+    "rank": 101,
+    "title": "The Apartment",
+    "year": "1960",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hhSRt1KKfRT0yEhEtRW3qp31JFU.jpg",
+    "overview": "Bud Baxter is a minor clerk in a huge New York insurance company, until he discovers a quick way to climb the corporate ladder. He lends out his apartment to the executives as a place to take their mistresses. Although he often has to deal with the aftermath of their visits, one night he's left with a major problem to solve."
+  },
+  {
+    "id": 947,
+    "imdb_id": "tt0056172",
+    "rank": 102,
+    "title": "Lawrence of Arabia",
+    "year": "1962",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Adventure",
+      "Biography",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/AiAm0EtDvyGqNpVoieRw4u65vD1.jpg",
+    "overview": "During World War I, English officer Thomas Edward 'T.E.' Lawrence sets out to unite and lead the diverse, often warring, Arab tribes to fight the Turks."
+  },
+  {
+    "id": 949,
+    "imdb_id": "tt0113277",
+    "rank": 103,
+    "title": "Heat",
+    "year": "1995",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/umSVjVdbVwtx5ryCA2QXL44Durm.jpg",
+    "overview": "Obsessive master thief Neil McCauley leads a top-notch crew on various daring heists throughout Los Angeles while determined detective Vincent Hanna pursues him without rest. Each man recognizes and respects the ability and the dedication of the other even though they are aware their cat-and-mouse game may end in violence."
+  },
+  {
+    "id": 111,
+    "imdb_id": "tt0086250",
+    "rank": 104,
+    "title": "Scarface",
+    "year": "1983",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iQ5ztdjvteGeboxtmRdXEChJOHh.jpg",
+    "overview": "After getting a green card in exchange for assassinating a Cuban government official, Tony Montana stakes a claim on the drug trade in Miami. Viciously murdering anyone who stands in his way, Tony eventually becomes the biggest drug lord in the state, controlling nearly all the cocaine that comes through Miami. But increased pressure from the police, wars with Colombian drug cartels and his own drug-fueled paranoia serve to fuel the flames of his eventual downfall."
+  },
+  {
+    "id": 500,
+    "imdb_id": "tt0105236",
+    "rank": 105,
+    "title": "Reservoir Dogs",
+    "year": "1992",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xi8Iu6qyTfyZVDVy60raIOYJJmk.jpg",
+    "overview": "A botched robbery indicates a police informant, and the pressure mounts in the aftermath at a warehouse. Crime begets violence as the survivors -- veteran Mr. White, newcomer Mr. Orange, psychopathic parolee Mr. Blonde, bickering weasel Mr. Pink and Nice Guy Eddie -- unravel."
+  },
+  {
+    "id": 14160,
+    "imdb_id": "tt1049413",
+    "rank": 106,
+    "title": "Up",
+    "year": "2009",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mFvoEwSfLqbcWwFsDjQebn9bzFe.jpg",
+    "overview": "Carl Fredricksen spent his entire life dreaming of exploring the globe and experiencing life to its fullest. But at age 78, life seems to have passed him by, until a twist of fate (and a persistent 8-year old Wilderness Explorer named Russell) gives him a new lease on life."
+  },
+  {
+    "id": 62,
+    "imdb_id": "tt0062622",
+    "rank": 107,
+    "title": "2001: A Space Odyssey",
+    "year": "1968",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ve72VxNqjGM69Uky4WTo2bK6rfq.jpg",
+    "overview": "Humanity finds a mysterious object buried beneath the lunar surface and sets off to find its origins with the help of HAL 9000, the world's most advanced super computer."
+  },
+  {
+    "id": 996,
+    "imdb_id": "tt0036775",
+    "rank": 108,
+    "title": "Double Indemnity",
+    "year": "1944",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Film-Noir"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rVNYZZgfhwqVMMWlBmxOfWqnwCj.jpg",
+    "overview": "An insurance representative is seduced by a dissatisfied housewife into a scheme of insurance fraud and murder that arouses the suspicion of his colleague, a claims investigator."
+  },
+  {
+    "id": 7508,
+    "imdb_id": "tt0986264",
+    "rank": 109,
+    "title": "Taare Zameen Par",
+    "year": "2007",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/puHRt6Raovm5ujGCdwLWvRv4NHU.jpg",
+    "overview": "Ishaan Awasthi is an eight-year-old whose world is filled with wonders that no one else seems to appreciate. Colours, fish, dogs, and kites don't seem important to the adults, who are much more interested in things like homework, marks, and neatness. Ishaan cannot seem to get anything right in class; he is then sent to boarding school, where his life changes forever."
+  },
+  {
+    "id": 213,
+    "imdb_id": "tt0053125",
+    "rank": 110,
+    "title": "North by Northwest",
+    "year": "1959",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kNOFPQrel9YFCVzI0DF8FnCEpCw.jpg",
+    "overview": "Advertising man Roger Thornhill is mistaken for a spy, triggering a deadly cross-country chase."
+  },
+  {
+    "id": 1317149,
+    "imdb_id": "tt31514146",
+    "rank": 111,
+    "title": "I Swear",
+    "year": "2025",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Biography",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vUwyhNWBKkSwK8ELvEeBRwV724h.jpg",
+    "overview": "Diagnosed with Tourette Syndrome at 15, John Davidson navigates his way against the odds through troubled teenage years and into adulthood, finding inspiration in the kindness of others to discover his true purpose in life."
+  },
+  {
+    "id": 600,
+    "imdb_id": "tt0093058",
+    "rank": 112,
+    "title": "Full Metal Jacket",
+    "year": "1987",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kMKyx1k8hWWscYFnPbnxxN4Eqo4.jpg",
+    "overview": "A pragmatic U.S. Marine observes the dehumanizing effects the U.S.-Vietnam War has on his fellow recruits from their brutal boot camp training to the bloody street fighting in Hue."
+  },
+  {
+    "id": 60243,
+    "imdb_id": "tt1832382",
+    "rank": 113,
+    "title": "Jodaeiye Nader az Simin",
+    "year": "2011",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xQadpnoLokxzN3hRpCPbBGpxsiz.jpg",
+    "overview": "A married couple are faced with a difficult decision \u2013 to improve the life of their child by moving to another country or to stay in Iran and look after a deteriorating parent who has Alzheimer's disease."
+  },
+  {
+    "id": 562,
+    "imdb_id": "tt0095016",
+    "rank": 114,
+    "title": "Die Hard",
+    "year": "1988",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Action",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7Bjd8kfmDSOzpmhySpEhkUyK2oH.jpg",
+    "overview": "High above the city of L.A. a team of terrorists has seized a building, taken hostages, and declared war. One man has manages to escape... An off-duty cop hiding somewhere inside. He's alone, tired... and the only chance anyone has got."
+  },
+  {
+    "id": 832,
+    "imdb_id": "tt0022100",
+    "rank": 115,
+    "title": "M - Eine Stadt sucht einen M\u00f6rder",
+    "year": "1931",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Crime",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bTdZk3q2DWpBRnLiaaItKFWOVhI.jpg",
+    "overview": "In this classic German thriller, Hans Beckert, a serial killer who preys on children, becomes the focus of a massive Berlin police manhunt. Beckert's heinous crimes are so repellant and disruptive to city life that he is even targeted by others in the seedy underworld network. With both cops and criminals in pursuit, the murderer soon realizes that people are on his trail, sending him into a tense, panicked attempt to escape justice."
+  },
+  {
+    "id": 194,
+    "imdb_id": "tt0211915",
+    "rank": 116,
+    "title": "Le fabuleux destin d&apos;Am\u00e9lie Poulain",
+    "year": "2001",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Comedy",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nSxDa3M9aMvGVLoItzWTepQ5h5d.jpg",
+    "overview": "At a tiny Parisian caf\u00e9, the adorable yet painfully shy Am\u00e9lie accidentally discovers a gift for helping others. Soon Amelie is spending her days as a matchmaker, guardian angel, and all-around do-gooder. But when she bumps into a handsome stranger, will she find the courage to become the star of her very own love story?"
+  },
+  {
+    "id": 426,
+    "imdb_id": "tt0052357",
+    "rank": 117,
+    "title": "Vertigo",
+    "year": "1958",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Mystery",
+      "Romance",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/15uOEfqBNTVtDUT7hGBVCka0rZz.jpg",
+    "overview": "A retired San Francisco detective suffering from acrophobia investigates the strange activities of an old friend's wife, all the while becoming dangerously obsessed with her."
+  },
+  {
+    "id": 595,
+    "imdb_id": "tt0056592",
+    "rank": 118,
+    "title": "To Kill a Mockingbird",
+    "year": "1962",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pKUaZNOb2FDdzSz7kWyAuBMhA8I.jpg",
+    "overview": "Scout Finch, 6, and her older brother Jem live in sleepy Maycomb, Alabama, spending much of their time with their friend Dill and spying on their reclusive and mysterious neighbor, Boo Radley. When Atticus, their widowed father and a respected lawyer, defends a black man named Tom Robinson against fabricated rape charges, the trial and tangent events expose the children to evils of racism and stereotyping."
+  },
+  {
+    "id": 15,
+    "imdb_id": "tt0033467",
+    "rank": 119,
+    "title": "Citizen Kane",
+    "year": "1941",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sav0jxhqiH0bPr2vZFU0Kjt2nZL.jpg",
+    "overview": "Newspaper magnate Charles Foster Kane is taken from his mother as a boy and made the ward of a rich industrialist. As a result, every well-meaning, tyrannical or self-destructive move he makes for the rest of his life appears in some way to be a reaction to that deeply wounding event."
+  },
+  {
+    "id": 89,
+    "imdb_id": "tt0097576",
+    "rank": 120,
+    "title": "Indiana Jones and the Last Crusade",
+    "year": "1989",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sizg1AU8f8JDZX4QIgE4pjUMBvx.jpg",
+    "overview": "In 1938, an art collector appeals to eminent archaeologist Dr. Indiana Jones to embark on a search for the Holy Grail. Indy learns that a medieval historian has vanished while searching for it, and the missing man is his own father, Dr. Henry Jones Sr.. He sets out to rescue his father by following clues in the old man's notebook, which his father had mailed to him before he went missing. Indy arrives in Venice, where he enlists the help of a beautiful academic, Dr. Elsa Schneider, along with Marcus Brody and Sallah. Together they must stop the Nazis from recovering the power of eternal life and taking over the world!"
+  },
+  {
+    "id": 9277,
+    "imdb_id": "tt0070735",
+    "rank": 121,
+    "title": "The Sting",
+    "year": "1973",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Comedy",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ckmYng37zey8INYf6d10cVgIG93.jpg",
+    "overview": "A novice con man teams up with an acknowledged master to avenge the murder of a mutual friend by pulling off the ultimate big con and swindling a fortune from a big-time mobster."
+  },
+  {
+    "id": 185,
+    "imdb_id": "tt0066921",
+    "rank": 122,
+    "title": "A Clockwork Orange",
+    "year": "1971",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/4sHeTAp65WrSSuc05nRBKddhBxO.jpg",
+    "overview": "In a near-future Britain, young Alexander DeLarge and his pals get their kicks beating and raping anyone they please. When not destroying the lives of others, Alex swoons to the music of Beethoven. The state, eager to crack down on juvenile crime, gives an incarcerated Alex the option to undergo an invasive procedure that'll rob him of all personal agency. In a time when conscience is a commodity, can Alex change his tune?"
+  },
+  {
+    "id": 19,
+    "imdb_id": "tt0017136",
+    "rank": 123,
+    "title": "Metropolis",
+    "year": "1927",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kr9wXRN23zLuWJIelahas1mtnYj.jpg",
+    "overview": "In a futuristic city sharply divided between the rich and the poor, the son of the city's mastermind meets a prophet who predicts the coming of a savior to mediate their differences."
+  },
+  {
+    "id": 530915,
+    "imdb_id": "tt8579674",
+    "rank": 124,
+    "title": "1917",
+    "year": "2019",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iZf0KyrE25z1sage4SYFLCCrMi9.jpg",
+    "overview": "At the height of the First World War, two young British soldiers must cross enemy territory and deliver a message that will stop a deadly attack on hundreds of soldiers."
+  },
+  {
+    "id": 106646,
+    "imdb_id": "tt0993846",
+    "rank": 125,
+    "title": "The Wolf of Wall Street",
+    "year": "2013",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Biography",
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kW9LmvYHAaS9iA0tHmZVq8hQYoq.jpg",
+    "overview": "A New York stockbroker refuses to cooperate in a large securities fraud case involving corruption on Wall Street, corporate banking world and mob infiltration. Based on Jordan Belfort's autobiography."
+  },
+  {
+    "id": 37165,
+    "imdb_id": "tt0120382",
+    "rank": 126,
+    "title": "The Truman Show",
+    "year": "1998",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vuza0WqY239yBXOadKlGwJsZJFE.jpg",
+    "overview": "In a picture-perfect seaside town, an insurance salesman begins to realize that his entire existence may be staged and observed by a vast unseen audience as part of a long-running real-time reality TV show."
+  },
+  {
+    "id": 107,
+    "imdb_id": "tt0208092",
+    "rank": 127,
+    "title": "Snatch",
+    "year": "2000",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kJZoAHq1SLDdWjeNGtlHAnGpmFV.jpg",
+    "overview": "Unscrupulous boxing promoters, violent bookies, a Russian gangster, incompetent amateur robbers, and supposedly Jewish jewellers fight to track down a priceless stolen diamond."
+  },
+  {
+    "id": 11324,
+    "imdb_id": "tt1130884",
+    "rank": 128,
+    "title": "Shutter Island",
+    "year": "2010",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nrmXQ0zcZUL8jFLrakWc90IR8z9.jpg",
+    "overview": "World War II soldier-turned-U.S. Marshal Teddy Daniels investigates the disappearance of a patient from a hospital for the criminally insane, but his efforts are compromised by troubling visions and a mysterious doctor."
+  },
+  {
+    "id": 613,
+    "imdb_id": "tt0363163",
+    "rank": 129,
+    "title": "Der Untergang",
+    "year": "2004",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cP1ElGjBhbZAAqmueXjHDKlSwiP.jpg",
+    "overview": "In April of 1945, Germany stands at the brink of defeat with the Russian Army closing in from the east and the Allied Expeditionary Force attacking from the west. In Berlin, capital of the Third Reich, Adolf Hitler proclaims that Germany will still achieve victory and orders his generals and advisers to fight to the last man. When the end finally does come, and Hitler lies dead by his own hand, what is left of his military must find a way to end the killing that is the Battle of Berlin, and lay down their arms in surrender."
+  },
+  {
+    "id": 2118,
+    "imdb_id": "tt0119488",
+    "rank": 130,
+    "title": "L.A. Confidential",
+    "year": "1997",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lWCgf5sD5FpMljjpkRhcC8pXcch.jpg",
+    "overview": "Three detectives in the corrupt and brutal L.A. police force of the 1950s use differing methods to uncover a conspiracy behind the shotgun slayings of the patrons at an all-night diner."
+  },
+  {
+    "id": 490132,
+    "imdb_id": "tt6966692",
+    "rank": 131,
+    "title": "Green Book",
+    "year": "2018",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Biography",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7BsvSuDQuoqhWmU2fL7W2GOcZHU.jpg",
+    "overview": "Tony Lip, a bouncer in 1962, is hired to drive pianist Don Shirley on a tour through the Deep South in the days when African Americans, forced to find alternate accommodations and services due to segregation laws below the Mason-Dixon Line, relied on a guide called The Negro Motorist Green Book."
+  },
+  {
+    "id": 360814,
+    "imdb_id": "tt5074352",
+    "rank": 132,
+    "title": "Dangal",
+    "year": "2016",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Action",
+      "Biography",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cJRPOLEexI7qp2DKtFfCh7YaaUG.jpg",
+    "overview": "Dangal is an extraordinary true story based on the life of Mahavir Singh and his two daughters, Geeta and Babita Phogat. The film traces the inspirational journey of a father who trains his daughters to become world class wrestlers."
+  },
+  {
+    "id": 16672,
+    "imdb_id": "tt0058625",
+    "rank": 133,
+    "title": "Suna no onna",
+    "year": "1964",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xiBr3bIT2xpbuIKo5bLK7ebP4O1.jpg",
+    "overview": "A vacationing entomologist suffers extreme physical and psychological trauma after being taken captive by the residents of a poor seaside village and made to live with a woman whose life task is shoveling sand for them."
+  },
+  {
+    "id": 5156,
+    "imdb_id": "tt0040522",
+    "rank": 134,
+    "title": "Ladri di biciclette",
+    "year": "1948",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iPdVqIpmR3bRvOQJPrn4pr2KR3q.jpg",
+    "overview": "Unemployed Antonio is elated when he finally finds work hanging posters around war-torn Rome. However on his first day, his bicycle\u2014essential to his work\u2014gets stolen. His job is doomed unless he can find the thief. With the help of his son, Antonio combs the city, becoming desperate for justice."
+  },
+  {
+    "id": 821,
+    "imdb_id": "tt0055031",
+    "rank": 135,
+    "title": "Judgment at Nuremberg",
+    "year": "1961",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Drama",
+      "History",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/b6vYatvui1EXeFYfpDX4rcbueuP.jpg",
+    "overview": "In 1947, four German judges who served on the bench during the Nazi regime face a military tribunal to answer charges of crimes against humanity. Chief Justice Haywood hears evidence and testimony not only from lead defendant Ernst Janning and his defense attorney Hans Rolfe, but also from the widow of a Nazi general, an idealistic U.S. Army captain and reluctant witness Irene Wallner."
+  },
+  {
+    "id": 329,
+    "imdb_id": "tt0107290",
+    "rank": 136,
+    "title": "Jurassic Park",
+    "year": "1993",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/d9mtMGQDLANKieb9PbD3yK7xxzo.jpg",
+    "overview": "A wealthy entrepreneur secretly creates a theme park featuring living dinosaurs drawn from prehistoric DNA. Before opening day, he invites a team of experts and his two eager grandchildren to experience the park and help calm anxious investors. However, the park is anything but amusing as the security systems go off-line and the dinosaurs escape."
+  },
+  {
+    "id": 272,
+    "imdb_id": "tt0372784",
+    "rank": 137,
+    "title": "Batman Begins",
+    "year": "2005",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sPX89Td70IDDjVr85jdSBb4rWGr.jpg",
+    "overview": "Driven by tragedy, billionaire Bruce Wayne dedicates his life to uncovering and defeating the corruption that plagues his home, Gotham City.  Unable to work within the system, he instead creates a new identity, a symbol of fear for the criminal underworld - The Batman."
+  },
+  {
+    "id": 872585,
+    "imdb_id": "tt15398776",
+    "rank": 138,
+    "title": "Oppenheimer",
+    "year": "2023",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    "overview": "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II."
+  },
+  {
+    "id": 938,
+    "imdb_id": "tt0059578",
+    "rank": 139,
+    "title": "Per qualche dollaro in pi\u00f9",
+    "year": "1965",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Western"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ooqASvA7qxlTVKL3KwOzBwy57Dh.jpg",
+    "overview": "Two bounty hunters both pursue the brutal and sadistic bandit, El Indio, who has a large bounty on his head."
+  },
+  {
+    "id": 556574,
+    "imdb_id": "tt8503618",
+    "rank": 140,
+    "title": "Hamilton",
+    "year": "2025",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/h1B7tW0t399VDjAcWJh8m87469b.jpg",
+    "overview": "Presenting the tale of American founding father Alexander Hamilton, this filmed version of the original Broadway smash hit is the story of America then, told by America now."
+  },
+  {
+    "id": 7345,
+    "imdb_id": "tt0469494",
+    "rank": 141,
+    "title": "There Will Be Blood",
+    "year": "2007",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fa0RDkAlCec0STeMNAhPaF89q6U.jpg",
+    "overview": "Ruthless silver miner, turned oil prospector, Daniel Plainview, moves to oil-rich California. Using his son to project a trustworthy, family-man image, Plainview cons local landowners into selling him their valuable properties for a pittance. However, local preacher Eli Sunday suspects Plainview's motives and intentions, starting a slow-burning feud that threatens both their lives."
+  },
+  {
+    "id": 239,
+    "imdb_id": "tt0053291",
+    "rank": 142,
+    "title": "Some Like It Hot",
+    "year": "1959",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Comedy",
+      "Music",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hVIKyTK13AvOGv7ICmJjK44DTzp.jpg",
+    "overview": "In Prohibition-era Chicago, musicians Joe and Jerry witness a mob hit, and flee the state in an all-female band disguised as Josephine and Daphne, but further complications set in."
+  },
+  {
+    "id": 103,
+    "imdb_id": "tt0075314",
+    "rank": 143,
+    "title": "Taxi Driver",
+    "year": "1976",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ekstpH614fwDX8DUln1a2Opz0N8.jpg",
+    "overview": "Suffering from insomnia, disturbed loner Travis Bickle takes a job as a New York City cabbie, haunting the streets nightly, growing increasingly detached from reality as he dreams of cleaning up the filthy city."
+  },
+  {
+    "id": 600354,
+    "imdb_id": "tt10272386",
+    "rank": 144,
+    "title": "The Father",
+    "year": "2020",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pr3bEQ517uMb5loLvjFQi8uLAsp.jpg",
+    "overview": "A man refuses all assistance from his daughter as he ages and, as he tries to make sense of his changing circumstances, he begins to doubt his loved ones, his own mind and even the fabric of his reality."
+  },
+  {
+    "id": 10098,
+    "imdb_id": "tt0012349",
+    "rank": 145,
+    "title": "The Kid",
+    "year": "1921",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/A9NWYyn7eX0H9XIjaOvfWJ9mCGA.jpg",
+    "overview": "A tramp cares for a boy after he's abandoned as a newborn by his mother. Later the mother has a change of heart and aches to be reunited with her son."
+  },
+  {
+    "id": 745,
+    "imdb_id": "tt0167404",
+    "rank": 146,
+    "title": "The Sixth Sense",
+    "year": "1999",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vOyfUXNFSnaTk7Vk5AjpsKTUWsu.jpg",
+    "overview": "Following an unexpected tragedy, child psychologist Malcolm Crowe meets a nine year old boy named Cole Sear, who is hiding a dark secret."
+  },
+  {
+    "id": 705,
+    "imdb_id": "tt0042192",
+    "rank": 147,
+    "title": "All About Eve",
+    "year": "1950",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/blBzZaatPWVuWpXEnPscMA4Xp6m.jpg",
+    "overview": "From the moment she glimpses her idol at the stage door, Eve Harrington is determined to take the reins of power away from the great actress Margo Channing. Eve maneuvers her way into Margo's Broadway role, becomes a sensation and even causes turmoil in the lives of Margo's director boyfriend, her playwright and his wife. Only the cynical drama critic sees through Eve, admiring her audacity and perfect pattern of deceit."
+  },
+  {
+    "id": 11645,
+    "imdb_id": "tt0089881",
+    "rank": 148,
+    "title": "Ran",
+    "year": "1985",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Action",
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dGgiXMWDcS5aJTBEFu7bmaQPNox.jpg",
+    "overview": "Shakespeare's King Lear is reimagined as a singular historical epic set in sixteenth-century Japan where an aging warlord divides his kingdom between his three sons."
+  },
+  {
+    "id": 524,
+    "imdb_id": "tt0112641",
+    "rank": 149,
+    "title": "Casino",
+    "year": "1995",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gziIkUSnYuj9ChCi8qOu2ZunpSC.jpg",
+    "overview": "In Las Vegas, two best friends--a casino executive and a Mafia enforcer--compete for a gambling empire and a fast-living, fast-loving socialite."
+  },
+  {
+    "id": 1091,
+    "imdb_id": "tt0084787",
+    "rank": 150,
+    "title": "The Thing",
+    "year": "1982",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Horror",
+      "Mystery",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tzGY49kseSE9QAKk47uuDGwnSCu.jpg",
+    "overview": "A research team in Antarctica is hunted by a shape-shifting alien that assumes the appearance of its victims."
+  },
+  {
+    "id": 6977,
+    "imdb_id": "tt0477348",
+    "rank": 151,
+    "title": "No Country for Old Men",
+    "year": "2007",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6d5XOczc226jECq0LIX0siKtgHR.jpg",
+    "overview": "Llewelyn Moss stumbles upon dead bodies, $2 million and a hoard of heroin in a Texas desert, but methodical killer Anton Chigurh comes looking for it, with local sheriff Ed Tom Bell hot on his trail. The roles of prey and predator blur as the violent pursuit of money and justice collide."
+  },
+  {
+    "id": 146233,
+    "imdb_id": "tt1392214",
+    "rank": 152,
+    "title": "Prisoners",
+    "year": "2013",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uhviyknTT5cEQXbn6vWIqfM4vGm.jpg",
+    "overview": "After his six-year-old daughter is abducted, a desperate father takes justice into his own hands when he loses faith in the detective leading the investigation, setting both men on a collision course as the search descends into obsession and moral compromise."
+  },
+  {
+    "id": 361743,
+    "imdb_id": "tt1745960",
+    "rank": 153,
+    "title": "Top Gun: Maverick",
+    "year": "2022",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Action",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/n0YuM4f5lvGAP6MAW2kBIzugXnc.jpg",
+    "overview": "After more than thirty years of service as one of the Navy\u2019s top aviators, and dodging the advancement in rank that would ground him, Pete \u201cMaverick\u201d Mitchell finds himself training a detachment of TOP GUN graduates for a specialized mission the likes of which no living pilot has ever seen."
+  },
+  {
+    "id": 24,
+    "imdb_id": "tt0266697",
+    "rank": 154,
+    "title": "Kill Bill: Vol. 1",
+    "year": "2003",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/v7TaX8kXMXs5yFFGR41guUDNcnB.jpg",
+    "overview": "An assassin is shot by her ruthless employer, Bill, and other members of their assassination circle \u2013 but she lives to plot her vengeance."
+  },
+  {
+    "id": 1417,
+    "imdb_id": "tt0457430",
+    "rank": 155,
+    "title": "El laberinto del fauno",
+    "year": "2006",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Fantasy",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7wb2Ldp0oAx1lcZvffq9RfWoI2h.jpg",
+    "overview": "In post\u2013civil war Spain, 10-year-old Ofelia moves with her pregnant mother to live under the control of her cruel stepfather. Drawn into a mysterious labyrinth, she meets a faun who reveals that she may be a lost princess from an underground kingdom. To return to her true father, she must complete a series of surreal and perilous tasks that blur the line between reality and fantasy."
+  },
+  {
+    "id": 33,
+    "imdb_id": "tt0105695",
+    "rank": 156,
+    "title": "Unforgiven",
+    "year": "1992",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Western"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/54roTwbX9fltg85zjsmrooXAs12.jpg",
+    "overview": "William Munny is a retired, once-ruthless killer turned gentle widower and hog farmer. To help support his two motherless children, he accepts one last bounty-hunter mission to find the men who brutalized a prostitute. Joined by his former partner and a cocky greenhorn, he takes on a corrupt sheriff."
+  },
+  {
+    "id": 453,
+    "imdb_id": "tt0268978",
+    "rank": 157,
+    "title": "A Beautiful Mind",
+    "year": "2001",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rEIg5yJdNOt9fmX4P8gU9LeNoTQ.jpg",
+    "overview": "From the heights of notoriety to the depths of depravity, John Forbes Nash Jr. experiences it all. As a brilliant but socially awkward mathematician, he made a groundbreaking discovery early in his career and stands on the brink of international acclaim. But as the handsome and arrogant Nash accepts secret work in cryptography, he becomes entangled in a mysterious conspiracy. His life takes a nightmarish turn and he soon finds himself on a painful and harrowing journey of self-discovery."
+  },
+  {
+    "id": 4935,
+    "imdb_id": "tt0347149",
+    "rank": 158,
+    "title": "Hauru no ugoku shiro",
+    "year": "2004",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/13kOl2v0nD2OLbVSHnHk8GUFEhO.jpg",
+    "overview": "Sophie, a young milliner, is turned into an elderly woman by a witch who enters her shop and curses her. She encounters a wizard named Howl and gets caught up in his resistance to fighting for the king."
+  },
+  {
+    "id": 1311031,
+    "imdb_id": "tt32820897",
+    "rank": 159,
+    "title": "Gekij\u00f4-ban Kimetsu no Yaiba Mugen J\u00f4-hen",
+    "year": "2025",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fWVSwgjpT2D78VUh6X8UBd2rorW.jpg",
+    "overview": "The Demon Slayer Corps are drawn into the Infinity Castle, where Tanjiro, Nezuko, and the Hashira face terrifying Upper Rank demons in a desperate fight as the final battle against Muzan Kibutsuji begins."
+  },
+  {
+    "id": 687163,
+    "imdb_id": "tt12042730",
+    "rank": 160,
+    "title": "Project Hail Mary",
+    "year": "2026",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yihdXomYb5kTeSivtFndMy5iDmf.jpg",
+    "overview": "Science teacher Ryland Grace wakes up on a spaceship light years from home with no recollection of who he is or how he got there. As his memory returns, he begins to uncover his mission: solve the riddle of the mysterious substance causing the sun to die out. He must call on his scientific knowledge and unorthodox ideas to save everything on Earth from extinction."
+  },
+  {
+    "id": 3090,
+    "imdb_id": "tt0040897",
+    "rank": 161,
+    "title": "The Treasure of the Sierra Madre",
+    "year": "1948",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Western"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pWcst7zVbi8Z8W6GFrdNE7HHRxL.jpg",
+    "overview": "Two jobless Americans convince a prospector to travel to the mountains of Mexico with them in search of gold. But the hostile wilderness, local bandits, and greed all get in the way of their journey."
+  },
+  {
+    "id": 12,
+    "imdb_id": "tt0266543",
+    "rank": 162,
+    "title": "Finding Nemo",
+    "year": "2003",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/eHuGQ10FUzK1mdOY69wF5pGgEf5.jpg",
+    "overview": "Nemo, an adventurous young clownfish, is unexpectedly taken from his Great Barrier Reef home to a dentist's office aquarium. It's up to his worrisome father Marlin and a friendly but forgetful fish Dory to bring Nemo home -- meeting vegetarian sharks, surfer dude turtles, hypnotic jellyfish, hungry seagulls, and more along the way."
+  },
+  {
+    "id": 508965,
+    "imdb_id": "tt4729430",
+    "rank": 163,
+    "title": "Klaus",
+    "year": "2019",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/q125RHUDgR4gjwh1QkfYuJLYkL.jpg",
+    "overview": "A selfish postman and a reclusive toymaker form an unlikely friendship, delivering joy to a cold, dark town that desperately needs it."
+  },
+  {
+    "id": 11878,
+    "imdb_id": "tt0055630",
+    "rank": 164,
+    "title": "Y\u00f4jinb\u00f4",
+    "year": "1961",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tN7kYPjRhDolpui9sc9Eq9n5b2O.jpg",
+    "overview": "A nameless ronin, or samurai with no master, enters a small village in feudal Japan where two rival businessmen are struggling for control of the local gambling trade. Taking the name Sanjuro Kuwabatake, the ronin convinces both silk merchant Tazaemon and sake merchant Tokuemon to hire him as a personal bodyguard, then artfully sets in motion a full-scale gang war between the two ambitious and unscrupulous men."
+  },
+  {
+    "id": 1955,
+    "imdb_id": "tt0080678",
+    "rank": 165,
+    "title": "The Elephant Man",
+    "year": "1980",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Biography",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/u0wpPYjuSt8DIe1Y3Vapnh8jcKE.jpg",
+    "overview": "A Victorian surgeon rescues a heavily disfigured man being mistreated by his \"owner\" as a side-show freak. Behind his monstrous fa\u00e7ade, there is revealed a person of great intelligence and sensitivity. Based on the true story of Joseph Merrick (called John Merrick in the film), a severely deformed man in 19th century London."
+  },
+  {
+    "id": 5925,
+    "imdb_id": "tt0057115",
+    "rank": 166,
+    "title": "The Great Escape",
+    "year": "1963",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gBH4H8UMFxl139HaLz6lRuvsel8.jpg",
+    "overview": "The Nazis, exasperated at the number of escapes from their prison camps by a relatively small number of Allied prisoners, relocate them to a high-security 'escape-proof' camp to sit out the remainder of the war. Undaunted, the prisoners plan one of the most ambitious escape attempts of World War II. Based on a true story."
+  },
+  {
+    "id": 762,
+    "imdb_id": "tt0071853",
+    "rank": 167,
+    "title": "Monty Python and the Holy Grail",
+    "year": "1975",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7nTkHjETdGMYK1phHwDbPsrzbYl.jpg",
+    "overview": "King Arthur, accompanied by his squire, recruits his Knights of the Round Table, including Sir Bedevere the Wise, Sir Lancelot the Brave, Sir Robin the Not-Quite-So-Brave-As-Sir-Lancelot and Sir Galahad the Pure. On the way, Arthur battles the Black Knight who, despite having had all his limbs chopped off, insists he can still fight. They reach Camelot, but Arthur decides not  to enter, as \"it is a silly place\"."
+  },
+  {
+    "id": 521,
+    "imdb_id": "tt0046912",
+    "rank": 168,
+    "title": "Dial M for Murder",
+    "year": "1954",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2gDCAgl2iBQNuJuk6p2xtuS1ewg.jpg",
+    "overview": "When her American lover visits London, a wealthy woman\u2019s jealous husband hatches a plan to murder her and inherit her fortune."
+  },
+  {
+    "id": 25376,
+    "imdb_id": "tt1305806",
+    "rank": 169,
+    "title": "El secreto de sus ojos",
+    "year": "2009",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dkeAwfZzwL3WvToydE3CXiY80E0.jpg",
+    "overview": "Hoping to put to rest years of unease concerning a past case, retired criminal investigator Benjam\u00edn begins writing a novel based on the unsolved mystery of a newlywed\u2019s rape and murder. With the help of a former colleague, judge Irene, he attempts to make sense of the past."
+  },
+  {
+    "id": 770,
+    "imdb_id": "tt0031381",
+    "rank": 170,
+    "title": "Gone with the Wind",
+    "year": "1939",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Romance",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lNz2Ow0wGCAvzckW7EOjE03KcYv.jpg",
+    "overview": "The spoiled daughter of a Georgia plantation owner conducts a tumultuous romance with a cynical profiteer during the American Civil War and Reconstruction Era."
+  },
+  {
+    "id": 100,
+    "imdb_id": "tt0120735",
+    "rank": 171,
+    "title": "Lock, Stock and Two Smoking Barrels",
+    "year": "1998",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6pJB2t3MbQUy9m5pFIBHXLqnqNd.jpg",
+    "overview": "A card shark and his unwillingly-enlisted friends need to make a lot of cash quick after losing a sketchy poker match. To do this they decide to pull a heist on a small-time gang who happen to be operating out of the flat next door."
+  },
+  {
+    "id": 829,
+    "imdb_id": "tt0071315",
+    "rank": 172,
+    "title": "Chinatown",
+    "year": "1974",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kZRSP3FmOcq0xnBulqpUQngJUXY.jpg",
+    "overview": "Private eye Jake Gittes lives off of the murky moral climate of sunbaked, pre-World War II Southern California. Hired by a beautiful socialite to investigate her husband's extra-marital affair, Gittes is swept into a maelstrom of double dealings and deadly deceits, uncovering a web of personal and political scandals that come crashing together."
+  },
+  {
+    "id": 640,
+    "imdb_id": "tt0264464",
+    "rank": 173,
+    "title": "Catch Me If You Can",
+    "year": "2002",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ctjEj2xM32OvBXCq8zAdK3ZrsAj.jpg",
+    "overview": "A true story about Frank Abagnale Jr. who, before his 19th birthday, successfully conned millions of dollars worth of checks as a Pan Am pilot, doctor, and legal prosecutor. An FBI agent makes it his mission to put him behind bars. But Frank not only eludes capture, he revels in the pursuit."
+  },
+  {
+    "id": 752,
+    "imdb_id": "tt0434409",
+    "rank": 174,
+    "title": "V for Vendetta",
+    "year": "2006",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/piZOwjyk1g51oPHonc7zaQY3WOv.jpg",
+    "overview": "In a world in which Great Britain has become a fascist state, a masked vigilante known only as \u201cV\u201d conducts guerrilla warfare against the oppressive British government. When V rescues a young woman from the secret police, he finds in her an ally with whom he can continue his fight to free the people of Britain."
+  },
+  {
+    "id": 207,
+    "imdb_id": "tt0097165",
+    "rank": 175,
+    "title": "Dead Poets Society",
+    "year": "1989",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tNvKkSnnn4Z6RCBThyK1gfCSSvv.jpg",
+    "overview": "At an elite, old-fashioned boarding school in New England, a passionate English teacher inspires his students to rebel against convention and seize the potential of every day, courting the disdain of the stern headmaster."
+  },
+  {
+    "id": 11659,
+    "imdb_id": "tt0346336",
+    "rank": 176,
+    "title": "La meglio giovent\u00f9",
+    "year": "2003",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ltmcFRvTeAgBgMLUGa15KzDSQqs.jpg",
+    "overview": "After a fateful encounter in the summer of 1966, the lifepaths of two brothers from a middle-class Roman family diverge, intersecting with some of the most significant events of postwar Italian history in the following decades."
+  },
+  {
+    "id": 150540,
+    "imdb_id": "tt2096673",
+    "rank": 177,
+    "title": "Inside Out",
+    "year": "2015",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2H1TmgdfNtsKlU9jKdeNyYL5y8T.jpg",
+    "overview": "When 11-year-old Riley moves to a new city, her Emotions team up to help her through the transition. Joy, Fear, Anger, Disgust and Sadness work together, but when Joy and Sadness get lost, they must journey through unfamiliar places to get back home."
+  },
+  {
+    "id": 627,
+    "imdb_id": "tt0117951",
+    "rank": 178,
+    "title": "Trainspotting",
+    "year": "1996",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1jUC02qsqS2NxBMFarbIhcQtazV.jpg",
+    "overview": "Heroin addict Mark Renton stumbles through bad ideas and sobriety attempts with his unreliable friends --Sick Boy, Begbie, Spud and Tommy. He also has an underage girlfriend, Diane, along for the ride. After cleaning up and moving from Edinburgh to London, Mark finds he can't escape the life he left behind as Begbie and Sick Boy come knocking."
+  },
+  {
+    "id": 12445,
+    "imdb_id": "tt1201607",
+    "rank": 179,
+    "title": "Harry Potter and the Deathly Hallows: Part 2",
+    "year": "2011",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/c54HpQmuwXjHq2C9wmoACjxoom3.jpg",
+    "overview": "Harry, Ron and Hermione continue their quest to vanquish the evil Voldemort once and for all. Just as things begin to look hopeless for the young wizards, Harry discovers a trio of magical objects that endow him with powers to rival Voldemort's formidable skills."
+  },
+  {
+    "id": 359940,
+    "imdb_id": "tt5027774",
+    "rank": 180,
+    "title": "Three Billboards Outside Ebbing, Missouri",
+    "year": "2017",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bRYLt8fV82tdVoDppSFTZIcJiLN.jpg",
+    "overview": "After seven months have passed without a culprit in her daughter's murder case, Mildred Hayes makes a bold move, painting three signs leading into her town with a controversial message directed at Bill Willoughby, the town's revered chief of police. When his second-in-command Officer Jason Dixon, an immature mother's boy with a penchant for violence, gets involved, the battle between Mildred and Ebbing's law enforcement is only exacerbated."
+  },
+  {
+    "id": 826,
+    "imdb_id": "tt0050212",
+    "rank": 181,
+    "title": "The Bridge on the River Kwai",
+    "year": "1957",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7paXMt2e3Tr5dLmEZOGgFEn2Vo7.jpg",
+    "overview": "The classic story of English POWs in Burma forced to build a bridge to aid the war effort of their Japanese captors. British and American intelligence officers conspire to blow up the structure, but Col. Nicholson, the commander who supervised the bridge's construction, has acquired a sense of pride in his creation and tries to foil their plans."
+  },
+  {
+    "id": 548,
+    "imdb_id": "tt0042876",
+    "rank": 182,
+    "title": "Rash\u00f4mon",
+    "year": "1950",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ijWibsAU1iBcCD8tuIZfTmDzMVE.jpg",
+    "overview": "Four people recount different versions of the story of a man's murder and the rape of his wife."
+  },
+  {
+    "id": 3175,
+    "imdb_id": "tt0072684",
+    "rank": 183,
+    "title": "Barry Lyndon",
+    "year": "1975",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/znfLskGQnXYB2xcOGM9eInRHPAV.jpg",
+    "overview": "An Irish rogue uses his cunning and wit to work his way up the social classes of 18th century England, transforming himself from the humble Redmond Barry into the noble Barry Lyndon."
+  },
+  {
+    "id": 665,
+    "imdb_id": "tt0052618",
+    "rank": 184,
+    "title": "Ben-Hur",
+    "year": "1959",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/m4WQ1dBIrEIHZNCoAjdpxwSKWyH.jpg",
+    "overview": "In ancient Judea, a Jewish aristocrat opposing Roman occupation of his homeland reunites with his childhood friend, now a Roman commander \u2014 setting in motion a saga of betrayal, adventure, tragedy, revenge, and faith."
+  },
+  {
+    "id": 1184918,
+    "imdb_id": "tt29623480",
+    "rank": 185,
+    "title": "The Wild Robot",
+    "year": "2024",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wTnV3PCVW5O92JMrFvvrRcV39RU.jpg",
+    "overview": "After a shipwreck, an intelligent robot called Roz is stranded on an uninhabited island. To survive the harsh environment, Roz bonds with the island's animals and cares for an orphaned baby goose."
+  },
+  {
+    "id": 59440,
+    "imdb_id": "tt1291584",
+    "rank": 186,
+    "title": "Warrior",
+    "year": "2011",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Sport"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iM8n4nZJPR2abpnyZ36FUgHiRjr.jpg",
+    "overview": "The youngest son of an alcoholic former boxer returns home, where he's trained by his father for competition in a mixed martial arts tournament \u2013 a path that puts the fighter on a collision course with his estranged, older brother."
+  },
+  {
+    "id": 324786,
+    "imdb_id": "tt2119532",
+    "rank": 187,
+    "title": "Hacksaw Ridge",
+    "year": "2016",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fnOMP6mjmOmZwmlC1n0K7ivrzt1.jpg",
+    "overview": "WWII American Army Medic Desmond T. Doss, who served during the Battle of Okinawa, refuses to kill people and becomes the first Conscientious Objector in American history to receive the Congressional Medal of Honor."
+  },
+  {
+    "id": 2062,
+    "imdb_id": "tt0382932",
+    "rank": 188,
+    "title": "Ratatouille",
+    "year": "2007",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/t3vaWRPSf6WjDSamIkKDs1iQWna.jpg",
+    "overview": "In one of Paris's finest restaurants, Remy, a determined young rat, dreams of becoming a renowned French chef. Torn between his family's wishes and his true calling, Remy and his pal Linguini set in motion a hilarious chain of events that turns the City of Lights upside down."
+  },
+  {
+    "id": 76341,
+    "imdb_id": "tt1392190",
+    "rank": 189,
+    "title": "Mad Max: Fury Road",
+    "year": "2015",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ulcAi4dKpAjHwYGS08vNyx9H6I9.jpg",
+    "overview": "An apocalyptic story set in the furthest reaches of our planet, in a stark desert landscape where humanity is broken, and most everyone is crazed fighting for the necessities of life. Within this world exist two rebels on the run who just might be able to restore order."
+  },
+  {
+    "id": 275,
+    "imdb_id": "tt0116282",
+    "rank": 190,
+    "title": "Fargo",
+    "year": "1996",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rt7cpEr1uP6RTZykBFhBTcRaKvG.jpg",
+    "overview": "Jerry, a small-town Minnesota car salesman is bursting at the seams with debt... but he's got a plan. He's going to hire two thugs to kidnap his wife in a scheme to collect a hefty ransom from his wealthy father-in-law. It's going to be a snap and nobody's going to get hurt... until people start dying. Enter Police Chief Marge, a coffee-drinking, parka-wearing - and extremely pregnant - investigator who'll stop at nothing to get her man. And if you think her small-time investigative skills will give the crooks a run for their ransom... you betcha!"
+  },
+  {
+    "id": 70,
+    "imdb_id": "tt0405159",
+    "rank": 191,
+    "title": "Million Dollar Baby",
+    "year": "2004",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Sport"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jcfEqKdWF1zeyvECPqp3mkWLct2.jpg",
+    "overview": "Despondent over a painful estrangement from his daughter, trainer Frankie Dunn isn't prepared for boxer Maggie Fitzgerald to enter his life. But Maggie's determined to go pro and to convince Dunn and his cohort to help her."
+  },
+  {
+    "id": 21334,
+    "imdb_id": "tt0118849",
+    "rank": 192,
+    "title": "Bacheha-ye aseman",
+    "year": "1997",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama",
+      "Family",
+      "Sport"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jWqh1CJWAEcxckMRrf6ARhIEh0R.jpg",
+    "overview": "Zohre's shoes are gone; her older brother Ali lost them. They are poor, there are no shoes for Zohre until they come up with an idea: they will share one pair of shoes. School awaits."
+  },
+  {
+    "id": 8392,
+    "imdb_id": "tt0096283",
+    "rank": 193,
+    "title": "Tonari no Totoro",
+    "year": "1988",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rtGDOeG9LzoerkDGZF9dnVeLppL.jpg",
+    "overview": "Two sisters move to the country with their father in order to be closer to their hospitalized mother, and discover the surrounding trees are inhabited by Totoros, magical spirits of the forest. When the youngest runs away from home, the older sister seeks help from the spirits to find her."
+  },
+  {
+    "id": 13223,
+    "imdb_id": "tt1205489",
+    "rank": 194,
+    "title": "Gran Torino",
+    "year": "2008",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zUybYvxWdAJy5hhYovsXtHSWI1l.jpg",
+    "overview": "Disgruntled Korean War veteran Walt Kowalski sets out to reform his neighbor, Thao Lor, a Hmong teenager who tried to steal Kowalski's prized possession: a 1972 Gran Torino."
+  },
+  {
+    "id": 1578,
+    "imdb_id": "tt0081398",
+    "rank": 195,
+    "title": "Raging Bull",
+    "year": "1980",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Sport"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1WV7WlTS8LI1L5NkCgjWT9GSW3O.jpg",
+    "overview": "The life of boxer Jake LaMotta, whose violence and temper that led him to the top in the ring destroyed his life outside of it."
+  },
+  {
+    "id": 76203,
+    "imdb_id": "tt2024544",
+    "rank": 196,
+    "title": "12 Years a Slave",
+    "year": "2013",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xdANQijuNrJaw1HA61rDccME4Tm.jpg",
+    "overview": "In the pre-Civil War United States, Solomon Northup, a free black man from upstate New York, is abducted and sold into slavery. Facing cruelty as well as unexpected kindnesses Solomon struggles not only to stay alive, but to retain his dignity. In the twelfth year of his unforgettable odyssey, Solomon\u2019s chance meeting with a Canadian abolitionist will forever alter his life."
+  },
+  {
+    "id": 10191,
+    "imdb_id": "tt0892769",
+    "rank": 197,
+    "title": "How to Train Your Dragon",
+    "year": "2010",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ygGmAO60t8GyqUo9xYeYxSZAR3b.jpg",
+    "overview": "As the son of a Viking leader on the cusp of manhood, shy Hiccup Horrendous Haddock III faces a rite of passage: he must kill a dragon to prove his warrior mettle. But after downing a feared dragon, he realizes that he no longer wants to destroy it, and instead befriends the beast \u2013 which he names Toothless \u2013 much to the chagrin of his warrior father."
+  },
+  {
+    "id": 11423,
+    "imdb_id": "tt0353969",
+    "rank": 198,
+    "title": "Salinui chueok",
+    "year": "2003",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jcgUjx1QcupGzjntTVlnQ15lHqy.jpg",
+    "overview": "A sadistic serial rapist and murderer of young women terrorizes a small province in 1980s South Korea. To prevent further crimes, three increasingly desperate detectives with conflicting methods race against time to unravel the violent mind of the killer in a futile effort to solve the case."
+  },
+  {
+    "id": 120467,
+    "imdb_id": "tt2278388",
+    "rank": 199,
+    "title": "The Grand Budapest Hotel",
+    "year": "2014",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/eWdyYQreja6JGCzqHWXpWHDrrPo.jpg",
+    "overview": "The Grand Budapest Hotel tells of a legendary concierge at a famous European hotel between the wars and his friendship with a young employee who becomes his trusted prot\u00e9g\u00e9. The story involves the theft and recovery of a priceless Renaissance painting, the battle for an enormous family fortune and the slow and then sudden upheavals that transformed Europe during the first half of the 20th century."
+  },
+  {
+    "id": 76,
+    "imdb_id": "tt0112471",
+    "rank": 200,
+    "title": "Before Sunrise",
+    "year": "1995",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kf1Jb1c2JAOqjuzA3H4oDM263uB.jpg",
+    "overview": "An unexpected meeting on a train leads two travelers to spend an evening wandering through Vienna. As the night unfolds, they share stories and conversations about life and love, exploring new ideas while a quiet intimacy grows between them, knowing it may be their only night together."
+  },
+  {
+    "id": 585,
+    "imdb_id": "tt0198781",
+    "rank": 201,
+    "title": "Monsters, Inc.",
+    "year": "2001",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wFSpyMsp7H0ttERbxY7Trlv8xry.jpg",
+    "overview": "Lovable Sulley and his wisecracking sidekick Mike Wazowski are the top scare team at Monsters, Inc., the scream-processing factory in Monstropolis. When a little girl named Boo wanders into their world, it's the monsters who are scared silly, and it's up to Sulley and Mike to keep her out of sight and get her back home."
+  },
+  {
+    "id": 78,
+    "imdb_id": "tt0083658",
+    "rank": 202,
+    "title": "Blade Runner",
+    "year": "1982",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/63N9uy8nd9j7Eog2axPQ8lbr3Wj.jpg",
+    "overview": "In the smog-choked dystopian Los Angeles of 2019, blade runner Rick Deckard is called out of retirement to terminate a quartet of replicants who have escaped to Earth seeking their creator for a way to extend their short life spans."
+  },
+  {
+    "id": 210577,
+    "imdb_id": "tt2267998",
+    "rank": 203,
+    "title": "Gone Girl",
+    "year": "2014",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ts996lKsxvjkO2yiYG0ht4qAicO.jpg",
+    "overview": "With his wife's disappearance having become the focus of an intense media circus, a man sees the spotlight turned on him when it's suspected that he may not be innocent."
+  },
+  {
+    "id": 359724,
+    "imdb_id": "tt1950186",
+    "rank": 204,
+    "title": "Ford v Ferrari",
+    "year": "2019",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Biography",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dR1Ju50iudrOh3YgfwkAU1g2HZe.jpg",
+    "overview": "American car designer Carroll Shelby and the British-born driver Ken Miles work together to battle corporate interference, the laws of physics, and their own personal demons to build a revolutionary race car for Ford Motor Company and take on the dominating race cars of Enzo Ferrari at the 24 Hours of Le Mans in France in 1966."
+  },
+  {
+    "id": 578,
+    "imdb_id": "tt0073195",
+    "rank": 205,
+    "title": "Jaws",
+    "year": "1975",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Horror"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lxM6kqilAdpdhqUl2biYp5frUxE.jpg",
+    "overview": "When the seaside community of Amity finds itself under attack by a dangerous great white shark, the town's chief of police, a young marine biologist, and a grizzled shark hunter embark on a desperate quest to kill the beast before it strikes again."
+  },
+  {
+    "id": 7984,
+    "imdb_id": "tt0107207",
+    "rank": 206,
+    "title": "In the Name of the Father",
+    "year": "1993",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3NcIkKxaO2SmRVsG1v50XhtmL0f.jpg",
+    "overview": "A small-time Belfast thief, Gerry Conlon, is wrongly convicted of an IRA bombing in London, along with his father and friends, and spends 15 years in prison fighting to prove his innocence."
+  },
+  {
+    "id": 634649,
+    "imdb_id": "tt10872600",
+    "rank": 207,
+    "title": "Spider-Man: No Way Home",
+    "year": "2021",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1g0dhYtq4irTY1GPXvft6k4YLjm.jpg",
+    "overview": "Peter Parker is unmasked and no longer able to separate his normal life from the high-stakes of being a super-hero. When he asks for help from Doctor Strange the stakes become even more dangerous, forcing him to discover what it truly means to be Spider-Man."
+  },
+  {
+    "id": 1218925,
+    "imdb_id": "tt30472557",
+    "rank": 208,
+    "title": "Gekij\u00f4-ban Chens\u00f4 Man Reze-hen",
+    "year": "2025",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pHyxb2RV5wLlboAwm9ZJ9qTVEDw.jpg",
+    "overview": "In a brutal war between devils, hunters, and secret enemies, a mysterious girl named Reze has stepped into Denji's world, and he faces his deadliest battle yet, fueled by love in a world where survival knows no rules."
+  },
+  {
+    "id": 265195,
+    "imdb_id": "tt3011894",
+    "rank": 209,
+    "title": "Relatos salvajes",
+    "year": "2014",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vmeCDuWJ6B2cqi9f3QFyIwRKqFV.jpg",
+    "overview": "Injustice and the demands of the world can cause stress for many people. Some of them, however, explode. This includes a waitress serving a grouchy loan shark, an altercation between two motorists, an ill-fated wedding reception, and a wealthy businessman who tries to buy his family out of trouble."
+  },
+  {
+    "id": 962,
+    "imdb_id": "tt0015864",
+    "rank": 210,
+    "title": "The Gold Rush",
+    "year": "1925",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/eQRFo1qwRREYwj47Yoe1PisgOle.jpg",
+    "overview": "A gold prospector in Alaska struggles to survive the elements and win the heart of a dance hall girl."
+  },
+  {
+    "id": 378064,
+    "imdb_id": "tt5323662",
+    "rank": 211,
+    "title": "Koe no katachi",
+    "year": "2016",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Animation",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tuFaWiqX0TXoWu7DGNcmX3UW7sT.jpg",
+    "overview": "Shouya Ishida starts bullying the new girl in class, Shouko Nishimiya, because she is deaf. But as the teasing continues, the rest of the class starts to turn on Shouya for his lack of compassion. When they leave elementary school, Shouko and Shouya do not speak to each other again... until an older, wiser Shouya, tormented by his past behaviour, decides he must see Shouko once more. He wants to atone for his sins, but is it already too late...?"
+  },
+  {
+    "id": 992,
+    "imdb_id": "tt0015324",
+    "rank": 212,
+    "title": "Sherlock Jr.",
+    "year": "1924",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Comedy",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1G9r3rqtbFAQuyWKOZm4Y5J5s7Q.jpg",
+    "overview": "A film projectionist longs to be a detective, and puts his meager skills to work when he is framed by a rival for stealing his girlfriend's father's pocketwatch."
+  },
+  {
+    "id": 24238,
+    "imdb_id": "tt0978762",
+    "rank": 213,
+    "title": "Mary and Max.",
+    "year": "2009",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ebmsM382m9IClLUzKYY2U5biFwM.jpg",
+    "overview": "A tale of friendship between two unlikely pen pals: Mary, a lonely, eight-year-old girl living in the suburbs of Melbourne, and Max, a forty-four-year old, severely obese man living in New York."
+  },
+  {
+    "id": 11778,
+    "imdb_id": "tt0077416",
+    "rank": 214,
+    "title": "The Deer Hunter",
+    "year": "1978",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bbGtogDZOg09bm42KIpCXUXICkh.jpg",
+    "overview": "Three steelworkers enlist in the army and are sent to Vietnam, one leaving behind a rushed marriage, the others a shared love. What they encounter during the war changes their lives forever."
+  },
+  {
+    "id": 204,
+    "imdb_id": "tt0046268",
+    "rank": 215,
+    "title": "Le salaire de la peur",
+    "year": "1953",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sNOvIp4X0fmCMfgEs2ww5IyMgFm.jpg",
+    "overview": "In a run-down South American town, four men are paid to drive trucks loaded with nitroglycerin into the jungle through to the oil field. Friendships are tested and rivalries develop as they embark upon the perilous journey."
+  },
+  {
+    "id": 263115,
+    "imdb_id": "tt3315342",
+    "rank": 216,
+    "title": "Logan",
+    "year": "2017",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fnbjcRDYn6YviCcePDnGdyAkYsB.jpg",
+    "overview": "In the near future, a weary Logan cares for an ailing Professor X in a hideout on the Mexican border. But Logan's attempts to hide from the world and his legacy are upended when a young mutant arrives, pursued by dark forces."
+  },
+  {
+    "id": 1366,
+    "imdb_id": "tt0075148",
+    "rank": 217,
+    "title": "Rocky",
+    "year": "1976",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Sport"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xSI0dbKLDETwhiVUy6hGE8KXUln.jpg",
+    "overview": "Rocky Balboa is a Philadelphia club fighter who seems to be going nowhere. But when a stroke of fate puts him in the ring with a world heavyweight champion, Rocky knows that it's his one shot at the big time \u2014 a once-in-a-lifetime opportunity to go the distance and come out a winner!"
+  },
+  {
+    "id": 22,
+    "imdb_id": "tt0325980",
+    "rank": 218,
+    "title": "Pirates of the Caribbean: The Curse of the Black Pearl",
+    "year": "2003",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/poHwCZeWzJCShH7tOjg8RIoyjcw.jpg",
+    "overview": "When wily pirate Captain Barbossa seizes Jack Sparrow\u2019s beloved ship, the Black Pearl, and kidnaps the governor\u2019s daughter, Elizabeth Swann, blacksmith Will Turner reluctantly teams up with the unpredictable pirate Jack to rescue her\u2014only to uncover a terrifying curse that turns Barbossa\u2019s crew into the undead."
+  },
+  {
+    "id": 961,
+    "imdb_id": "tt0017925",
+    "rank": 219,
+    "title": "The General",
+    "year": "1926",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/4NmV1Wei4LxT2lpjViCAScgCZLq.jpg",
+    "overview": "During America\u2019s Civil War, Union spies steal engineer Johnny Gray's beloved locomotive, 'The General'\u2014with Johnnie's lady love aboard an attached boxcar\u2014and he single-handedly must do all in his power to both get The General back and to rescue Annabelle."
+  },
+  {
+    "id": 3083,
+    "imdb_id": "tt0031679",
+    "rank": 220,
+    "title": "Mr. Smith Goes to Washington",
+    "year": "1939",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nDjg1fbNyq15excNDl3acd2IqAk.jpg",
+    "overview": "After the death of a United States Senator, the idealistic Jefferson Smith is appointed as his replacement in Washington. The naive and earnest new senator soon finds himself battling political corruption."
+  },
+  {
+    "id": 18148,
+    "imdb_id": "tt0046438",
+    "rank": 221,
+    "title": "T\u00f4ky\u00f4 monogatari",
+    "year": "1953",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/g2YbTYKpY7N2yDSk7BfXZ18I5QV.jpg",
+    "overview": "The elderly Shukishi and his wife, Tomi, take the long journey from their small seaside village to visit their adult children in Tokyo. Their elder son, Koichi, a doctor, and their daughter, Shige, a hairdresser, don't have much time to spend with their aged parents, and so it falls to Noriko, the widow of their younger son who was killed in the war, to keep her in-laws company."
+  },
+  {
+    "id": 406,
+    "imdb_id": "tt0113247",
+    "rank": 222,
+    "title": "La haine",
+    "year": "1995",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hY4exng4s29RzDbtQInjx9MA3PZ.jpg",
+    "overview": "After a chaotic night of rioting in a marginal suburb of Paris, three young friends, Vinz, Hubert and Sa\u00efd, wander around unoccupied waiting for news about the state of health of a mutual friend who has been seriously injured when confronting the police."
+  },
+  {
+    "id": 314365,
+    "imdb_id": "tt1895587",
+    "rank": 223,
+    "title": "Spotlight",
+    "year": "2015",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8DPGG400FgaFWaqcv11n8mRd2NG.jpg",
+    "overview": "The true story of how the Boston Globe uncovered the massive scandal of child molestation and cover-up within the local Catholic Archdiocese, shaking the entire Catholic Church to its core."
+  },
+  {
+    "id": 855400,
+    "imdb_id": "tt15097216",
+    "rank": 224,
+    "title": "Jai Bhim",
+    "year": "2021",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ehybiOtBUtrMkmtB39zQEtq1Jie.jpg",
+    "overview": "A pregnant woman from a primitive tribal community, searches desperately for her husband, who is missing from police custody. So as to find her husband and seek justice for them, as their voice, a High Court advocate rises in support. Will their battle for justice succeed?"
+  },
+  {
+    "id": 15121,
+    "imdb_id": "tt0059742",
+    "rank": 225,
+    "title": "The Sound of Music",
+    "year": "1965",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/c6CrUZypAsBCaRWX0M3RVRDbhNS.jpg",
+    "overview": "In the years before World War II, a tomboyish postulant at an Austrian abbey is hired as a governess in the home of a widowed naval captain with seven children and brings a new love of life and music into the home."
+  },
+  {
+    "id": 1118224,
+    "imdb_id": "tt26548265",
+    "rank": 226,
+    "title": "Maharaja",
+    "year": "2024",
+    "vote_average": 8.3,
+    "imdb_rating": "8.3",
+    "rotten_tomatoes": "92%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/s0m4TM1XRAftQStgKpw024RvkJo.jpg",
+    "overview": "A barber seeks vengeance after his home is burglarized, cryptically telling police his \"Lakshmi\" has been taken, leaving them uncertain if it's a person or object, jeer at his request until they learn what they're really looking for."
+  },
+  {
+    "id": 218,
+    "imdb_id": "tt0088247",
+    "rank": 227,
+    "title": "The Terminator",
+    "year": "1984",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qvktm0BHcnmDpul4Hz01GIazWPr.jpg",
+    "overview": "In the post-apocalyptic future, reigning tyrannical supercomputers teleport a cyborg assassin known as the \"Terminator\" back to 1984 to kill Sarah Connor, whose unborn son is destined to lead insurgents against 21st century mechanical hegemony. Meanwhile, the human-resistance movement dispatches a lone warrior to safeguard Sarah. Can he stop the virtually indestructible killing machine?"
+  },
+  {
+    "id": 614,
+    "imdb_id": "tt0050986",
+    "rank": 228,
+    "title": "Smultronst\u00e4llet",
+    "year": "1957",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iyTD2QnySNMPUPE3IedZQipSWfz.jpg",
+    "overview": "Crotchety retired doctor Isak Borg travels from Stockholm to Lund, Sweden, with his pregnant and unhappy daughter-in-law, Marianne, in order to receive an honorary degree from his alma mater. Along the way, they encounter a series of hitchhikers, each of whom causes the elderly doctor to muse upon the pleasures and failures of his own life. These include the vivacious young Sara, a dead ringer for the doctor's own first love."
+  },
+  {
+    "id": 654,
+    "imdb_id": "tt0047296",
+    "rank": 229,
+    "title": "On the Waterfront",
+    "year": "1954",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/d4S8LpbCyFJsh1tGgwGQSJdGzKm.jpg",
+    "overview": "A prizefighter-turned-longshoreman with a conscience goes up against labor leaders to expose corruption, extortion, and murder among the union ranks."
+  },
+  {
+    "id": 887,
+    "imdb_id": "tt0036868",
+    "rank": 230,
+    "title": "The Best Years of Our Lives",
+    "year": "1946",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Romance",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gd5EoAU4MM57sW3vlWxJ0NMM8cV.jpg",
+    "overview": "It's the hope that sustains the spirit of every GI: the dream of the day when he will finally return home. For three WWII veterans, the day has arrived. But for each man, the dream is about to become a nightmare."
+  },
+  {
+    "id": 1092,
+    "imdb_id": "tt0041959",
+    "rank": 231,
+    "title": "The Third Man",
+    "year": "1949",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Film-Noir",
+      "Mystery"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vqnFHTx1phgTAsLfxZoejSbMVHA.jpg",
+    "overview": "In postwar Vienna, Austria, Holly Martins, a writer of pulp Westerns, arrives penniless as a guest of his childhood chum Harry Lime, only to learn he has died. Martins develops a conspiracy theory after learning of a \"third man\" present at the time of Harry's death, running into interference from British officer Major Calloway, and falling head-over-heels for Harry's grief-stricken lover, Anna."
+  },
+  {
+    "id": 115,
+    "imdb_id": "tt0118715",
+    "rank": 232,
+    "title": "The Big Lebowski",
+    "year": "1998",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3bv6WAp6BSxxYvB5ozKFUYuRA8C.jpg",
+    "overview": "Jeffrey 'The Dude' Lebowski, a Los Angeles slacker who only wants to bowl and drink White Russians, is mistaken for another Jeffrey Lebowski, a wheelchair-bound millionaire, and finds himself dragged into a strange series of events involving nihilists, adult film producers, ferrets, errant toes, and large sums of money."
+  },
+  {
+    "id": 9806,
+    "imdb_id": "tt0317705",
+    "rank": 233,
+    "title": "The Incredibles",
+    "year": "2004",
+    "vote_average": 8.0,
+    "imdb_rating": "8",
+    "rotten_tomatoes": "89%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2LqaLgk4Z226KkgPJuiOQ58wvrm.jpg",
+    "overview": "Bob Parr has given up his superhero days to log in time as an insurance adjuster and raise his three children with his formerly heroic wife in suburbia. But when he receives a mysterious assignment, it's time to get back into costume."
+  },
+  {
+    "id": 28178,
+    "imdb_id": "tt1028532",
+    "rank": 234,
+    "title": "Hachi: A Dog&apos;s Tale",
+    "year": "2009",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lsy3aEsEfYIHdLRk4dontZ4s85h.jpg",
+    "overview": "Professor Wilson discovers a lost Akita puppy on his way home. Despite objections from his wife, Hachi endears himself to the family and grows to be Parker's loyal companion. As their bond grows deeper, a beautiful relationship unfolds."
+  },
+  {
+    "id": 80,
+    "imdb_id": "tt0381681",
+    "rank": 235,
+    "title": "Before Sunset",
+    "year": "2004",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/4sW5XH9ZfYXpvFzev00S1IGAEbg.jpg",
+    "overview": "Nine years later, Jesse travels across Europe giving readings from a book he wrote about the night he spent in Vienna with Celine. After his reading in Paris, Celine finds him, and they spend part of the day together before Jesse has to again leave for a flight. They are both in relationships now, and Jesse has a son, but as their strong feelings for each other start to return, both confess a longing for more."
+  },
+  {
+    "id": 264644,
+    "imdb_id": "tt3170832",
+    "rank": 236,
+    "title": "Room",
+    "year": "2015",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2hHDMeYyZjbGWn0BeNH1cTMxuM7.jpg",
+    "overview": "Held captive for 7 years in an enclosed space, a woman and her young son finally gain their freedom, allowing the boy to experience the outside world for the first time."
+  },
+  {
+    "id": 9552,
+    "imdb_id": "tt0070047",
+    "rank": 237,
+    "title": "The Exorcist",
+    "year": "1973",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Horror"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5x0CeVHJI8tcDx8tUUwYHQSNILq.jpg",
+    "overview": "When a mysterious entity possesses a young girl, her mother seeks the help of two Catholic priests to save her life."
+  },
+  {
+    "id": 205,
+    "imdb_id": "tt0395169",
+    "rank": 238,
+    "title": "Hotel Rwanda",
+    "year": "2004",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/p3pHw85UMZPegfMZBA6dZ06yarm.jpg",
+    "overview": "Inspired by true events, this film takes place in Rwanda in the 1990s when more than a million Tutsis were killed in a genocide that went mostly unnoticed by the rest of the world. Hotel owner Paul Rusesabagina houses over a thousand refuges in his hotel in attempt to save their lives."
+  },
+  {
+    "id": 10386,
+    "imdb_id": "tt0129167",
+    "rank": 239,
+    "title": "The Iron Giant",
+    "year": "1999",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/k1Cv5CHJvqGWK1xJDUJz8DojFEy.jpg",
+    "overview": "In the small town of Rockwell, Maine in October 1957, a giant metal machine befriends a nine-year-old boy and ultimately finds its humanity by unselfishly saving people from their own fears and prejudices."
+  },
+  {
+    "id": 490,
+    "imdb_id": "tt0050976",
+    "rank": 240,
+    "title": "Det sjunde inseglet",
+    "year": "1957",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wcZ21zrOsy0b52AfAF50XpTiv75.jpg",
+    "overview": "When disillusioned Swedish knight Antonius Block returns home from the Crusades to find his country in the grips of the Black Death, he challenges Death to a chess match for his life. Tormented by the belief that God does not exist, Block sets off on a journey, meeting up with traveling players Jof and his wife, Mia, and becoming determined to evade Death long enough to commit one redemptive act while he still lives."
+  },
+  {
+    "id": 792,
+    "imdb_id": "tt0091763",
+    "rank": 241,
+    "title": "Platoon",
+    "year": "1986",
+    "vote_average": 8.0,
+    "imdb_rating": "8",
+    "rotten_tomatoes": "89%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/m3mmFkPQKvPZq5exmh0bDuXlD9T.jpg",
+    "overview": "As a young and naive recruit in Vietnam, Chris Taylor faces a moral crisis when confronted with the horrors of war and the duality of man."
+  },
+  {
+    "id": 31534,
+    "imdb_id": "tt0252488",
+    "rank": 242,
+    "title": "Hababam Sinifi: Sinifta Kaldi",
+    "year": "1976",
+    "vote_average": 8.4,
+    "imdb_rating": "8.4",
+    "rotten_tomatoes": "94%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zMfsVXGxJy2xh0FwUWcZ1XXDZus.jpg",
+    "overview": "A young and beautiful female teacher starts working in an all boys high school."
+  },
+  {
+    "id": 96721,
+    "imdb_id": "tt1979320",
+    "rank": 243,
+    "title": "Rush",
+    "year": "2013",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "Sport"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/95BDrWmcfJDEa2WCfjmLgi67jhi.jpg",
+    "overview": "In the 1970s, a rivalry propels race car drivers Niki Lauda and James Hunt to fame and glory \u2014 until a horrible accident threatens to end it all."
+  },
+  {
+    "id": 235,
+    "imdb_id": "tt0092005",
+    "rank": 244,
+    "title": "Stand by Me",
+    "year": "1986",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vz0w9BSehcqjDcJOjRaCk7fgJe7.jpg",
+    "overview": "After learning that a boy their age has been accidentally killed near their rural homes, four boys decide to go see the body. Gordie, Vern, Chris, and Teddy encounter a mean junk man and a marsh full of leeches, but they also learn more about one another and their very different home lives. Just a lark at first, the boys' adventure evolves into a defining event in their lives."
+  },
+  {
+    "id": 630,
+    "imdb_id": "tt0032138",
+    "rank": 245,
+    "title": "The Wizard of Oz",
+    "year": "1939",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Adventure",
+      "Family",
+      "Fantasy"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uCC3j4pV9eOZwzDUWp2ilbcTf1f.jpg",
+    "overview": "Young Dorothy finds herself in a magical world where she makes friends with a lion, a scarecrow and a tin man as they make their way along the yellow brick road to talk with the Wizard and ask for the things they miss most in their lives. The Wicked Witch of the West is the only thing that could stop them."
+  },
+  {
+    "id": 17295,
+    "imdb_id": "tt0058946",
+    "rank": 246,
+    "title": "La battaglia di Algeri",
+    "year": "1966",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2p3AFtOHFvP6OeVMqlnL1zLKOqL.jpg",
+    "overview": "Paratrooper commander Colonel Mathieu, a former French Resistance fighter during World War II, is sent to Algeria to reinforce efforts to squelch the uprisings of the Algerian War. There he faces Ali la Pointe, a former petty criminal who, as the leader of the Algerian Front de Liberation Nationale, directs terror strategies against the colonial French government occupation. As each side resorts to ever-increasing brutality, no violent act is too unthinkable."
+  },
+  {
+    "id": 13393,
+    "imdb_id": "tt0476735",
+    "rank": 247,
+    "title": "Babam ve Oglum",
+    "year": "2005",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ephCcqJYZFUnkQC7Oudah2qUL6O.jpg",
+    "overview": "A left-wing journalist whose wife died while giving birth to his son during a military coup returns to his family's farm. Estranged from his father for turning his back on the family and wasting his life with political activism instead, he tries to reconnect with him so that his son will have a place to live as his health is deteriorating due to the extensive torture he had to endure."
+  },
+  {
+    "id": 780,
+    "imdb_id": "tt0019254",
+    "rank": 248,
+    "title": "La passion de Jeanne d&apos;Arc",
+    "year": "1928",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tAgV9yxY6AC1bsPt3qJJQpD4s8.jpg",
+    "overview": "A classic of the silent age, this film tells the story of the doomed but ultimately canonized 15th-century teenage warrior. On trial for claiming she'd spoken to God, Jeanne d'Arc is subjected to inhumane treatment and scare tactics at the hands of church court officials. Initially bullied into changing her story, Jeanne eventually opts for what she sees as the truth. Her punishment, a famously brutal execution, earns her perpetual martyrdom."
+  },
+  {
+    "id": 12761,
+    "imdb_id": "tt0077711",
+    "rank": 249,
+    "title": "H\u00f6stsonaten",
+    "year": "1978",
+    "vote_average": 8.1,
+    "imdb_rating": "8.1",
+    "rotten_tomatoes": "90%",
+    "genres": [
+      "Drama",
+      "Music"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6beNbtCXv3GkzHkxkGYf38ib7v8.jpg",
+    "overview": "After a seven-year absence, Charlotte Andergast travels to Sweden to reunite with her daughter Eva. The pair have a troubled relationship: Charlotte sacrificed the responsibilities of motherhood for a career as a classical pianist. Over an emotional night, the pair reopen the wounds of the past. Charlotte gets another shock when she finds out that her mentally impaired daughter, Helena, is out of the asylum and living with Eva."
+  },
+  {
+    "id": 637920,
+    "imdb_id": "tt10431500",
+    "rank": 250,
+    "title": "Yedinci Kogustaki Mucize",
+    "year": "2019",
+    "vote_average": 8.2,
+    "imdb_rating": "8.2",
+    "rotten_tomatoes": "91%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "movie",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bOth4QmNyEkalwahfPCfiXjNh1r.jpg",
+    "overview": "Separated from his daughter, a father with an intellectual disability must prove his innocence when he is jailed for the death of a commander's child."
+  }
+]

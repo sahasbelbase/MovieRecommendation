@@ -72,40 +72,58 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
 
         {/* Quick Actions: Not Interested, Watchlist & Watched */}
         <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
-          <button
-            onClick={handleNotInterestedClick}
-            aria-label="Not interested"
-            className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100"
-            title="Not interested (Hide permanently)"
-          >
-            <EyeOff className="w-3.5 h-3.5" />
-          </button>
+          {/* Not Interested Tooltip & Button */}
+          <div className="relative group/tip">
+            <button
+              onClick={handleNotInterestedClick}
+              aria-label="Not interested"
+              className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100"
+              title="Not interested (Hide permanently)"
+            >
+              <EyeOff className="w-3.5 h-3.5" />
+            </button>
+            <span className="pointer-events-none absolute top-full mt-1 right-0 z-30 hidden group-hover/tip:inline-flex items-center px-2 py-0.5 rounded bg-zinc-950/95 border border-zinc-700 text-[10px] font-medium text-zinc-200 shadow-xl whitespace-nowrap">
+              Not Interested
+            </span>
+          </div>
 
-          <button
-            onClick={handleWatchlistClick}
-            aria-label={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
-            className={`rounded-full p-2 transition-all active:scale-90 ${
-              isWatchlist
-                ? 'bg-amber-500 text-black shadow-lg shadow-amber-900/50'
-                : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
-            }`}
-            title={isWatchlist ? "In Watchlist (Click to remove)" : "Add to Watchlist"}
-          >
-            <Bookmark className={`w-3.5 h-3.5 ${isWatchlist ? 'fill-black stroke-black' : ''}`} />
-          </button>
+          {/* Watchlist Tooltip & Button */}
+          <div className="relative group/tip">
+            <button
+              onClick={handleWatchlistClick}
+              aria-label={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
+              className={`rounded-full p-2 transition-all active:scale-90 ${
+                isWatchlist
+                  ? 'bg-amber-500 text-black shadow-lg shadow-amber-900/50'
+                  : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
+              }`}
+              title={isWatchlist ? "In Watchlist (Click to remove)" : "Add to Watchlist"}
+            >
+              <Bookmark className={`w-3.5 h-3.5 ${isWatchlist ? 'fill-black stroke-black' : ''}`} />
+            </button>
+            <span className="pointer-events-none absolute top-full mt-1 right-0 z-30 hidden group-hover/tip:inline-flex items-center px-2 py-0.5 rounded bg-zinc-950/95 border border-zinc-700 text-[10px] font-medium text-zinc-200 shadow-xl whitespace-nowrap">
+              {isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+            </span>
+          </div>
 
-          <button
-            onClick={handleWatchedClick}
-            aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
-            className={`rounded-full p-2 transition-all active:scale-90 ${
-              isWatched
-                ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
-                : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
-            }`}
-            title={isWatched ? "Watched (Click to remove)" : "Mark as Watched"}
-          >
-            <Check className={`w-3.5 h-3.5 stroke-[2.5] ${isWatched ? 'text-white' : ''}`} />
-          </button>
+          {/* Watched Tooltip & Button */}
+          <div className="relative group/tip">
+            <button
+              onClick={handleWatchedClick}
+              aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
+              className={`rounded-full p-2 transition-all active:scale-90 ${
+                isWatched
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
+                  : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
+              }`}
+              title={isWatched ? "Watched (Click to remove)" : "Mark as Watched"}
+            >
+              <Check className={`w-3.5 h-3.5 stroke-[2.5] ${isWatched ? 'text-white' : ''}`} />
+            </button>
+            <span className="pointer-events-none absolute top-full mt-1 right-0 z-30 hidden group-hover/tip:inline-flex items-center px-2 py-0.5 rounded bg-zinc-950/95 border border-zinc-700 text-[10px] font-medium text-zinc-200 shadow-xl whitespace-nowrap">
+              {isWatched ? 'Watched (Undo)' : 'Mark as Watched'}
+            </span>
+          </div>
         </div>
 
         {/* Top Left Badges: Media Type & Year */}

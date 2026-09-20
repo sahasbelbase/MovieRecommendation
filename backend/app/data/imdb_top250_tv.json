@@ -1,0 +1,4352 @@
+[
+  {
+    "id": 1396,
+    "imdb_id": "tt0903747",
+    "rank": 1,
+    "title": "Breaking Bad",
+    "year": "2008",
+    "vote_average": 9.5,
+    "imdb_rating": "9.5",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/anFx9aTOOYqgS3v7x3R84Kz67ly.jpg",
+    "overview": "Walter White, a New Mexico chemistry teacher, is diagnosed with Stage III cancer and given a prognosis of only two years left to live. He becomes filled with a sense of fearlessness and an unrelenting desire to secure his family's financial future at any cost as he enters the dangerous world of drugs and crime."
+  },
+  {
+    "id": 68595,
+    "imdb_id": "tt5491994",
+    "rank": 2,
+    "title": "Planet Earth II",
+    "year": "2016",
+    "vote_average": 9.4,
+    "imdb_rating": "9.4",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tUKomxy50suT4MyxjYfOJDkZUq3.jpg",
+    "overview": "David Attenborough presents a documentary series exploring how animals meet the challenges of surviving in the most iconic habitats on earth."
+  },
+  {
+    "id": 1044,
+    "imdb_id": "tt0795176",
+    "rank": 3,
+    "title": "Planet Earth",
+    "year": "2006",
+    "vote_average": 9.4,
+    "imdb_rating": "9.4",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bNcNxUtZ520d5de5s78onoiSiwQ.jpg",
+    "overview": "David Attenborough celebrates the amazing variety of the natural world in this epic documentary series, filmed over four years across 64 different countries."
+  },
+  {
+    "id": 4613,
+    "imdb_id": "tt0185906",
+    "rank": 4,
+    "title": "Band of Brothers",
+    "year": "2001",
+    "vote_average": 9.4,
+    "imdb_rating": "9.4",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Action",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pGzV187ogXzgJrvPRy2YPi29ofH.jpg",
+    "overview": "Drawn from interviews with survivors of Easy Company, as well as their journals and letters, Band of Brothers chronicles the experiences of these men from paratrooper training in Georgia through the end of the war. As an elite rifle company parachuting into Normandy early on D-Day morning, participants in the Battle of the Bulge, and witness to the horrors of war, the men of Easy knew extraordinary bravery and extraordinary fear - and became the stuff of legend. Based on Stephen E. Ambrose's acclaimed book of the same name."
+  },
+  {
+    "id": 87108,
+    "imdb_id": "tt7366338",
+    "rank": 5,
+    "title": "Chernobyl",
+    "year": "2019",
+    "vote_average": 9.3,
+    "imdb_rating": "9.3",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama",
+      "History",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hlLXt2tOPT6RRnjiUmoxyG1LTFi.jpg",
+    "overview": "The true story of one of the worst man-made catastrophes in history: the catastrophic nuclear accident at Chernobyl. A tale of the brave men and women who sacrificed to save Europe from unimaginable disaster."
+  },
+  {
+    "id": 246,
+    "imdb_id": "tt0417299",
+    "rank": 6,
+    "title": "Avatar: The Last Airbender",
+    "year": "2005",
+    "vote_average": 9.3,
+    "imdb_rating": "9.3",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yaGt4GIutpbXHsv48tWceWg6s56.jpg",
+    "overview": "In a war-torn world of elemental magic, a young boy reawakens to undertake a dangerous mystic quest to fulfill his destiny as the Avatar, and bring peace to the world."
+  },
+  {
+    "id": 1438,
+    "imdb_id": "tt0306414",
+    "rank": 7,
+    "title": "The Wire",
+    "year": "2002",
+    "vote_average": 9.3,
+    "imdb_rating": "9.3",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/4lbclFySvugI51fwsyxBTOm4DqK.jpg",
+    "overview": "Told from the points of view of both the Baltimore homicide and narcotics detectives and their targets, the series captures a universe in which the national war on drugs has become a permanent, self-sustaining bureaucracy, and distinctions between good and evil are routinely obliterated."
+  },
+  {
+    "id": 141842,
+    "imdb_id": "tt0141842",
+    "rank": 8,
+    "title": "The Sopranos",
+    "year": "",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZjYwNWQwOTMtMzYwOS00NTcxLWFhNTYtNGQ4YjdmYTcyNDFkXkEyXkFqcGc@._V1_.jpg",
+    "overview": "New Jersey mob boss Tony Soprano deals with personal and professional issues in his home and business life that affect his mental state, leading him to seek professional psychiatric counseling."
+  },
+  {
+    "id": 74313,
+    "imdb_id": "tt6769208",
+    "rank": 9,
+    "title": "Blue Planet II",
+    "year": "2017",
+    "vote_average": 9.3,
+    "imdb_rating": "9.3",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/j1NsoYYDYHnPkRr7Enqr8tlexgO.jpg",
+    "overview": "There is nowhere more powerful and unforgiving yet more beautiful and compelling than the ocean. Join us and explore the greatest yet least known parts of our planet."
+  },
+  {
+    "id": 58474,
+    "imdb_id": "tt2395695",
+    "rank": 10,
+    "title": "Cosmos: A Spacetime Odyssey",
+    "year": "2014",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5o07ps0QZ0bNoRYxTn9cPdRWlUu.jpg",
+    "overview": "Famed astrophysicist Neil deGrasse Tyson provides clarity for the vision of the cosmos as he voyages across the universe with never-before-told stories that delve into the scientific concepts of the laws of gravity and the origins of space and time."
+  },
+  {
+    "id": 1430,
+    "imdb_id": "tt0081846",
+    "rank": 11,
+    "title": "Cosmos",
+    "year": "1980",
+    "vote_average": 9.3,
+    "imdb_rating": "9.3",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nOGArjE0WMkzY2GW1taJm8l9gxD.jpg",
+    "overview": "Carl Sagan covers a wide range of scientific subjects, including the origin of life and a perspective of our place in the universe."
+  },
+  {
+    "id": 83880,
+    "imdb_id": "tt9253866",
+    "rank": 12,
+    "title": "Our Planet",
+    "year": "2019",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wRSnArnQBmeUYb5GWDU595bGsBr.jpg",
+    "overview": "Experience our planet's natural beauty and examine how climate change impacts all living creatures in this ambitious documentary of spectacular scope."
+  },
+  {
+    "id": 1399,
+    "imdb_id": "tt0944947",
+    "rank": 13,
+    "title": "Game of Thrones",
+    "year": "2011",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1XS1oqL89opfnbLl8WnZY1O1uJx.jpg",
+    "overview": "Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond."
+  },
+  {
+    "id": 82728,
+    "imdb_id": "tt7678620",
+    "rank": 14,
+    "title": "Bluey",
+    "year": "2018",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Short",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9p4pNoGcuyCfHcGWKNrTopqMWtq.jpg",
+    "overview": "Bluey is an inexhaustible six year-old Blue Heeler dog, who loves to play and turns everyday family life into extraordinary adventures, developing her imagination as well as her mental, physical and emotional resilience."
+  },
+  {
+    "id": 751,
+    "imdb_id": "tt0071075",
+    "rank": 15,
+    "title": "The World at War",
+    "year": "1973",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "History",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bWdwEYQQEsz9HuXy5m95z95BYQM.jpg",
+    "overview": "A documentary series that gives a historical account of the events of World War II, from its roots in the 1920s to the aftermath and the lives it profoundly influenced."
+  },
+  {
+    "id": 1429,
+    "imdb_id": "tt2560140",
+    "rank": 16,
+    "title": "Shingeki no kyojin",
+    "year": "2013",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hTP1DtLGFamjfu8WqjnuQdP1n4i.jpg",
+    "overview": "100 years ago, the last remnants of humanity were forced to retreat behind the towering walls of a fortified city to escape the massive, man-eating Titans that roamed the land outside their fortress. Only the members of the Scouting Legion dared to stray beyond the safety of the walls \u2013 but even those brave warriors seldom returned alive. Those within the city clung to the illusion of a peaceful existence until the day that dream was shattered, and their slim chance at survival was reduced to one horrifying choice: kill \u2013 or be devoured!"
+  },
+  {
+    "id": 31911,
+    "imdb_id": "tt1355642",
+    "rank": 17,
+    "title": "Hagane no renkinjutsushi",
+    "year": "2009",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5ZFUEOULaVml7pQuXxhpR2SmVUw.jpg",
+    "overview": "Disregard for alchemy\u2019s laws ripped half of Edward Elric\u2019s limbs from his body and left his brother Alphonse\u2019s soul clinging to a suit of armor. To restore what was lost, the brothers seek the Philosopher\u2019s Stone. Enemies and allies \u2013 the corrupt military, the Homunculi, and foreign alchemists \u2013 will alter the Elric brothers course, but their purpose will remain unchanged and their bond unbreakable."
+  },
+  {
+    "id": 16946,
+    "imdb_id": "tt1533395",
+    "rank": 18,
+    "title": "Life",
+    "year": "2009",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9dVHGMYfI6T6p07UHfYVUk1Wzit.jpg",
+    "overview": "David Attenborough looks at the extraordinary ends to which animals and plants go in order to survive. Featuring epic spectacles, amazing TV firsts and examples of new wildlife behaviour."
+  },
+  {
+    "id": 79525,
+    "imdb_id": "tt8420184",
+    "rank": 19,
+    "title": "The Last Dance",
+    "year": "2020",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Biography",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/oVf4xGGbDtwVHiKn8uTuSriY7PH.jpg",
+    "overview": "A 10-part documentary chronicling the untold story of Michael Jordan and the Chicago Bulls dynasty with rare, never-before-seen footage and sound from the 1997-98 championship season \u2013 plus over 100 interviews with famous figures and basketball\u2019s biggest names."
+  },
+  {
+    "id": 6357,
+    "imdb_id": "tt0052520",
+    "rank": 20,
+    "title": "The Twilight Zone",
+    "year": "1959",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama",
+      "Fantasy",
+      "Horror"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7uY4pCOxbEdv4M8jTE4uMPVoSIW.jpg",
+    "overview": "An anthology series containing drama, psychological thriller, fantasy, science fiction, suspense, and/or horror, often concluding with a macabre or unexpected twist."
+  },
+  {
+    "id": 46434,
+    "imdb_id": "tt1877514",
+    "rank": 21,
+    "title": "The Vietnam War",
+    "year": "2017",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "History",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tKt4lYTA4YmfBUH5Vtd7qqgqGBW.jpg",
+    "overview": "An immersive 360-degree narrative telling the epic story of the Vietnam War as it has never before been told on film. Featuring testimony from nearly 80 witnesses, including many Americans who fought in the war and others who opposed it, as well as Vietnamese combatants and civilians from both the winning and losing sides."
+  },
+  {
+    "id": 2861424,
+    "imdb_id": "tt2861424",
+    "rank": 22,
+    "title": "Rick and Morty",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZGQyZjk2MzMtMTcyNC00NGU3LTlmNjItNDExMWM4ZDFhYmQ2XkEyXkFqcGc@._V1_.jpg",
+    "overview": "The fractured domestic lives of a nihilistic mad scientist and his anxious grandson are further complicated by their inter-dimensional misadventures."
+  },
+  {
+    "id": 19885,
+    "imdb_id": "tt1475582",
+    "rank": 23,
+    "title": "Sherlock",
+    "year": "2010",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7WTsnHkbA0FaG6R9twfFde0I9hl.jpg",
+    "overview": "A modern update finds the famous sleuth and his doctor partner solving crime in 21st century London."
+  },
+  {
+    "id": 2098,
+    "imdb_id": "tt0103359",
+    "rank": 24,
+    "title": "Batman: The Animated Series",
+    "year": "1992",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lBomQFW1vlm1yUYMNSbFZ45R4Ox.jpg",
+    "overview": "Vowing to avenge the murder of his parents, Bruce Wayne devotes his life to wiping out crime in Gotham City as the masked vigilante \"Batman\"."
+  },
+  {
+    "id": 60059,
+    "imdb_id": "tt3032476",
+    "rank": 25,
+    "title": "Better Call Saul",
+    "year": "2015",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zjg4jpK1Wp2kiRvtt5ND0kznako.jpg",
+    "overview": "Six years before Saul Goodman meets Walter White. We meet him when the man who will become Saul Goodman is known as Jimmy McGill, a small-time lawyer searching for his destiny, and, more immediately, hustling to make ends meet. Working alongside, and, often, against Jimmy, is \u201cfixer\u201d Mike Ehrmantraut. The series tracks Jimmy\u2019s transformation into Saul Goodman, the man who puts \u201ccriminal\u201d in \u201ccriminal lawyer\"."
+  },
+  {
+    "id": 2316,
+    "imdb_id": "tt0386676",
+    "rank": 26,
+    "title": "The Office",
+    "year": "2005",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7DJKHzAi83BmQrWLrYYOqcoKfhR.jpg",
+    "overview": "The everyday lives of office employees in the Scranton, Pennsylvania branch of the fictional Dunder Mifflin Paper Company."
+  },
+  {
+    "id": 94605,
+    "imdb_id": "tt11126994",
+    "rank": 27,
+    "title": "Arcane: League of Legends",
+    "year": "2021",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3k6mlX3tvRT.jpg",
+    "overview": "Amid the stark discord of twin cities Piltover and Zaun, two sisters fight on rival sides of a war between magic technologies and clashing convictions."
+  },
+  {
+    "id": 13579,
+    "imdb_id": "tt0296310",
+    "rank": 28,
+    "title": "The Blue Planet",
+    "year": "2001",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jiedd3kJ2Xr4y05CdFCbu0vQPiD.jpg",
+    "overview": "Sir David Attenborough narrates this critically acclaimed series that dives deep into the marine environment of Planet Earth. Although two-thirds of the world's surface is covered with water, scientists know less about the oceans than they do about the surface of the moon. This limited series travels from various coasts to the poles to examine watery denizens ranging from the gigantic blue whale to microscopic coral polyps."
+  },
+  {
+    "id": 117648,
+    "imdb_id": "tt10541088",
+    "rank": 29,
+    "title": "Clarkson&apos;s Farm",
+    "year": "2021",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Comedy",
+      "Reality-TV"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/toVhyqMT3ICfahE7Ad8obJvZHpX.jpg",
+    "overview": "Follow Jeremy Clarkson as he embarks on his latest adventure, farming. The man who on several occasions claims to be allergic to manual labour takes on the most manually labour intensive job there is. What could possibly go wrong?"
+  },
+  {
+    "id": 46298,
+    "imdb_id": "tt2098220",
+    "rank": 30,
+    "title": "Hunter x Hunter",
+    "year": "2011",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/i2EEr2uBvRlAwJ8d8zTG2Y19mIa.jpg",
+    "overview": "Gon, a young boy who lives on Whale Island, dreams of becoming a Hunter like his father, who left when Gon was still young."
+  },
+  {
+    "id": 111188,
+    "imdb_id": "tt12392504",
+    "rank": 31,
+    "title": "Scam 1992: The Harshad Mehta Story",
+    "year": "2020",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fiimZ9Xt5cPTPHNrbS4QautBXpU.jpg",
+    "overview": "Set in 1980's & 90's Bombay, Scam 1992 follows the life of Harshad Mehta - a stockbroker who single-handedly took the stock market to dizzying heights & his catastrophic downfall. Being directed by National Award-winning filmmaker Hansal Mehta, the series is based on journalist Debashis Basu & Sucheta Dalal's book \"The Scam\"."
+  },
+  {
+    "id": 8724,
+    "imdb_id": "tt2092588",
+    "rank": 32,
+    "title": "Frozen Planet",
+    "year": "2011",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jEGKNLYq6ZxtBmkQz3edaw62xMp.jpg",
+    "overview": "David Attenborough travels to the end of the earth, taking viewers on an extraordinary journey across the polar regions of our planet."
+  },
+  {
+    "id": 72,
+    "imdb_id": "tt0081912",
+    "rank": 33,
+    "title": "Only Fools and Horses",
+    "year": "1981",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8QznQBwr4aqPIQTiymL7obM3qOK.jpg",
+    "overview": "Only Fools and Horses.... Is a British sitcom created and written by John Sullivan. Seven series were originally transmitted on BBC One from 1981 to 1991, with sixteen sporadic Christmas specials aired until 2003.\n\nIn working-class Peckham in south-east London, ambitious market trader Derek 'Del Boy' Trotter and his younger half-brother Rodney, explore their highs and lows in life, in particular their attempts to get rich.\n\nInitially not an immediate hit and receiving little promotion early on, it later achieved consistently high ratings, and the 1996 episode \"Time on Our Hands\" (originally billed as the series finale) holds the record for the biggest UK audience for a sitcom episode, attracting 24.3 million viewers. The series bears a significant influence on British culture, contributing several words and phrases to the English language."
+  },
+  {
+    "id": 32062,
+    "imdb_id": "tt1806234",
+    "rank": 34,
+    "title": "Human Planet",
+    "year": "2011",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bjhP5yIeyWMRMxJdLjBuiIf255X.jpg",
+    "overview": "A cinematic experience bringing you the most amazing human stories in the world. Humans and wildlife surviving in the most extreme environments on Earth."
+  },
+  {
+    "id": 16906,
+    "imdb_id": "tt0111893",
+    "rank": 35,
+    "title": "The Beatles Anthology",
+    "year": "1995",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Music"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/97zhDkOLlrkaIiIvROPsAMSqnzQ.jpg",
+    "overview": "A documentary series on the career of The Beatles."
+  },
+  {
+    "id": 259909,
+    "imdb_id": "tt33043892",
+    "rank": 36,
+    "title": "Dexter: Resurrection",
+    "year": "2025",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8eg1Ka32Mwcs9fBLcJG1iR8CbPo.jpg",
+    "overview": "Dexter Morgan awakens from a coma to find Harrison gone without a trace. Realizing the weight of what he put his son through, Dexter sets out for New York City, determined to find him and make things right. But closure won't come easy. When Miami Metro's Angel Batista arrives with questions, Dexter realizes his past is catching up to him fast. As father and son navigate their own darkness in the city that never sleeps, they soon find themselves deeper than they ever imagined - and that the only way out is together."
+  },
+  {
+    "id": 9693,
+    "imdb_id": "tt0098769",
+    "rank": 37,
+    "title": "The Civil War",
+    "year": "1990",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "History",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qs6J3T0mfAlmoOOUt0B2d4zd6je.jpg",
+    "overview": "A documentary on the American Civil War narrated by Ken Burns, covering the secession of the Confederacy to the assassination of Abraham Lincoln."
+  },
+  {
+    "id": 13675832,
+    "imdb_id": "tt13675832",
+    "rank": 38,
+    "title": "Gibi",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BOWY0ZGIyZjAtZDIxMC00NTY4LTgyNDEtYmMwMzBmNmQ0MmE1XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Yilmaz and Ilkkan are two friends who are constantly fighting each other. Their greatest feature is always being able to do something that will turn their ordinary lives upside down."
+  },
+  {
+    "id": 1437,
+    "imdb_id": "tt0303461",
+    "rank": 39,
+    "title": "Firefly",
+    "year": "2002",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Adventure",
+      "Sci-Fi"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vZcKsy4sGAvWMVqLluwYuoi11Kj.jpg",
+    "overview": "In the year 2517, the universe is a vast frontier where lawlessness reigns and adventure awaits! Join Captain Malcolm Reynolds and his ragtag crew aboard the spaceship Serenity as they navigate the fringes of society, battling the oppressive Alliance and facing off against ruthless bounty hunters."
+  },
+  {
+    "id": 250307,
+    "imdb_id": "tt31938062",
+    "rank": 40,
+    "title": "The Pitt",
+    "year": "2025",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kvFSpESyBZMjaeOJDx7RS3P1jey.jpg",
+    "overview": "The staff of Pittsburgh's Trauma Medical Center work around the clock to save lives in an overcrowded and underfunded emergency department."
+  },
+  {
+    "id": 1865718,
+    "imdb_id": "tt1865718",
+    "rank": 41,
+    "title": "Gravity Falls",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMTEzNDc3MDQ2NzNeQTJeQWpwZ15BbWU4MDYzMzUwMDIx._V1_.jpg",
+    "overview": "Twin siblings Dipper and Mabel Pines spend the summer at their great-uncle&apos;s tourist trap in the enigmatic Gravity Falls, Oregon."
+  },
+  {
+    "id": 877057,
+    "imdb_id": "tt0877057",
+    "rank": 42,
+    "title": "Death Note: Desu n\u00f4to",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BYTgyZDhmMTEtZDFhNi00MTc4LTg3NjUtYWJlNGE5Mzk2NzMxXkEyXkFqcGc@._V1_.jpg",
+    "overview": "An intelligent high school student goes on a secret crusade to eliminate criminals from the world after discovering a notebook capable of killing anyone whose name is written into it."
+  },
+  {
+    "id": 4934214,
+    "imdb_id": "tt4934214",
+    "rank": 43,
+    "title": "Taskmaster",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Game-Show"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BY2RmNmM1YzAtOWJlMi00NTdiLWEwN2MtNDliNGI3NmUxMTk3XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Five comedians are set tasks challenging their creativity and wit. The tasks are supervised by Alex Horne but the Taskmaster, Greg Davies, always has the final word."
+  },
+  {
+    "id": 22248376,
+    "imdb_id": "tt22248376",
+    "rank": 44,
+    "title": "S\u00f4s\u00f4 no Fur\u00eeren",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZTI4ZGMxN2UtODlkYS00MTBjLWE1YzctYzc3NDViMGI0ZmJmXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Elf mage Frieren and her fellow adventurers have defeated the Demon King and brought peace to the land. But Frieren will long outlive the rest of her former party. How will she come to understand what life means to the people arou..."
+  },
+  {
+    "id": 9735318,
+    "imdb_id": "tt9735318",
+    "rank": 45,
+    "title": "The Beatles: Get Back",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Biography",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BYmEzY2E0MDQtMTc3NS00OTM5LWIyMDMtMTliNThlOWQ5OWEyXkEyXkFqcGc@._V1_.jpg",
+    "overview": "In January 1969, The Beatles set out to write and record new songs for their first live show in more than two years, culminating in an impromptu concert atop their Savile Row studio."
+  },
+  {
+    "id": 92337,
+    "imdb_id": "tt0092337",
+    "rank": 46,
+    "title": "Dekalog",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZmUzZjk0NjEtOTFjMC00NDI2LTkwZmEtZWIxYjVjNDEwNWZiXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Ten television drama films, each one based on one of the Ten Commandments."
+  },
+  {
+    "id": 98904,
+    "imdb_id": "tt0098904",
+    "rank": 47,
+    "title": "Seinfeld",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMmRjNjZjN2ItN2FkYi00ZDg0LWExN2EtMTU2ODUwNWU1M2NhXkEyXkFqcGc@._V1_.jpg",
+    "overview": "The continuing misadventures of neurotic New York City stand-up comedian Jerry Seinfeld and his equally neurotic New York City friends."
+  },
+  {
+    "id": 2297757,
+    "imdb_id": "tt2297757",
+    "rank": 48,
+    "title": "Nathan for You",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BNDU5OTA3YWUtYTIxYi00MWEwLTljZDEtYjhiYjEwYmJhMGVlXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Nathan Fielder uses his business degree and life experiences to, in unorthodox ways, help real small businesses turn a profit."
+  },
+  {
+    "id": 213338,
+    "imdb_id": "tt0213338",
+    "rank": 49,
+    "title": "Kaub\u00f4i bibappu",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMTU3ZTdiOGQtYmYwYy00OGM5LThmNjMtZGJmNTVlZjk1ZmEyXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Intergalactic loners team up to track down fugitives and turn them in for cold hard cash."
+  },
+  {
+    "id": 2356777,
+    "imdb_id": "tt2356777",
+    "rank": 50,
+    "title": "True Detective",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BYjgwYzA1NWMtNDYyZi00ZGQyLWI5NTktMDYwZjE2OTIwZWEwXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Anthology series in which police investigations unearth the personal and professional secrets of those involved, both within and outside the law."
+  },
+  {
+    "id": 1508238,
+    "imdb_id": "tt1508238",
+    "rank": 51,
+    "title": "Apocalypse: La 2\u00e8me guerre mondiale",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "History",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZDQwMjdmZTctODU5MS00NDFmLWFmODYtZTUzMzAzOTFlNTMwXkEyXkFqcGc@._V1_.jpg",
+    "overview": "This six-part series traces the Second World War, from the rise of the Nazis to the surrender of the Japanese, with detailed portraits of key figures."
+  },
+  {
+    "id": 60622,
+    "imdb_id": "tt2802850",
+    "rank": 52,
+    "title": "Fargo",
+    "year": "2014",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/a3VW6khsyUVKrG0GBCWFG3NzWPX.jpg",
+    "overview": "A close-knit anthology series dealing with stories involving malice, violence and murder based in and around Minnesota."
+  },
+  {
+    "id": 77994,
+    "imdb_id": "tt7920978",
+    "rank": 53,
+    "title": "Sahsiyet",
+    "year": "2018",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/OjvNOeB55tVymgybfWZOD7yXAF.jpg",
+    "overview": "After being diagnosed with Alzheimer's, a retired judicial officer decides to commit a murder that he had been planning for years."
+  },
+  {
+    "id": 37854,
+    "imdb_id": "tt0388629",
+    "rank": 54,
+    "title": "One Piece: Wan p\u00eesu",
+    "year": "1999",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dB4EDhre2dsC2kxYDavyKWqLQwi.jpg",
+    "overview": "Years ago, the fearsome Pirate King, Gol D. Roger was executed leaving a huge pile of treasure and the famous \"One Piece\" behind. Whoever claims the \"One Piece\" will be named the new King of the Pirates.\n\nMonkey D. Luffy, a boy who consumed a \"Devil Fruit,\" decides to follow in the footsteps of his idol, the pirate Shanks, and find the One Piece. It helps, of course, that his body has the properties of rubber and that he's surrounded by a bevy of skilled fighters and thieves to help him along the way.\n\nLuffy will do anything to get the One Piece and become King of the Pirates!"
+  },
+  {
+    "id": 2571774,
+    "imdb_id": "tt2571774",
+    "rank": 55,
+    "title": "Africa",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Documentary",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BNWIxM2MyYzItMzZkMC00YTI4LWI4M2UtNWNlYjk5MzU5YjY2XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Africa, the world&apos;s wildest continent. David Attenborough takes an awe-inspiring journey through one of the most diverse places in the world. We visit deserts, savannas, and jungles and meet up with some of Africa&apos;s amazing wildlife."
+  },
+  {
+    "id": 5622316,
+    "imdb_id": "tt5622316",
+    "rank": 56,
+    "title": "The Chosen",
+    "year": "",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMDRiNmVjYmQtZDQ3Yy00MjA5LWFhYWYtYWMxYTE1NzEyZDNiXkEyXkFqcGc@._V1_.jpg",
+    "overview": "The Chosen is a historical drama based on the life of Jesus and those who knew him. Set against the backdrop of Roman oppression in first-century Israel, the series shares an authentic look at Jesus&apos; revolutionary life and teachings."
+  },
+  {
+    "id": 14986406,
+    "imdb_id": "tt14986406",
+    "rank": 57,
+    "title": "Bleach: Sennen Kessen-hen",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMjgyM2QzMjAtOGZjOS00OGFkLTkxZGYtMDJjZGM5MzIzYmM3XkEyXkFqcGc@._V1_.jpg",
+    "overview": "The peace is suddenly broken when warning sirens blare through the Soul Society. Residents are disappearing without a trace and nobody knows who&apos;s behind it. Meanwhile, a darkness is approaching Ichigo and his friends in Karakura ..."
+  },
+  {
+    "id": 200276,
+    "imdb_id": "tt0200276",
+    "rank": 58,
+    "title": "The West Wing",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BY2I2Mzc0YjItN2I3MS00NjNjLWE5OWUtYmQzMjkxZjIwOGY5XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Follows US president Josiah Bartlet and his administration as they tackle various political issues in order to maintain peace and harmony in the nation."
+  },
+  {
+    "id": 108778,
+    "imdb_id": "tt0108778",
+    "rank": 59,
+    "title": "Friends",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BOTU2YmM5ZjctOGVlMC00YTczLTljM2MtYjhlNGI5YWMyZjFkXkEyXkFqcGc@._V1_.jpg",
+    "overview": "The personal and professional lives of six friends living in the Manhattan borough of New York City."
+  },
+  {
+    "id": 7137906,
+    "imdb_id": "tt7137906",
+    "rank": 60,
+    "title": "When They See Us",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMGU0MDIzZTAtYjBjZi00ZDQ1LThlYzctNWJkOWU4NTI5OWNkXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Five teens from Harlem become trapped in a nightmare when they&apos;re falsely accused of a brutal attack in Central Park. Based on the true story."
+  },
+  {
+    "id": 26471411,
+    "imdb_id": "tt26471411",
+    "rank": 61,
+    "title": "Pokssak sogatsuda",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama",
+      "History",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BNDU5NTY2YjgtNGZjNy00MTk2LWExM2QtOTdlMjhjZTE5MTMxXkEyXkFqcGc@._V1_.jpg",
+    "overview": "In Jeju, a spirited girl and a steadfast boy&apos;s island story blossoms into a lifelong tale of setbacks and triumphs, proving love endures across time."
+  },
+  {
+    "id": 472954,
+    "imdb_id": "tt0472954",
+    "rank": 62,
+    "title": "It&apos;s Always Sunny in Philadelphia",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZjkxZWUzNGEtNWFjZi00MDJmLWI2ODctMDRiZTdhY2RiNmZkXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Five friends with big egos and small brains are the proprietors of an Irish pub in Philadelphia."
+  },
+  {
+    "id": 4742876,
+    "imdb_id": "tt4742876",
+    "rank": 63,
+    "title": "TVF Pitchers",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZDYxYTQxM2MtMDkxYi00ZjgzLTg0ODEtMWEzZjYzZTM5OGRiXkEyXkFqcGc@._V1_.jpg",
+    "overview": "A story of trials and tribulations of four young entrepreneurs who quit their day jobs in order to pursue their start up venture."
+  },
+  {
+    "id": 3530232,
+    "imdb_id": "tt3530232",
+    "rank": 64,
+    "title": "Last Week Tonight with John Oliver",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "News",
+      "Talk-Show"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZDM5YzVhYWYtMjUzMy00OTBhLThhYzAtNjEzN2IwMzk4ZWVlXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Former Daily Show host and correspondent John Oliver brings his persona to this weekly news satire program."
+  },
+  {
+    "id": 7660850,
+    "imdb_id": "tt7660850",
+    "rank": 65,
+    "title": "Succession",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BYTY4YTVkY2QtMjRmOS00YzliLWIxOWQtMTdkOTVkN2UzODNmXkEyXkFqcGc@._V1_.jpg",
+    "overview": "The Roy family is known for controlling the biggest media and entertainment company in the world. However, their world changes when their father steps down from the company."
+  },
+  {
+    "id": 10233448,
+    "imdb_id": "tt10233448",
+    "rank": 66,
+    "title": "Vinland Saga",
+    "year": "",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BNDA3MGNmZTEtMzFiMy00ZmViLThhNmQtMjQ4ZDc5MDEyN2U1XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Following a tragedy, Thorfinn embarks on a journey with the man responsible for it to take his life in a duel as a true and honorable warrior."
+  },
+  {
+    "id": 3398228,
+    "imdb_id": "tt3398228",
+    "rank": 67,
+    "title": "BoJack Horseman",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZmMwMDlkNTEtMmQzZS00ODQ0LWJlZmItOTgwYWMwZGM4MzFiXkEyXkFqcGc@._V1_.jpg",
+    "overview": "BoJack Horseman was the star of the hit television show &quot;Horsin&apos; Around&quot; in the &apos;80s and &apos;90s, but now he&apos;s washed up, living in Hollywood, complaining about everything, and wearing colorful sweaters."
+  },
+  {
+    "id": 264235,
+    "imdb_id": "tt0264235",
+    "rank": 68,
+    "title": "Curb Your Enthusiasm",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZmFiZDY2ZDItZDliOC00Y2JhLTliMWYtODkzMTA0YmIwZDA3XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Larry David stars as an over-the-top version of himself in this comedy series that shows how seemingly trivial details of day-to-day life can precipitate a catastrophic chain of events."
+  },
+  {
+    "id": 101352,
+    "imdb_id": "tt12004706",
+    "rank": 69,
+    "title": "Panchayat",
+    "year": "2020",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xrfvAhrMdT6Uwg5fyTyQAZBYyiu.jpg",
+    "overview": "Panchayat is a comedy-drama, which captures the journey of an engineering graduate Abhishek, who for lack of a better job option joins as secretary of a panchayat office in a remote village of Uttar Pradesh. Stuck between crazy villagers and a difficult village lifestyle Abhishek starts his job with the sole motivation of getting out of there as soon as possible, for which he even prepares for CAT."
+  },
+  {
+    "id": 156249,
+    "imdb_id": "tt0081834",
+    "rank": 70,
+    "title": "Das Boot",
+    "year": "1985",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Drama",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lWBQ1Z6MBuiPAfubWjxytKirQco.jpg",
+    "overview": "Based on an autobiographical novel by German World War II photographer Lothar-Guenther Buchheim, Das Boot follows the lives of a fearless U-Boat captain (Jurgen Prochnow) and his inexperienced crew as they patrol the Atlantic and Mediterranean in search of Allied vessels, taking turns as hunter and prey."
+  },
+  {
+    "id": 849,
+    "imdb_id": "tt0063929",
+    "rank": 71,
+    "title": "Monty Python&apos;s Flying Circus",
+    "year": "1969",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hZtMtL8Pqv9FAMljN9911U4qBhI.jpg",
+    "overview": "A British sketch comedy series with the shows being composed of surreality, risqu\u00e9 or innuendo-laden humour, sight gags and observational sketches without punchlines."
+  },
+  {
+    "id": 72500,
+    "imdb_id": "tt0072500",
+    "rank": 72,
+    "title": "Fawlty Towers",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BODM5YWE5NDAtZTU4MC00YWI0LThjMjItNTlhMTQ5Y2Y5NWJiXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Hotel owner Basil Fawlty&apos;s incompetence, short fuse, and arrogance form a combination that ensures accidents and trouble are never far away."
+  },
+  {
+    "id": 10530900,
+    "imdb_id": "tt10530900",
+    "rank": 73,
+    "title": "Gullak",
+    "year": "",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZGE3NTA0MDQtZmM3NC00ZmUwLWJmODktMWZkNTczN2JiYzA0XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Set in quaint by-lanes in the heart of India, Gullak is a collection of disarming and relatable tales of the Mishra family."
+  },
+  {
+    "id": 214341,
+    "imdb_id": "tt0214341",
+    "rank": 74,
+    "title": "Dragon Ball Z",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BN2VlNTdlMzQtYzE5OC00YmYwLTgyZTItYjEzMWY0ZDNjMTJhXkEyXkFqcGc@._V1_.jpg",
+    "overview": "With the help of the powerful Dragonballs, a team of fighters led by the saiyan warrior Goku defend the planet earth from extraterrestrial enemies."
+  },
+  {
+    "id": 96548,
+    "imdb_id": "tt0096548",
+    "rank": 75,
+    "title": "Blackadder Goes Forth",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BM2ZiODg3ZWQtMzcyMC00MTRhLWI2MjItNjk5OTdlOTRiMGRiXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Stuck in the middle of World War I, Captain Edmund Blackadder does his best to escape the banality of the war."
+  },
+  {
+    "id": 121220,
+    "imdb_id": "tt0121220",
+    "rank": 76,
+    "title": "Dragon Ball Z: Doragon b\u00f4ru zetto",
+    "year": "",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BMTM4YmEzMjUtOWViNS00NTE0LTk2YmEtZjYwMGUyZDk5NjM4XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Goku, his son Gohan and their allies defend Earth from increasingly powerful enemies, pushing their extraordinary abilities to the limit in battles that reach far beyond the planet."
+  },
+  {
+    "id": 1831164,
+    "imdb_id": "tt1831164",
+    "rank": 77,
+    "title": "Leyla ile Mecnun",
+    "year": "",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BNzQ4ZTMxM2UtYTY2MS00NjlmLTlmNmYtYWFmMjMyMzZmZjZkXkEyXkFqcGc@._V1_.jpg",
+    "overview": "This unique, heartwarming show follows the extraordinary journey of a couple named Leyla (Ezgi Asaroglu) and Mecnun (Ali Atay). The series has garnered a massive fan base and critical acclaim."
+  },
+  {
+    "id": 713,
+    "imdb_id": "tt0353049",
+    "rank": 78,
+    "title": "Chappelle&apos;s Show",
+    "year": "2003",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "Music"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/aHpTmNU2wLHokoVpzcnh2VQBJOI.jpg",
+    "overview": "Dave Chappelle's singular point of view is unleashed through a combination of laidback stand-up and street-smart sketches."
+  },
+  {
+    "id": 2382,
+    "imdb_id": "tt0193676",
+    "rank": 79,
+    "title": "Freaks and Geeks",
+    "year": "1999",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tPqV63zcW6ZV0Hd48DMGb5UzQIG.jpg",
+    "overview": "High school mathlete Lindsay Weir rebels and begins hanging out with a crowd of burnouts (the \"freaks\"), while her brother Sam Weir navigates a different part of the social universe with his nerdy friends (the \"geeks\")."
+  },
+  {
+    "id": 1457,
+    "imdb_id": "tt0112130",
+    "rank": 80,
+    "title": "Pride and Prejudice",
+    "year": "1995",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7od3Mob2qu5lL1l5RsdV6xuEquw.jpg",
+    "overview": "Set in England in the early 19th century, Pride and Prejudice tells the story of Mr and Mrs Bennet's five unmarried daughters after the rich and eligible Mr Bingley and his status-conscious friend, Mr Darcy, have moved into their neighbourhood. While Bingley takes an immediate liking to the eldest Bennet daughter, Jane, Darcy has difficulty adapting to local society and repeatedly clashes with the second-eldest Bennet daughter, Elizabeth."
+  },
+  {
+    "id": 1920,
+    "imdb_id": "tt0098936",
+    "rank": 81,
+    "title": "Twin Peaks",
+    "year": "1990",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lA9CNSdo50iQPZ8A2fyVpMvJZAf.jpg",
+    "overview": "The body of Laura Palmer is washed up on a beach near the small Washington state town of Twin Peaks. FBI Special Agent Dale Cooper is called in to investigate her strange demise only to uncover a web of mystery that ultimately leads him deep into the heart of the surrounding woodland and his very own soul."
+  },
+  {
+    "id": 64010,
+    "imdb_id": "tt5182866",
+    "rank": 82,
+    "title": "Eungdaphara 1988",
+    "year": "2015",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/655MownSWwplhvVlXERRJ4OSOG2.jpg",
+    "overview": "Take a nostalgic trip back to the late 1980s through the lives of five families and their five teenage kids living in a small neighbourhood in Seoul."
+  },
+  {
+    "id": 63351,
+    "imdb_id": "tt2707408",
+    "rank": 83,
+    "title": "Narcos",
+    "year": "2015",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rTmal9fDbwh5F0waol2hq35U4ah.jpg",
+    "overview": "A gritty chronicle of the war against Colombia's infamously violent and powerful drug cartels."
+  },
+  {
+    "id": 5487,
+    "imdb_id": "tt0074006",
+    "rank": 84,
+    "title": "I, Claudius",
+    "year": "1976",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/oztxNqan7wKvFuCDS55WyUmKNMU.jpg",
+    "overview": "Acclaimed blackly comic historical drama series. Set amidst a web of power, corruption and lies, it chronicles the reigns of the Roman emperors - Augustus, Tiberius, Caligula and finally Claudius."
+  },
+  {
+    "id": 89113,
+    "imdb_id": "tt9432978",
+    "rank": 85,
+    "title": "Kota Factory",
+    "year": "2019",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fMBookmwL6HjIgIVTjQ6EMr3pCH.jpg",
+    "overview": "In a city of coaching centers known to train India\u2019s finest collegiate minds, an earnest but unexceptional student and his friends navigate campus life."
+  },
+  {
+    "id": 2190,
+    "imdb_id": "tt0121955",
+    "rank": 86,
+    "title": "South Park",
+    "year": "1997",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/k7n2EVge7G77eMr3brztRGG1fFU.jpg",
+    "overview": "Follow the misadventures of four irreverent grade-schoolers in the quiet, dysfunctional town of South Park, Colorado."
+  },
+  {
+    "id": 35935,
+    "imdb_id": "tt0318871",
+    "rank": 87,
+    "title": "Kenpuu Denki Berserk",
+    "year": "1997",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xctRBSZzvoHDHz38ZZUGxRYetvG.jpg",
+    "overview": "Guts, a wandering mercenary, joins the Band of the Hawk after being defeated in a duel by Griffith, the group's leader and founder. Together, they dominate every battle, but something menacing lurks in the shadows."
+  },
+  {
+    "id": 42509,
+    "imdb_id": "tt1910272",
+    "rank": 88,
+    "title": "Steins; Gate",
+    "year": "2011",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/96R4bV7dB8ramaWceNKsxvJgCUd.jpg",
+    "overview": "A group of friends have customized their microwave so that it can send text messages to the past. As they perform different experiments, an organization named SERN who has been doing their own research on time travel tracks them down and now the characters have to find a way to avoid being captured by them."
+  },
+  {
+    "id": 61617,
+    "imdb_id": "tt3718778",
+    "rank": 89,
+    "title": "Over the Garden Wall",
+    "year": "2014",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Short",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/m3lU8n7WxzMecxKZcqhq5y5ESy.jpg",
+    "overview": "Two brothers, Wirt and Greg, find themselves lost in the Unknown; a strange forest adrift in time. With the help of a wise old Woodsman and a foul-tempered bluebird named Beatrice, Wirt and Greg must travel across this strange land, in hope of finding their way home. Join them as they encounter surprises and obstacles on their journey through the wood."
+  },
+  {
+    "id": 76662,
+    "imdb_id": "tt7923710",
+    "rank": 90,
+    "title": "Naui ajusshi",
+    "year": "2018",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gE9tZDycsA31wvtzUcDWVk6Nf7t.jpg",
+    "overview": "In a world that is less than kind, a young woman and a middle-aged man develop a sense of kinship as they find warmth and comfort in one another."
+  },
+  {
+    "id": 97546,
+    "imdb_id": "tt10986410",
+    "rank": 91,
+    "title": "Ted Lasso",
+    "year": "2020",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Sport"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uRHsiw1wLxPHFXkkv4Ix1s0O6f4.jpg",
+    "overview": "Ted Lasso, an American football coach, moves to England when he's hired to manage a soccer team\u2014despite having no experience. With cynical players and a doubtful town, will he get them to see the Ted Lasso Way?"
+  },
+  {
+    "id": 42009,
+    "imdb_id": "tt2085059",
+    "rank": 92,
+    "title": "Black Mirror",
+    "year": "2011",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/seN6rRfN0I6n8iDXjlSMk1QjNcq.jpg",
+    "overview": "Twisted tales run wild in this mind-bending anthology series that reveals humanity's worst traits, greatest innovations and more."
+  },
+  {
+    "id": 60574,
+    "imdb_id": "tt2442560",
+    "rank": 93,
+    "title": "Peaky Blinders",
+    "year": "2013",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg",
+    "overview": "A gangster family epic set in 1919 Birmingham, England and centered on a gang who sew razor blades in the peaks of their caps, and their fierce boss Tommy Shelby, who means to move up in the world."
+  },
+  {
+    "id": 1274,
+    "imdb_id": "tt0248654",
+    "rank": 94,
+    "title": "Six Feet Under",
+    "year": "2001",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sCgzLaVlFy8KxtxRPvt1V5MNTDb.jpg",
+    "overview": "When death is your business, what is your life? For the Fisher family, the world outside of their family-owned funeral home continues to be at least as challenging as\u2014and far less predictable than\u2014the one inside."
+  },
+  {
+    "id": 30981,
+    "imdb_id": "tt0434706",
+    "rank": 95,
+    "title": "Monster",
+    "year": "2004",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/n5XNKXnoXpoXyfiCtXHOf8q8PFM.jpg",
+    "overview": "Kenzou Tenma, a Japanese brain surgeon in Germany, finds his life in utter turmoil after getting involved with a psychopath that was once a former patient."
+  },
+  {
+    "id": 70523,
+    "imdb_id": "tt5753856",
+    "rank": 96,
+    "title": "Dark",
+    "year": "2017",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/apbrbWs8M9lyOpJYU5WXrpFbk1Z.jpg",
+    "overview": "A missing child sets four families on a frantic hunt for answers as they unearth a mind-bending mystery that spans three generations."
+  },
+  {
+    "id": 1891,
+    "imdb_id": "tt0384766",
+    "rank": 97,
+    "title": "Rome",
+    "year": "2005",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1A1BwgWO3Sw379VEhR0vkTuE3XW.jpg",
+    "overview": "A down-to-earth account of the lives of both illustrious and ordinary Romans set in the last days of the Roman Republic."
+  },
+  {
+    "id": 3322,
+    "imdb_id": "tt0118421",
+    "rank": 98,
+    "title": "Oz",
+    "year": "1997",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/oTQ9PUnCgf9CimYeWuDGp8iaT07.jpg",
+    "overview": "The daily lives of prisoners in Emerald City, an experimental unit of the Oswald Maximum Security Prison where ingroups - Muslims, Latinos, Italians, Aryans - stick close to their mutual friends and terrorize their mutual enemies."
+  },
+  {
+    "id": 31910,
+    "imdb_id": "tt0988824",
+    "rank": 99,
+    "title": "Naruto: Shipp\u00fbden",
+    "year": "2007",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kV27j3Nz4d5z8u6mN3EJw9RiLg2.jpg",
+    "overview": "After 2 and a half years Naruto finally returns to his village of Konoha, and sets about putting his ambitions to work. It will not be easy though as he has amassed a few more dangerous enemies, in the likes of the shinobi organization; Akatsuki."
+  },
+  {
+    "id": 67557,
+    "imdb_id": "tt5712554",
+    "rank": 100,
+    "title": "The Grand Tour",
+    "year": "2016",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sport"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3Pcqu6QliBWJ8vsOVClVLddPnZw.jpg",
+    "overview": "Jeremy Clarkson, Richard Hammond and James May are back with a show about adventure, excitement and friendship... as long as you accept that the people you call friends are also the ones you find extremely annoying. Sometimes it's even a show about cars. Follow them on their global adventure."
+  },
+  {
+    "id": 95557,
+    "imdb_id": "tt6741278",
+    "rank": 101,
+    "title": "Invincible",
+    "year": "2021",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/4tblBrslcKSifMVZ3TmtT2ukMor.jpg",
+    "overview": "Mark Grayson is a normal teenager except for the fact that his father is the most powerful superhero on the planet. Shortly after his seventeenth birthday, Mark begins to develop powers of his own and enters into his father's tutelage."
+  },
+  {
+    "id": 1414,
+    "imdb_id": "tt0286486",
+    "rank": 102,
+    "title": "The Shield",
+    "year": "2002",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/AfdZXqqlFsPUEfi6kWWWthxw7Nz.jpg",
+    "overview": "The story of an inner-city Los Angeles police precinct where some of the cops aren't above breaking the rules or working against their associates to both keep the streets safe and their self-interests intact."
+  },
+  {
+    "id": 33907,
+    "imdb_id": "tt1606375",
+    "rank": 103,
+    "title": "Downton Abbey",
+    "year": "2010",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cf9vkwFmwvdzBlcpAYEVQfsKoTp.jpg",
+    "overview": "A chronicle of the lives of the aristocratic Crawley family and their servants in the post-Edwardian era\u2014with great events in history having an effect on their lives and on the British social hierarchy.\n\n"
+  },
+  {
+    "id": 67070,
+    "imdb_id": "tt5687612",
+    "rank": 104,
+    "title": "Fleabag",
+    "year": "2016",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vFn0nLPcIggPH5LTWWaJ2hcsGlc.jpg",
+    "overview": "A portrait into the mind of a dry-witted, sexual, angry, porn-watching, grief-riddled woman, trying to make sense of the world. As she hurls herself headlong at modern living, Fleabag is thrown roughly up against the walls of contemporary London, with all its frenetic energy, late nights, and bright lights."
+  },
+  {
+    "id": 1972,
+    "imdb_id": "tt0407362",
+    "rank": 105,
+    "title": "Battlestar Galactica",
+    "year": "2004",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/99PJSbcO2LeM10uOGWeFihNp77j.jpg",
+    "overview": "When an old enemy, the Cylons, resurface and obliterate the 12 colonies, the crew of the aged Galactica protect a small civilian fleet - the last of humanity - as they journey toward the fabled 13th colony, Earth."
+  },
+  {
+    "id": 138502,
+    "imdb_id": "tt16026746",
+    "rank": 106,
+    "title": "X-Men &apos;97",
+    "year": "2024",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2HKBc5UiFw8JrruHq8S1Y7TnlW0.jpg",
+    "overview": "The X-Men, a band of mutants who use their uncanny gifts to protect a world that hates and fears them, are challenged like never before, forced to face a dangerous and unexpected new future."
+  },
+  {
+    "id": 655,
+    "imdb_id": "tt0092455",
+    "rank": 107,
+    "title": "Star Trek: The Next Generation",
+    "year": "1987",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vkLzXddgUKH5VcpnYiRzpJFrZhz.jpg",
+    "overview": "Follow the intergalactic adventures of Capt. Jean-Luc Picard and his loyal crew aboard the all-new USS Enterprise NCC-1701D, as they explore new worlds."
+  },
+  {
+    "id": 1104,
+    "imdb_id": "tt0804503",
+    "rank": 108,
+    "title": "Mad Men",
+    "year": "2007",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5jOedTeytYzlJZwU66MFjmLHhHX.jpg",
+    "overview": "Set in 1960-1970 New York, this sexy, stylized and provocative drama follows the lives of the ruthlessly competitive men and women of Madison Avenue advertising."
+  },
+  {
+    "id": 815,
+    "imdb_id": "tt0387764",
+    "rank": 109,
+    "title": "Peep Show",
+    "year": "2003",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6rdoQ0cTjsEQLIwEjhBV8U98oUm.jpg",
+    "overview": "Two dysfunctional flatmates reveal all their inner thoughts - whether dark, stupid or embarrassing. Or, occasionally, all three..."
+  },
+  {
+    "id": 436,
+    "imdb_id": "tt0281491",
+    "rank": 110,
+    "title": "Still Game",
+    "year": "2002",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/b5O5zTFlaiwXb8FrqqTA0sihJPO.jpg",
+    "overview": "Cult Scottish comedy about the lives of two OAP's (Old Age Pensioners) Jack and Victor and their views on how it used to be in the old days and how bad it is now in the fictional town of Craiglang."
+  },
+  {
+    "id": 225180,
+    "imdb_id": "tt13309742",
+    "rank": 111,
+    "title": "Blue Eye Samurai",
+    "year": "2023",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fXm3JT4WLQVnwukdvghtAblc1wc.jpg",
+    "overview": "Driven by a dream of revenge against those who made her an outcast in Edo-period Japan, a young warrior cuts a bloody path toward her destiny."
+  },
+  {
+    "id": 12605,
+    "imdb_id": "tt0158417",
+    "rank": 112,
+    "title": "Mahabharat",
+    "year": "1988",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/850vJ2Is5zTYh7lnwhMvwovwRSe.jpg",
+    "overview": "A dynastic struggle occurs for the throne of Hastinapur, the kingdom ruled by the Kuru clan, between the Kauravas and Pandavas, collateral branches of the clan, which causes the Kurukshetra War."
+  },
+  {
+    "id": 456,
+    "imdb_id": "tt0096697",
+    "rank": 113,
+    "title": "The Simpsons",
+    "year": "1989",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uWpG7GqfKGQqX4YMAo3nv5OrglV.jpg",
+    "overview": "Set in Springfield, the average American town, the show focuses on the antics and everyday adventures of the Simpson family; Homer, Marge, Bart, Lisa and Maggie, as well as a virtual cast of thousands. Since the beginning, the series has been a pop culture icon, attracting hundreds of celebrities to guest star. The show has also made name for itself in its fearless satirical take on politics, media and American life in general."
+  },
+  {
+    "id": 84200,
+    "imdb_id": "tt6025022",
+    "rank": 114,
+    "title": "Justice League Unlimited",
+    "year": "2004",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vRRvCUREeqqnp3hHdqep83eQjdP.jpg",
+    "overview": "The galaxy's most powerful superheroes return to battle the allied villains and criminal plots that endanger the universe."
+  },
+  {
+    "id": 1408,
+    "imdb_id": "tt0412142",
+    "rank": 115,
+    "title": "House M.D.",
+    "year": "2004",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3Cz7ySOQJmqiuTdrc6CY0r65yDI.jpg",
+    "overview": "Dr. Gregory House, a drug-addicted, unconventional, misanthropic medical genius, leads a team of diagnosticians at the fictional Princeton\u2013Plainsboro Teaching Hospital in New Jersey."
+  },
+  {
+    "id": 799,
+    "imdb_id": "tt0086661",
+    "rank": 116,
+    "title": "The Adventures of Sherlock Holmes",
+    "year": "1984",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mVmGmdfdWxVZ2vSbC8De0UG5QJW.jpg",
+    "overview": "Sherlock Holmes uses his abilities to take on cases by private clients and those that the Scotland Yard are unable to solve, along with his friend Dr. Watson."
+  },
+  {
+    "id": 43982,
+    "imdb_id": "tt2303687",
+    "rank": 117,
+    "title": "Line of Duty",
+    "year": "2012",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pBAp7VfKVQKQIiLRJHZSMGtyXAB.jpg",
+    "overview": "A drama about the investigations of AC-12, a controversial police anticorruption unit."
+  },
+  {
+    "id": 45,
+    "imdb_id": "tt1628033",
+    "rank": 118,
+    "title": "Top Gear",
+    "year": "2002",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Sport"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/aqM6QnuhSXzjHlKbXyKUqxaGiWu.jpg",
+    "overview": "This fast-paced and stunt-filled motor show tests whether cars, both mundane and extraordinary, live up to their manufacturers' claims. The long-running show travels to locations around the world, performing extreme stunts and challenges to see what the featured cars are capable of doing. The current hosts are Paddy Mcguinness, Chris Harris and Andrew \"Freddie\" Flintoff."
+  },
+  {
+    "id": 31724,
+    "imdb_id": "tt0994314",
+    "rank": 119,
+    "title": "K\u00f4do Giasu: Hangyaku no Rur\u00fbshu",
+    "year": "2006",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/x316WCogkeIwNY4JR8zTCHbI2nQ.jpg",
+    "overview": "Japan has been invaded and conquered by the Britannian Empire. Japan is now known as Area 11 and its citizens known as Elevens. The Britannian Empire takes away Japan's autonomous power and imposes its rule through the use of Knightmares. The Empire's rule has never faltered, but cracks have begun to show..."
+  },
+  {
+    "id": 42705,
+    "imdb_id": "tt0481256",
+    "rank": 120,
+    "title": "Hajime no Ippo",
+    "year": "2000",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fEYVJu08En9A7n0e5TTpeoSjtIm.jpg",
+    "overview": "Makunouchi Ippo is an ordinary high school student in Japan. Since he spends most of his time away from school helping his mother run the family business, he doesn't get to enjoy his younger years like most teenagers. Always a target for bullying at school (the family fishing business grants him a distinct odor), Ippo's life is one of hardship. One of these after-school bullying sessions turns Ippo's life around for the better, as he is saved by a boxer named Takamura. He decides to follow in Takamura's footsteps and train to become a boxer, giving his life direction and purpose. Ippo's path to perfecting his pugilistic prowess is just beginning..."
+  },
+  {
+    "id": 15,
+    "imdb_id": "tt0062588",
+    "rank": 121,
+    "title": "Mister Rogers&apos; Neighborhood",
+    "year": "1968",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Family",
+      "Fantasy",
+      "Music"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qhbeRYVg120cBmc9XvGxvk6EmJF.jpg",
+    "overview": "Mister Rogers' Neighborhood is an American children's television series that was created and hosted by namesake Fred Rogers. The series originated in 1963 as Misterogers on CBC Television, and was later debuted in 1966 as Misterogers' Neighborhood on the regional Eastern Educational Network, followed by its US network debut on February 19, 1968, and it aired on NET and its successor, PBS, until August 31, 2001. The series is aimed primarily at preschool ages 2 to 5, but has been stated by PBS as \"appropriate for all ages\". Mister Rogers' Neighborhood was produced by Pittsburgh, Pennsylvania, USA public broadcaster WQED and Rogers' non-profit production company Family Communications, Inc.; previously known as Small World Enterprises prior to 1971, the company was renamed The Fred Rogers Company after Rogers' death."
+  },
+  {
+    "id": 1990,
+    "imdb_id": "tt0268093",
+    "rank": 122,
+    "title": "Ramayan",
+    "year": "1987",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gIOtRVKHHyPtyGPsLLhzhSYG1QF.jpg",
+    "overview": "Ramayan is a highly successful and phenomenally popular Indian epic television series created, written, and directed by Ramanand Sagar. The 78 episode series originally aired weekly on Doordarshan from 25 January 1987, to 31 July 1988, on Sundays at 9:30 a.m. IST.\n\nIt is a television adaptation of the ancient Indian Hindu religious epic of the same name and is primarily based on Valmiki's Ramayan and Tulsidas' Ramcharitmanas. It is also partly derived from portions of Kamban's Ramavataram and other works."
+  },
+  {
+    "id": 4278,
+    "imdb_id": "tt0758745",
+    "rank": 123,
+    "title": "Friday Night Lights",
+    "year": "2006",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama",
+      "Sport"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/Eu7MzZY1DldJ683z7vLkILHNRD.jpg",
+    "overview": "The trials and triumphs of life in the small town of Dillon, Texas, where high school football is everything."
+  },
+  {
+    "id": 4589,
+    "imdb_id": "tt0367279",
+    "rank": 124,
+    "title": "Arrested Development",
+    "year": "2003",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/p4r4RD7RsNcJVoz0H6z3dBoTBtW.jpg",
+    "overview": "The story of a wealthy family that lost everything, and the one son who had no choice but to keep them all together."
+  },
+  {
+    "id": 95396,
+    "imdb_id": "tt11280740",
+    "rank": 125,
+    "title": "Severance",
+    "year": "2022",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Sci-Fi"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pPHpeI2X1qEd1CS1SeyrdhZ4qnT.jpg",
+    "overview": "Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives. When a mysterious colleague appears outside of work, it begins a journey to discover the truth about their jobs."
+  },
+  {
+    "id": 70796,
+    "imdb_id": "tt5788792",
+    "rank": 126,
+    "title": "The Marvelous Mrs. Maisel",
+    "year": "2017",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zS7fQiOZiKCVH2vlYSiIsFWW8hh.jpg",
+    "overview": "It\u2019s 1958 Manhattan and Miriam \u201cMidge\u201d Maisel has everything she\u2019s ever wanted - the perfect husband, kids, and Upper West Side apartment. But when her life suddenly takes a turn and Midge must start over, she discovers a previously unknown talent - one that will take her all the way from the comedy clubs of Greenwich Village to a spot on Johnny Carson\u2019s couch."
+  },
+  {
+    "id": 81358,
+    "imdb_id": "tt7472896",
+    "rank": 127,
+    "title": "Mr Inbetween",
+    "year": "2018",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1FkONly4j7hxi6Pz5CmuhRN1Ops.jpg",
+    "overview": "Ray Shoesmith is a father, ex-husband, boyfriend and best friend: tough roles to juggle in the modern age. Even harder when you\u2019re a criminal for hire."
+  },
+  {
+    "id": 15260,
+    "imdb_id": "tt1305826",
+    "rank": 128,
+    "title": "Adventure Time",
+    "year": "2010",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qk3eQ8jW4opJ48gFWYUXWaMT4l.jpg",
+    "overview": "Young Finn and his shape-shifting dog buddy, Jake, go on a series of surreal adventures as they journey through the postapocalyptic Land of Ooo."
+  },
+  {
+    "id": 110971,
+    "imdb_id": "tt10801534",
+    "rank": 129,
+    "title": "How to with John Wilson",
+    "year": "2020",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Documentary",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/jpHziYpJniprEFDFwMbOHabgnow.jpg",
+    "overview": "In a uniquely hilarious odyssey of self-discovery and cultural observation, documentary filmmaker and self-described \"anxious New Yorker\" John Wilson covertly and obsessively films the lives of his fellow New Yorkers while attempting to give everyday advice on relatable topics. The awkward contradictions of modern life are eased by Wilson\u2019s candid, unpolished commentary. Building upon Wilson\u2019s previously released \"how to\" short films, each episode takes wildly unexpected turns but is grounded in John's refreshing honesty."
+  },
+  {
+    "id": 67136,
+    "imdb_id": "tt5555260",
+    "rank": 130,
+    "title": "This Is Us",
+    "year": "2016",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/huxmY6Dmzwpv5Q2hnNft0UMK7vf.jpg",
+    "overview": "Follows the lives and families of three adults living and growing up in the United States of America in present and past times. As their paths cross and their life stories intertwine in curious ways, we find that several of them share the same birthday - and so much more than anyone would expect."
+  },
+  {
+    "id": 124411,
+    "imdb_id": "tt14392248",
+    "rank": 131,
+    "title": "Aspirants",
+    "year": "2021",
+    "vote_average": 9.1,
+    "imdb_rating": "9.1",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lG8wK40jH4EX6dbVFI1fzw2E96N.jpg",
+    "overview": "Aspirants is a story of 3 friends - Abhilash, SK, and Guri. The story takes place in the past and the present where the past captures the struggle and the drama behind the making of UPSC CSE aspirants in Old Rajinder Nagar of Delhi, while the present talks about the aftermath. It is the story of three UPSC aspirants journey."
+  },
+  {
+    "id": 4507,
+    "imdb_id": "tt0459159",
+    "rank": 132,
+    "title": "The Thick of It",
+    "year": "2005",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xuOz95tUuXclfnlOID7ejtREYqf.jpg",
+    "overview": "Set in the corridors of power and spin, the Minister for Social Affairs is continually harassed by Number 10's policy enforcer and dependent on his not-so-reliable team of civil servants."
+  },
+  {
+    "id": 1813,
+    "imdb_id": "tt0111958",
+    "rank": 133,
+    "title": "Father Ted",
+    "year": "1995",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hGgqGTVwZrifBX8T3f6ylqGFSXS.jpg",
+    "overview": "A crazy comedy about three rather strange parish priests exiled to Craggy Island, a remote island off the Irish west coast."
+  },
+  {
+    "id": 39176,
+    "imdb_id": "tt1795096",
+    "rank": 134,
+    "title": "Behzat \u00c7.",
+    "year": "2010",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/aRqNQ5v2tvZ9ZRAXpYik0JamHkm.jpg",
+    "overview": "Centered around a personally troubled, officially discredited police chief and his inharmonious police team in Ankara Police Force. Even though the show usually focuses on murders and other crimes that happens on a weekly basis, the undertone of the story leads to an eventual duel between Behzat \u00c7. and the rotten department officials and bureaucrats."
+  },
+  {
+    "id": 1405,
+    "imdb_id": "tt0773262",
+    "rank": 135,
+    "title": "Dexter",
+    "year": "2006",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/q8dWfc4JwQuv3HayIZeO84jAXED.jpg",
+    "overview": "Dexter Morgan, a blood spatter pattern analyst for the Miami Metro Police also leads a secret life as a serial killer, hunting down criminals who have slipped through the cracks of justice."
+  },
+  {
+    "id": 4087,
+    "imdb_id": "tt0106179",
+    "rank": 136,
+    "title": "The X Files",
+    "year": "1993",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Adventure",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/rcBx0p8h51LHceyhquYMxbspJQu.jpg",
+    "overview": "The exploits of FBI Special Agents Fox Mulder and Dana Scully who investigate X-Files: marginalized, unsolved cases involving paranormal phenomena. Mulder believes in the existence of aliens and the paranormal while Scully, a skeptic, is assigned to make scientific analyses of Mulder's discoveries that debunk Mulder's work and thus return him to mainstream cases."
+  },
+  {
+    "id": 8592,
+    "imdb_id": "tt1266020",
+    "rank": 137,
+    "title": "Parks and Recreation",
+    "year": "2009",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5IOj62y2Eb2ngyYmEn1IJ7bFhzH.jpg",
+    "overview": "In an attempt to beautify her town \u2014 and advance her career \u2014 Leslie Knope, a mid-level bureaucrat in the Parks and Recreation Department of Pawnee, Indiana, takes on bureaucrats, cranky neighbors, and single-issue fanatics whose weapons are lawsuits, the jumble of city codes, and the democratic process she loves so much."
+  },
+  {
+    "id": 118357,
+    "imdb_id": "tt13991232",
+    "rank": 138,
+    "title": "1883",
+    "year": "2021",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Western"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/waLbm384SQDwLTCn6ttPqQS5kfV.jpg",
+    "overview": "Follow the Dutton family as they embark on a journey west through the Great Plains toward the last bastion of untamed America. A stark retelling of Western expansion, and an intense study of one family fleeing poverty to seek a better future in America\u2019s promised land \u2014 Montana."
+  },
+  {
+    "id": 240983,
+    "imdb_id": "tt30263074",
+    "rank": 139,
+    "title": "Sapne vs Everyone",
+    "year": "2023",
+    "vote_average": 9.2,
+    "imdb_rating": "9.2",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ajBMZ9JNpfrecj4xpZz49tCONBm.jpg",
+    "overview": "Two obsessive dreamers collide with the resistance of expectations, morality and each other."
+  },
+  {
+    "id": 790,
+    "imdb_id": "tt0094525",
+    "rank": 140,
+    "title": "Poirot",
+    "year": "1989",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6f4IVfbn8knb7RjdZlGLuW5guDc.jpg",
+    "overview": "From England to Egypt, accompanied by his elegant and trustworthy sidekicks, the intelligent yet eccentrically-refined Belgian detective Hercule Poirot pits his wits against a collection of first class deceptions."
+  },
+  {
+    "id": 1406,
+    "imdb_id": "tt0348914",
+    "rank": 141,
+    "title": "Deadwood",
+    "year": "2004",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fWwxYAuqY4Na7fKI3Qq2nFWCwG8.jpg",
+    "overview": "The story of the early days of Deadwood, South Dakota; woven around actual historic events with most of the main characters based on real people. Deadwood starts as a gold mining camp and gradually turns from a lawless wild-west community into an organized wild-west civilized town. The story focuses on the real-life characters Seth Bullock and Al Swearengen."
+  },
+  {
+    "id": 4165,
+    "imdb_id": "tt1518542",
+    "rank": 142,
+    "title": "Sarabhai V/S Sarabhai",
+    "year": "2004",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/b4YbLCWGeaY0YTy2vawNccLmTE6.jpg",
+    "overview": "The show revolves around the lives of the members of an Uber Wealthy - High Society Gujarati family of Cuffe Parade - South Mumbai, whose daughter-in-law is from a middle class Delhi background."
+  },
+  {
+    "id": 65494,
+    "imdb_id": "tt4786824",
+    "rank": 143,
+    "title": "The Crown",
+    "year": "2016",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1M876KPjulVwppEpldhdc8V4o68.jpg",
+    "overview": "The gripping, decades-spanning inside story of Her Majesty Queen Elizabeth II and the Prime Ministers who shaped Britain's post-war destiny. \n\nThe Crown tells the inside story of two of the most famous addresses in the world \u2013 Buckingham Palace and 10 Downing Street \u2013 and the intrigues, love lives and machinations behind the great events that shaped the second half of the 20th century. Two houses, two courts, one Crown."
+  },
+  {
+    "id": 65495,
+    "imdb_id": "tt4288182",
+    "rank": 144,
+    "title": "Atlanta",
+    "year": "2016",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Music"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8HZyGMnPLVVb00rmrh6A2SbK9NX.jpg",
+    "overview": "Two cousins work through the Atlanta music scene in order to better their lives and the lives of their families."
+  },
+  {
+    "id": 61889,
+    "imdb_id": "tt3322312",
+    "rank": 145,
+    "title": "Daredevil",
+    "year": "2015",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/QWbPaDxiB6LW2LjASknzYBvjMj.jpg",
+    "overview": "Lawyer-by-day Matt Murdock uses his heightened senses from being blinded as a young boy to fight crime at night on the streets of Hell\u2019s Kitchen as Daredevil."
+  },
+  {
+    "id": 41692,
+    "imdb_id": "tt0096639",
+    "rank": 146,
+    "title": "Lonesome Dove",
+    "year": "1989",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Western"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qK4iseZGf0YhYx53ecawSGhL0sl.jpg",
+    "overview": "A pair of longtime friends and former Texas Rangers crave one last adventure before hanging-up their spurs. After stealing over a thousand head of cattle from rustlers south of the border, they recruit an unlikely crew of hands to drive the herd 3,000 miles north to the grasslands of Montana."
+  },
+  {
+    "id": 45016,
+    "imdb_id": "tt1733785",
+    "rank": 147,
+    "title": "Bron/Broen",
+    "year": "2011",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Mystery",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/v8V9hLWArWhoIdmZ1ujmWrJZL6J.jpg",
+    "overview": "When a body is found on the bridge between Denmark and Sweden, right on the border, Danish inspector Martin Rohde and Swedish Saga Nor\u00e9n have to share jurisdiction and work together to find the killer."
+  },
+  {
+    "id": 4327,
+    "imdb_id": "tt0096657",
+    "rank": 148,
+    "title": "Mr. Bean",
+    "year": "1990",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pUNQV35kDaKuejnXGNiUeEBurNE.jpg",
+    "overview": "Mr Bean turns simple everyday tasks into chaotic situations and will leave you in stitches as he creates havoc wherever he goes."
+  },
+  {
+    "id": 67744,
+    "imdb_id": "tt5290382",
+    "rank": 149,
+    "title": "Mindhunter",
+    "year": "2017",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fbKE87mojpIETWepSbD5Qt741fp.jpg",
+    "overview": "An agent in the FBI's Elite Serial Crime Unit develops profiling techniques as he pursues notorious serial killers and rapists."
+  },
+  {
+    "id": 116174,
+    "imdb_id": "tt9140342",
+    "rank": 150,
+    "title": "It&apos;s a Sin",
+    "year": "2021",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tUaNS4b5TIiP1SwpHCYCbUoGpHG.jpg",
+    "overview": "A chronicle of five friends during a decade in which everything changed, including the rise of AIDS."
+  },
+  {
+    "id": 1425,
+    "imdb_id": "tt1856010",
+    "rank": 151,
+    "title": "House of Cards",
+    "year": "2013",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hKWxWjFwnMvkWQawbhvC0Y7ygQ8.jpg",
+    "overview": "Betrayed by the White House, Congressman Frank Underwood embarks on a ruthless rise to power. Blackmail, seduction and ambition are his weapons."
+  },
+  {
+    "id": 89456,
+    "imdb_id": "tt10332508",
+    "rank": 152,
+    "title": "Primal",
+    "year": "2019",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mf12pRakr3eYdJtv6klQtoznnbU.jpg",
+    "overview": "A caveman forms a bond with a dinosaur as they struggle to survive in a hostile world."
+  },
+  {
+    "id": 60863,
+    "imdb_id": "tt3398540",
+    "rank": 153,
+    "title": "Haiky\u00fb!!",
+    "year": "2014",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8WEr48swcqe89Zsy5sdrGCASlIg.jpg",
+    "overview": "Inspired by a small-statured pro volleyball player, Hinata creates a volleyball team in his last year of middle school. Unfortunately the team is matched up against the \"King of the Court\" Tobio Kageyama\u2019s team in their first tournament and inevitably lose. After the crushing defeat, Hinata vows to surpass Kageyama After entering high school, Hinata joins the volleyball team only to find that Tobio has also joined."
+  },
+  {
+    "id": 88484,
+    "imdb_id": "tt0088484",
+    "rank": 154,
+    "title": "Blackadder II",
+    "year": "",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZmIyYmYwZDUtYmRiNi00ZmQ5LTliMDctZGE2ZjE0MWRlYzE4XkEyXkFqcGc@._V1_.jpg",
+    "overview": "In the Tudor court of Elizabeth I, Lord Edmund Blackadder strives to win Her Majesty&apos;s favour while attempting to avoid a grisly fate should he offend her."
+  },
+  {
+    "id": 62476,
+    "imdb_id": "tt4063800",
+    "rank": 155,
+    "title": "Le bureau des l\u00e9gendes",
+    "year": "2015",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pWd0ajqIsd92tcQEgYBC7nMpOrk.jpg",
+    "overview": "Within the DGSE (General Directorate for External Security), a department called the Office Of Legends (BDL) forms and remote pilot the most important agents of the French intelligence services: Clandestine. Immersion in hostile country, their mission is to identify individuals who may be recruited as sources of information. Operating \"under caption\", that is to say in a fabricated identity from scratch, they live for many years in a permanent duplicity. Our hero just returned from a clandestine mission six years in Damascus. But contrary to what is required by safety rules, he does not abandon his legend and the identity under which he lived in Syria, thus putting in danger the whole system."
+  },
+  {
+    "id": 82856,
+    "imdb_id": "tt8111088",
+    "rank": 156,
+    "title": "The Mandalorian",
+    "year": "2019",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sWgBv7LV2PRoQgkxwlibdGXKz1S.jpg",
+    "overview": "After the fall of the Galactic Empire, lawlessness has spread throughout the galaxy. A lone gunfighter makes his way through the outer reaches, earning his keep as a bounty hunter."
+  },
+  {
+    "id": 94796,
+    "imdb_id": "tt10850932",
+    "rank": 157,
+    "title": "Sarangeui bulsachak",
+    "year": "2019",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Adventure",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/fgBNLPr6mC8pxuR79ENAJY4nBmj.jpg",
+    "overview": "A paragliding mishap drops a South Korean heiress in North Korea -- and into the life of an army officer, who decides he will help her hide."
+  },
+  {
+    "id": 224372,
+    "imdb_id": "tt27497448",
+    "rank": 158,
+    "title": "A Knight of the Seven Kingdoms",
+    "year": "2026",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/k8yARbD9iYn2nRX2HvsopfKDN2r.jpg",
+    "overview": "A century before the events of Game of Thrones, two unlikely heroes wandered Westeros: a young, naive but courageous knight, Ser Duncan the Tall, and his diminutive squire, Egg. Set in an age when the Targaryen line still holds the Iron Throne and the last dragon has not yet passed from living memory, great destinies, powerful foes, and dangerous exploits await these improbable and incomparable friends."
+  },
+  {
+    "id": 47,
+    "imdb_id": "tt0229889",
+    "rank": 159,
+    "title": "El Chavo del Ocho",
+    "year": "1973",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Comedy",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/1TdBpVOASafzfWlnecwW17UL6a5.jpg",
+    "overview": "The mishaps of Chavo, an 8-year-old Mestizo-Latino American orphan boy who lives in a village. Together with Quico, Chilindrina, \u00d1o\u00f1o and La Popis, Chavo experiences a series of humorous entanglements."
+  },
+  {
+    "id": 83867,
+    "imdb_id": "tt9253284",
+    "rank": 160,
+    "title": "Andor",
+    "year": "2022",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Adventure",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/khZqmwHQicTYoS7Flreb9EddFZC.jpg",
+    "overview": "In an era filled with danger, deception and intrigue, Cassian Andor will discover the difference he can make in the struggle against the tyrannical Galactic Empire. He embarks on a path that is destined to turn him into a rebel hero."
+  },
+  {
+    "id": 114068,
+    "imdb_id": "tt13111040",
+    "rank": 161,
+    "title": "The Offer",
+    "year": "2022",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Biography",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9fdYX5uc3HZEuYotms3XJ72AbCr.jpg",
+    "overview": "Oscar-winning producer Al Ruddy\u2019s never before revealed experiences of making the iconic 1972 film The Godfather that Francis Ford Coppola directed and adapted with Mario Puzo."
+  },
+  {
+    "id": 126308,
+    "imdb_id": "tt2788316",
+    "rank": 162,
+    "title": "Shogun",
+    "year": "2024",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7O4iVfOMQmdCSxhOg1WnzG1AgYT.jpg",
+    "overview": "In Japan in the year 1600, at the dawn of a century-defining civil war, Lord Yoshii Toranaga is fighting for his life as his enemies on the Council of Regents unite against him, when a mysterious European ship is found marooned in a nearby fishing village."
+  },
+  {
+    "id": 4549,
+    "imdb_id": "tt0080306",
+    "rank": 163,
+    "title": "Yes Minister",
+    "year": "1980",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/2tFCZsypLY6UuRVEZVUeKqJsJAZ.jpg",
+    "overview": "Satirical sitcom set in the office of a UK Cabinet minister, Jim Hacker MP, who struggles with Civil Service bureaucracy and political machinations as he tries to get on with government business."
+  },
+  {
+    "id": 325386,
+    "imdb_id": "tt0090509",
+    "rank": 164,
+    "title": "The Return of Sherlock Holmes",
+    "year": "1986",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8e7138u8kAhvGB9truCWRr6aCZo.jpg",
+    "overview": "In the second series of the widely celebrated ITV detective programme, Dr John Watson finds a mystery in an empty house, while Holmes and he later solve the mysteries of an abbey grange, the Musgrave ritual, a second stain, a man with a twisted lip, the priory school, and a half-dozen plaster busts of Bonaparte."
+  },
+  {
+    "id": 63926,
+    "imdb_id": "tt4508902",
+    "rank": 165,
+    "title": "One Punch Man: Wanpanman",
+    "year": "2015",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dT10AxJIXVvRwFAew4tt2RhzJrD.jpg",
+    "overview": "Saitama is a hero who only became a hero for fun. After three years of \u201cspecial\u201d training, though, he\u2019s become so strong that he\u2019s practically invincible. In fact, he\u2019s too strong\u2014even his mightiest opponents are taken out with a single punch, and it turns out that being devastatingly powerful is actually kind of a bore. With his passion for being a hero lost along with his hair, yet still faced with new enemies every day, how much longer can he keep it going?"
+  },
+  {
+    "id": 79084,
+    "imdb_id": "tt7562112",
+    "rank": 166,
+    "title": "Pose",
+    "year": "2018",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5f23i30nFJz0nrd3DGheOCqXa2P.jpg",
+    "overview": "A dance musical that explores the juxtaposition of several segments of 1980s life and society in New York: the ball culture world, the rise of the luxury Trump-era universe and the downtown social and literary scene."
+  },
+  {
+    "id": 61068,
+    "imdb_id": "tt2049116",
+    "rank": 167,
+    "title": "Gomorra",
+    "year": "2014",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cXsagSyQQki9vTbV3TTxRCGIIlQ.jpg",
+    "overview": "Based on Robert Saviano's bestselling book, this gritty Italian crime drama paints a portrait of the brutal Neapolitan crime organisation the Camorra, as seen through the eyes of Ciro Di Marzo, the obedient and self- confident right-hand man of the clan's godfather, Pietro Savastano."
+  },
+  {
+    "id": 91724,
+    "imdb_id": "tt9103932",
+    "rank": 168,
+    "title": "Greatest Events of WWII in Colour",
+    "year": "2019",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Documentary",
+      "History",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dZpfRWErT6wyvlgGanhhUM89aQa.jpg",
+    "overview": "Using highly advanced colourisation techniques, critical moments from World War II, from Stalingrad to The Battle of Britain, are shown in a whole new light."
+  },
+  {
+    "id": 321969,
+    "imdb_id": "tt0092324",
+    "rank": 169,
+    "title": "Blackadder the Third",
+    "year": "",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BODZlNWM4OWEtMmUyNS00YjY5LWI3YmEtZDNkZTdlNDY5Zjc3XkEyXkFqcGc@._V1_.jpg",
+    "overview": "In the Regency era, Mr E. Blackadder serves as butler to the foppish numskull Prince George amidst the fads and crazes of the time."
+  },
+  {
+    "id": 61929,
+    "imdb_id": "tt4299972",
+    "rank": 170,
+    "title": "The Jinx: The Life and Deaths of Robert Durst",
+    "year": "2015",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Documentary",
+      "Biography",
+      "Crime"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qY3rk9hH6dzgDrIkonxxHBF3rp8.jpg",
+    "overview": "Robert Durst, scion of NY's billionaire real-estate family, has been accused of three murders but has evaded justice for over 30 years. Durst speaks in this true crime series, revealing secrets of a case that has baffled authorities."
+  },
+  {
+    "id": 194764,
+    "imdb_id": "tt15435876",
+    "rank": 171,
+    "title": "The Penguin",
+    "year": "2024",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vOWcqC4oDQws1doDWLO7d3dh5qc.jpg",
+    "overview": "With the city in peril following the seawall's collapse, Oswald \"Oz\" Cobb seeks to fill the power vacuum left by the death of Carmine Falcone and finally give his mother Francis the life he's always promised. But first, Oz must confront his enemies and his own demoralizing reputation as \"the Penguin.\""
+  },
+  {
+    "id": 15621,
+    "imdb_id": "tt1870479",
+    "rank": 172,
+    "title": "The Newsroom",
+    "year": "2012",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/pOC3DmU47X98Sv5vaPnmgjG30eY.jpg",
+    "overview": "A behind-the-scenes look at the people who make a nightly cable-news program. Focusing on a\u00a0network anchor, his new executive producer, the newsroom staff and their boss, the series tracks their quixotic mission to do the news well in the face of corporate and commercial obstacles-not to mention their own personal entanglements."
+  },
+  {
+    "id": 58887,
+    "imdb_id": "tt2063241",
+    "rank": 173,
+    "title": "Omar",
+    "year": "2012",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ypNn2XybknDmxDOXDWcToFtVYMV.jpg",
+    "overview": "A historical saga about the second caliph and Commander of the Faithful Omar Bin Al-Khattab and his pivotal role in the Islamic State."
+  },
+  {
+    "id": 4464,
+    "imdb_id": "tt0106028",
+    "rank": 174,
+    "title": "Homicide: Life on the Street",
+    "year": "1993",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nb5310xlFjx5r9TnpKoaOTQsAlP.jpg",
+    "overview": "An American police procedural chronicling the work of a fictional version of the Baltimore Police Department's Homicide Unit."
+  },
+  {
+    "id": 70785,
+    "imdb_id": "tt5421602",
+    "rank": 175,
+    "title": "Anne with an E",
+    "year": "2017",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6P6tXhjT5tK3qOXzxF9OMLlG7iz.jpg",
+    "overview": "A coming-of-age story about an outsider who, against all odds and numerous challenges, fights for love and acceptance and for her place in the world. The series centers on a young orphaned girl in the late 1890s, who, after an abusive childhood spent in orphanages and the homes of strangers, is mistakenly sent to live with an elderly woman and her aging brother. Over time, 13-year-old Anne will transform their lives and eventually the small town in which they live with her unique spirit, fierce intellect and brilliant imagination."
+  },
+  {
+    "id": 1621,
+    "imdb_id": "tt0979432",
+    "rank": 176,
+    "title": "Boardwalk Empire",
+    "year": "2010",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zyHLWVmqS8m7bxABJjcDFMYLdF8.jpg",
+    "overview": "Atlantic City at the dawn of Prohibition is a place where the rules don't apply. And the man who runs things -- legally and otherwise -- is the town's treasurer, Enoch \"Nucky\" Thompson, who is equal parts politician and gangster."
+  },
+  {
+    "id": 254002,
+    "imdb_id": "tt4834232",
+    "rank": 177,
+    "title": "Critical Role",
+    "year": "2015",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Adventure",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/keSNwdzmSgQzluKmqTI6kwDOFa7.jpg",
+    "overview": "Critical Role is a weekly actual play series that uses tabletop role-playing game mechanics as a means to explore and develop stories from the vast fantasy worlds of Exandria, Aram\u00e1n, and beyond, with sweeping narratives intricately woven through collaboration between Game Masters and players."
+  },
+  {
+    "id": 204154,
+    "imdb_id": "tt21056886",
+    "rank": 178,
+    "title": "Scavengers Reign",
+    "year": "2023",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bFlVZV8TQbs8hcIY7PVYonYFMgK.jpg",
+    "overview": "When a deep space freighter is damaged by a solar flare its surviving crew are stranded on a beautiful and unforgiving planet. They begin to learn the true nature of this planet as they try to survive long enough to escape or be rescued."
+  },
+  {
+    "id": 81166,
+    "imdb_id": "tt8595766",
+    "rank": 179,
+    "title": "Yeh Meri Family",
+    "year": "2018",
+    "vote_average": 8.9,
+    "imdb_rating": "8.9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Family"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7F33yqUYIzmFQwDibEjPoJxxTXg.jpg",
+    "overview": "Set in the summer of 1998 it is a story about conflicting emotions towards family members from the eyes of a twelve year old."
+  },
+  {
+    "id": 110695,
+    "imdb_id": "tt9174558",
+    "rank": 180,
+    "title": "Dopesick",
+    "year": "2021",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qW8Gpddy29faTcD7VuyKjwLXbKU.jpg",
+    "overview": "The story of how one company triggered the worst drug epidemic in American history. Look into the epicenter of America's struggle with opioid addiction, from a distressed Virginia mining community, to the hallways of the DEA, and to the opulence of \"one percenter\" Big Pharma Manhattan."
+  },
+  {
+    "id": 10283,
+    "imdb_id": "tt1486217",
+    "rank": 181,
+    "title": "Archer",
+    "year": "2009",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vhnrkTGYPqcB63ALcSJm0WoaKHT.jpg",
+    "overview": "Smart-mouthed superspy Sterling Archer and his dysfunctional team of secret agents turn dangerous missions into messy misadventures around the globe."
+  },
+  {
+    "id": 66732,
+    "imdb_id": "tt4574334",
+    "rank": 182,
+    "title": "Stranger Things",
+    "year": "2016",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Fantasy",
+      "Horror"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uOOtwVbSr4QDjAGIifLDwpb2Pdl.jpg",
+    "overview": "When a young boy vanishes, a small town uncovers a mystery involving secret experiments, terrifying supernatural forces, and one strange little girl."
+  },
+  {
+    "id": 1952,
+    "imdb_id": "tt0094517",
+    "rank": 183,
+    "title": "Mystery Science Theater 3000",
+    "year": "1989",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Sci-Fi"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nNeb35RFoeLwxu0CFzZ9NAI5UTA.jpg",
+    "overview": "A stranded spaceship pilot captured by mad scientists survives a blitz of cheesy B movies by riffing on them with his funny robot pals."
+  },
+  {
+    "id": 1436,
+    "imdb_id": "tt1489428",
+    "rank": 184,
+    "title": "Justified",
+    "year": "2010",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Crime",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ie1quhMk09lDtvtAyQAHTu09R9Z.jpg",
+    "overview": "A character drama based on the 2001 Elmore Leonard short story \"Fire in the Hole.\" Leonard's tale centers around U.S. Marshal Raylan Givens of Kentucky, a quiet but strong-willed official of the law. The tale covers his high-stakes job, as well as his strained relationships with his ex-wife and father."
+  },
+  {
+    "id": 328623,
+    "imdb_id": "tt0053488",
+    "rank": 185,
+    "title": "The Bugs Bunny Show",
+    "year": "1960",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hNmuiUrwmf9iuY038ZYWgv8aHqO.jpg",
+    "overview": "TV series featuring the classic Looney Tunes animated shorts."
+  },
+  {
+    "id": 1554,
+    "imdb_id": "tt0380136",
+    "rank": 186,
+    "title": "QI",
+    "year": "2003",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Game-Show"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/9zWVsauqP7GM9E1N9WDYVf9CWe3.jpg",
+    "overview": "Comedy quiz show full of quirky facts, in which contestants are rewarded more if their answers are 'quite interesting'."
+  },
+  {
+    "id": 301507,
+    "imdb_id": "tt35495073",
+    "rank": 187,
+    "title": "Heated Rivalry",
+    "year": "2025",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama",
+      "Romance",
+      "Sport"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/3YCKbtAkYWCMDLHvkUjGhG7eWoS.jpg",
+    "overview": "Two of the biggest stars in Major League Hockey are bound by ambition, rivalry, and a magnetic pull neither of them fully understands. What begins as a secret fling between two fresh faced rookies evolves into a years-long journey of love, denial, and self-discovery. Over the next eight years, as they chase glory on the ice, they struggle to navigate their feelings for each other. Torn between the sport they live for and the love they can\u2019t ignore, they must decide if there\u2019s room in their fiercely competitive world for something as fragile \u2013 and powerful \u2013 as real love."
+  },
+  {
+    "id": 71365,
+    "imdb_id": "tt0314979",
+    "rank": 188,
+    "title": "Battlestar Galactica",
+    "year": "2003",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Action",
+      "Adventure",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/imTQ4nBdA68TVpLaWhhQJnb7NQh.jpg",
+    "overview": "A re-imagining of the original series in which a \"rag-tag fugitive fleet\" of the last remnants of mankind flees pursuing robots while simultaneously searching for their true home, Earth."
+  },
+  {
+    "id": 44264,
+    "imdb_id": "tt2701582",
+    "rank": 189,
+    "title": "Endeavour",
+    "year": "2013",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/suX3F5e8XN9emrb52CQSwt2mRwx.jpg",
+    "overview": "The early days of a young Endeavour Morse, whose experiences as a detective constable with the Oxford City Police will ultimately shape his future."
+  },
+  {
+    "id": 31132,
+    "imdb_id": "tt1710308",
+    "rank": 190,
+    "title": "Regular Show",
+    "year": "2010",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mS5SLxMYcKfUxA0utBSR5MOAWWr.jpg",
+    "overview": "The surreal misadventures of two best friends - a blue jay and a raccoon - as they seek to liven up their mundane jobs as groundskeepers at the local park."
+  },
+  {
+    "id": 2418,
+    "imdb_id": "tt0417373",
+    "rank": 191,
+    "title": "The Venture Bros.",
+    "year": "2004",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ckQE1aLYQkRpp2HmHljiELAiOr1.jpg",
+    "overview": "Hank and Dean Venture, with their father Doctor Venture and faithful bodyguard Brock Samson, go on wild adventures facing megalomaniacs, zombies, and suspicious ninjas, all for the glory of adventure. Or something like that."
+  },
+  {
+    "id": 12609,
+    "imdb_id": "tt0088509",
+    "rank": 192,
+    "title": "Dragon Ball: Doragon b\u00f4ru",
+    "year": "1986",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/onCLyCOgszTIyyVs2XKYSkKPOPG.jpg",
+    "overview": "Young Goku sets off on a quest with his teenage friend Bulma to find the seven Dragon Balls, which grant whoever possesses them a single wish."
+  },
+  {
+    "id": 1618,
+    "imdb_id": "tt0275137",
+    "rank": 193,
+    "title": "Justice League",
+    "year": "2001",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/caIAQIoM9NLZofT8fz8t47W1gYe.jpg",
+    "overview": "The long-awaited rebirth of the greatest superhero team of all time: Batman, Superman, Wonder Woman, The Flash, Hawkgirl, Green Lantern, and Martian Manhunter."
+  },
+  {
+    "id": 12597,
+    "imdb_id": "tt0086831",
+    "rank": 194,
+    "title": "Yes, Prime Minister",
+    "year": "1986",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/n0QRcx4P9ZJFGnTBbNt359MvUh0.jpg",
+    "overview": "James Hacker MP the Government's bumbling minister  for Administrative Affairs is propelled along the corridors of power to the very pinnacle of politics - No. 10.  Could this have possibly have been managed by his trusted Permanent Private Secretary, the formidably political Sir Humphrey Appleby who must move to the \u201cTop Job\u201d in Downing Street to support him, together with his much put upon PPS Bernard Wolley. \n\nWhat could possibly go wrong?"
+  },
+  {
+    "id": 83631,
+    "imdb_id": "tt7908628",
+    "rank": 195,
+    "title": "What We Do in the Shadows",
+    "year": "2019",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Fantasy",
+      "Horror"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/wa3ZQE9kLnqwN3vQ0NNjg1NPsCa.jpg",
+    "overview": "A documentary-style look into the daily (or rather, nightly) lives of a group of vampires in Staten Island who have \u201clived\u201d together for hundreds and hundreds of years."
+  },
+  {
+    "id": 33217,
+    "imdb_id": "tt1641384",
+    "rank": 196,
+    "title": "Young Justice",
+    "year": "2010",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/7PZDkR1D5sAmygcYh5aeyfJsgf6.jpg",
+    "overview": "Teenage superheroes strive to prove themselves as members of the Justice League."
+  },
+  {
+    "id": 1063,
+    "imdb_id": "tt0423731",
+    "rank": 197,
+    "title": "Samurai Chanpur\u00fb",
+    "year": "2004",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/lYpHeSm7BcUxAbBx1ucuEH7oGAe.jpg",
+    "overview": "Break-dancing but fierce warrior Mugen has to deal with the cold-blooded and conceited Jin, a samurai who believes he is above all. These sworn enemies are brought together by Fuu for a special task."
+  },
+  {
+    "id": 280249,
+    "imdb_id": "tt0280249",
+    "rank": 198,
+    "title": "Dragon Ball",
+    "year": "",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BOWI0NzkxYTUtNGU5MS00MTUwLTk3NDItMTFlZDJiM2NlZDAxXkEyXkFqcGc@._V1_.jpg",
+    "overview": "Dragon Ball tells the tale of a young warrior by the name of Son Goku, a young peculiar boy with a tail who embarks on a quest to become stronger and learns of the Dragon Balls, when, once all 7 are gathered, grant any wish of cho..."
+  },
+  {
+    "id": 85937,
+    "imdb_id": "tt9335498",
+    "rank": 199,
+    "title": "Kimetsu no Yaiba",
+    "year": "2019",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xUfRZu2mi8jH6SzQEJGP6tjBuYj.jpg",
+    "overview": "After a demon attack leaves his family slain and his sister cursed, Tanjiro embarks upon a perilous journey to find a cure and avenge those he's lost."
+  },
+  {
+    "id": 138211,
+    "imdb_id": "tt13868972",
+    "rank": 200,
+    "title": "Rocket Boys",
+    "year": "2022",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Biography",
+      "Drama",
+      "History"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/esNv5JwxVsvu6vZE7bTVeu0mLaA.jpg",
+    "overview": "Spanning three crucial decades (1940-60s) in the history of India, the story chronicles the life of three great men responsible for launching India's space and nuclear programs respectively: Dr. Homi J. Bhabha, the architect of India's Nuclear Programme, Dr. Vikram Sarabhai, universally acknowledged as the Father of the Indian Space Programme and Dr. A.P.J. Abdul Kalam, the pioneer of modern Indian aerospace and nuclear technology. The season traces the journey of Bhabha and Sarabhai coming to terms with the challenges facing a young, independent nation and their friendship, sacrifice and determination."
+  },
+  {
+    "id": 72844,
+    "imdb_id": "tt6763664",
+    "rank": 201,
+    "title": "The Haunting of Hill House",
+    "year": "2018",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Horror",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nWPZb800NCGiDPNGsKCfY0w44Z2.jpg",
+    "overview": "Flashing between past and present, a fractured family confronts haunting memories of their old home and the terrifying events that drove them from it."
+  },
+  {
+    "id": 61828,
+    "imdb_id": "tt4082744",
+    "rank": 202,
+    "title": "Detectorists",
+    "year": "2014",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5BCQaZ8HrLjq6diLsIQxZuzXqiK.jpg",
+    "overview": "The lives of two eccentric metal detectorists, who spend their days plodding along ploughed tracks and open fields, hoping to disturb the tedium by unearthing the fortune of a lifetime."
+  },
+  {
+    "id": 74647,
+    "imdb_id": "tt6108262",
+    "rank": 203,
+    "title": "Senke nad Balkanom",
+    "year": "2017",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/8CoJjks7qPiycXzgHTt7f0capzB.jpg",
+    "overview": "A historical fiction drama and thriller set in the turbulent period of the late 1930s in the Balkans as a place where high politics, local interests, capital and crime all merge together."
+  },
+  {
+    "id": 2490,
+    "imdb_id": "tt0487831",
+    "rank": 204,
+    "title": "The IT Crowd",
+    "year": "2006",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/qtxL0ZLAZN1nd0kOpcu8V32bsU4.jpg",
+    "overview": "The comedic misadventures of Roy, Moss, and their grifting supervisor Jen, a 'motley crew' of IT support workers at a large corporation headed by a hotheaded yuppie."
+  },
+  {
+    "id": 2742,
+    "imdb_id": "tt0863046",
+    "rank": 205,
+    "title": "Flight of the Conchords",
+    "year": "2007",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Music",
+      "Musical"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ynboK8qiOTz0X44r59LpfF8jBP5.jpg",
+    "overview": "The trials and tribulations of a two man, digi-folk band who have moved from New Zealand to New York City in the hope of forging a successful music career. So far they've managed to find a manager (whose \"other\" job is at the New Zealand Consulate), one fan (a married obsessive) and one friend (who owns the local pawn shop) -- but not much else."
+  },
+  {
+    "id": 62560,
+    "imdb_id": "tt4158110",
+    "rank": 206,
+    "title": "Mr. Robot",
+    "year": "2015",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/kv1nRqgebSsREnd7vdC2pSGjpLo.jpg",
+    "overview": "A young programmer, Elliot, suffers from a debilitating anti-social disorder and decides that he can only connect to people by hacking them. He wields his skills as a weapon to protect the people that he cares about. Elliot finds himself in the intersection between a cybersecurity firm he works for and the underworld organizations that are recruiting him to bring down corporate America."
+  },
+  {
+    "id": 2723,
+    "imdb_id": "tt0278238",
+    "rank": 207,
+    "title": "Samurai Jack",
+    "year": "2001",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ddZ7Q2WZ0xAHkVXYvcEgNGFgVkw.jpg",
+    "overview": "A great warrior is displaced to the distant future by the evil shape-shifting wizard Aku. The world has become a bleak place under the rule of Aku, segregated into fantastic tribes and ruled by Aku's evil robot warlords. Jack travels this foreign landscape in search of a time portal that can return him to his home time so he can \"undo the future that is Aku!\"."
+  },
+  {
+    "id": 93352,
+    "imdb_id": "tt9544034",
+    "rank": 208,
+    "title": "The Family Man",
+    "year": "2019",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Action",
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tE1NUJqw9gV6AVjQ1GTK78LbWJ9.jpg",
+    "overview": "The story of a middle-class man who works for a special cell of the National Investigation Agency. While he tries to protect the nation from terrorists, he also has to protect his family from the impact of his secretive, high-pressure, and low paying job."
+  },
+  {
+    "id": 76148,
+    "imdb_id": "tt7120662",
+    "rank": 209,
+    "title": "Derry Girls",
+    "year": "2018",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ix9lphODnzRCAVG5F6w3jEyaGj1.jpg",
+    "overview": "Amidst the political conflict of Northern Ireland in the 1990s, five secondary school students square off with the universal challenges of being a teenager."
+  },
+  {
+    "id": 61244,
+    "imdb_id": "tt3428912",
+    "rank": 210,
+    "title": "Happy Valley",
+    "year": "2014",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xZK5iQSrn2mouZEk2PwyLPCwa4u.jpg",
+    "overview": "Happy Valley is a dark, funny, multi-layered thriller revolving around the personal and professional life of Catherine, a dedicated, experienced, hard-working copper. She is also a bereaved mother who looks after her orphaned grandchild."
+  },
+  {
+    "id": 2719,
+    "imdb_id": "tt0237123",
+    "rank": 211,
+    "title": "Coupling",
+    "year": "2000",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Romance"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cfHQwmPUrCbm6XAPnuuBAVZpC94.jpg",
+    "overview": "Six friends in their thirties navigate dating, sexual adventures,  and mishaps on their quest to find love."
+  },
+  {
+    "id": 87739,
+    "imdb_id": "tt10048342",
+    "rank": 212,
+    "title": "The Queen&apos;s Gambit",
+    "year": "2020",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/zU0htwkhNvBQdVSIKB9s6hgVeFK.jpg",
+    "overview": "In a 1950s orphanage, a young girl reveals an astonishing talent for chess and begins an unlikely journey to stardom while grappling with addiction."
+  },
+  {
+    "id": 1073,
+    "imdb_id": "tt0129690",
+    "rank": 213,
+    "title": "I&apos;m Alan Partridge",
+    "year": "1997",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/koh80SEzUnqVt9p7rkyNN4eB7pz.jpg",
+    "overview": "The fortunes of a former chat show host who is reduced to a lowly slot on Radio Norwich. Alan Partridge is divorced, living in a travel tavern, and desperate for a return to television."
+  },
+  {
+    "id": 32519,
+    "imdb_id": "tt1534360",
+    "rank": 214,
+    "title": "Ezel",
+    "year": "2009",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ex1K2iIwgxuzv54w89BrOJMqpTd.jpg",
+    "overview": "\u00d6mer, a young man returning from military service, is set up by his friends and fianc\u00e9 and ends up in prison for ten years. He fakes his own death and manages to escape. He re-creates himself as \u2018Ezel\u2019, a high-end gambler who is outwardly a successful man, but inwardly driven by one thing - his determination to understand why the people he loved betrayed him, and take his revenge."
+  },
+  {
+    "id": 204284,
+    "imdb_id": "tt10802170",
+    "rank": 215,
+    "title": "The Rehearsal",
+    "year": "2022",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Documentary",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mIevNYxovnH4sR22qkUmAgS5vdv.jpg",
+    "overview": "With a construction crew, a legion of actors, and seemingly unlimited resources, Nathan Fielder allows ordinary people to prepare for life's biggest moments by \"rehearsing\" them in carefully crafted simulations of his own design. When a single misstep could shatter your entire world, why leave life to chance?"
+  },
+  {
+    "id": 67075,
+    "imdb_id": "tt5897304",
+    "rank": 216,
+    "title": "Mob Psycho 100",
+    "year": "2016",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vR7hwaGQ0ySRoq1WobiNRaPs4WO.jpg",
+    "overview": "Shigeo Kageyama, a.k.a. \"Mob,\" is a boy who has trouble expressing himself, but who happens to be a powerful esper. Mob is determined to live a normal life and keeps his ESP suppressed, but when his emotions surge to a level of 100%, something terrible happens to him! As he's surrounded by false espers, evil spirits, and mysterious organizations, what will Mob think? What choices will he make?"
+  },
+  {
+    "id": 2899,
+    "imdb_id": "tt0403778",
+    "rank": 217,
+    "title": "Long Way Round",
+    "year": "2004",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Documentary",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/uoAYNsbmjQXk0vs72R6ITZzYaYx.jpg",
+    "overview": "In 2004 Ewan McGregor and Charley Boorman embarked on an epic challenge to bike 20,000-miles across 12 countries and 19 time zones in just 115 days. Watch as two friends ride around the world together and, against all the odds, realize their dream."
+  },
+  {
+    "id": 95479,
+    "imdb_id": "tt12343534",
+    "rank": 218,
+    "title": "Jujutsu Kaisen",
+    "year": "2020",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/6qQzMJG27XOJsyAEEIisoJB45j2.jpg",
+    "overview": "Yuji Itadori is a boy with tremendous physical strength, though he lives a completely ordinary high school life. One day, to save a classmate who has been attacked by curses, he eats the finger of Ryomen Sukuna, taking the curse into his own soul. From then on, he shares one body with Ryomen Sukuna. Guided by the most powerful of sorcerers, Satoru Gojo, Itadori is admitted to Tokyo Jujutsu High School, an organization that fights the curses... and thus begins the heroic tale of a boy who became a curse to exorcise a curse, a life from which he could never turn back."
+  },
+  {
+    "id": 135157,
+    "imdb_id": "tt20859920",
+    "rank": 219,
+    "title": "Hwan Hon",
+    "year": "2022",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Action",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/gvOZN1NlAoL8iz9ghpES1zWA3w3.jpg",
+    "overview": "A powerful sorceress in a blind woman's body encounters a man from a prestigious family, who wants her help to change his destiny."
+  },
+  {
+    "id": 108255,
+    "imdb_id": "tt10590066",
+    "rank": 220,
+    "title": "All Creatures Great &amp; Small",
+    "year": "2020",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/hchdfgmviL9qzJ3OVd0LOkh1b5F.jpg",
+    "overview": "The heartwarming and humorous adventures of a young country vet in the Yorkshire Dales in the 1930s. A remake of the 1978 series."
+  },
+  {
+    "id": 64439,
+    "imdb_id": "tt5189670",
+    "rank": 221,
+    "title": "Making a Murderer",
+    "year": "2015",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Documentary",
+      "Crime"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/sy2nV3rCcJQaRK5M0NWvvTU7CBx.jpg",
+    "overview": "Filmed over 10 years, this real-life thriller follows a DNA exoneree who, while exposing police corruption, becomes a suspect in a grisly new crime."
+  },
+  {
+    "id": 4093826,
+    "imdb_id": "tt4093826",
+    "rank": 222,
+    "title": "Twin Peaks",
+    "year": "",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Horror"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://m.media-amazon.com/images/M/MV5BZGU5OTQ2YzctZmE4Zi00OWI0LWJmMDQtNDcxYjJmODBjN2U1XkEyXkFqcGc@._V1_.jpg",
+    "overview": "Picks up 25 years after the inhabitants of a quaint northwestern town are stunned when their homecoming queen is murdered."
+  },
+  {
+    "id": 1409,
+    "imdb_id": "tt1124373",
+    "rank": 223,
+    "title": "Sons of Anarchy",
+    "year": "2008",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Thriller"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/yPLkf4EiCkR0NOvMfmpHMA2zfN3.jpg",
+    "overview": "The Sons of Anarchy (SOA) are an outlaw motorcycle club with many charters in the United States and overseas. The show focused on the original and founding charter, Sons of Anarchy Motorcycle Club, Redwood Original, often referred to by the acronym SAMCRO, Sam Crow, or simply Redwood Charter. The charter operates both legal and illegal businesses in the small town of Charming, California. They combine gun-running and a garage, and involvement in porn film industry. Clay, the charter president, likes it old school and violent; while Jax, his stepson and the club's VP, has thoughts about changing the way things are done. Their conflict has effects on both the club and their personal relationship, especially when Jax goes on a personal quest to cleanse the SAMCRO name and image."
+  },
+  {
+    "id": 284445,
+    "imdb_id": "tt36988358",
+    "rank": 224,
+    "title": "Takopii no genzai",
+    "year": "2025",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Drama",
+      "Sci-Fi"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/xPXDVhVKt0XM34ihoUVMHtLYTw8.jpg",
+    "overview": "A Happy alien, Takopi, lands on Earth with one mission: to spread happiness! When he meets Shizuka, a lonely fourth grader, he vows to bring back her smile using his magical Happy Gadgets. But as he uncovers the pain in her life, Takopi learns that true happiness may require more than gadgets."
+  },
+  {
+    "id": 745,
+    "imdb_id": "tt0187664",
+    "rank": 225,
+    "title": "Spaced",
+    "year": "1999",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/igZWEYUohDxlLodq8RkeJa7jBna.jpg",
+    "overview": "Spaced: the anti-Friends, in that it examines the lives of common 20 somethings, but in a way that is more down to earth and realistic. Here we have Daisy and Tim; two 'young' adults with big dreams just trying to get by in this crazy world. They are thrown together in a common pursuit of tenancy, which they find by posing as a couple. The house has a landlady and an oddball artist living there. The series explores the ins and outs of London living."
+  },
+  {
+    "id": 61018,
+    "imdb_id": "tt0163507",
+    "rank": 226,
+    "title": "Whose Line Is It Anyway?",
+    "year": "1998",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Game-Show"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iAIiJFlGCnmNO1fLtXxsM0IKo8H.jpg",
+    "overview": "The show where everything's made up and the points don't matter. Not a talk show, not a sitcom, not a game show, Whose Line Is It Anyway? is a completely unique concept to network television. Four talented actors perform completely unrehearsed skits and games in front of a studio audience. Host Drew Carey sets the scene, with contributions from the audience, but the actors rely completely on their quick wit and improvisational skills. It's genuinely improvised, so anything can happen - and often does."
+  },
+  {
+    "id": 59186,
+    "imdb_id": "tt2100976",
+    "rank": 227,
+    "title": "Impractical Jokers",
+    "year": "2011",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Reality-TV"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/tRLj19YXH9GPiaqlU7GwWyd6G5K.jpg",
+    "overview": "This hidden-camera series follows four lifelong friends -- Brian \"Q\"' Quinn, James \"Murr\"' Murray, Joe Gatto and Sal Vulcano -- who take dares to an outrageous level. To find out who is best under pressure, the guys compete in awkward and outrageous hidden-camera hijinks with the loser performing what is deemed to be the most-mortifying challenge yet."
+  },
+  {
+    "id": 76479,
+    "imdb_id": "tt1190634",
+    "rank": 228,
+    "title": "The Boys",
+    "year": "2019",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Action",
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/in1R2dDc421JxsoRWaIIAqVI2KE.jpg",
+    "overview": "A group of vigilantes known informally as \u201cThe Boys\u201d set out to take down corrupt superheroes with no more than blue-collar grit and a willingness to fight dirty."
+  },
+  {
+    "id": 57041,
+    "imdb_id": "tt0988818",
+    "rank": 229,
+    "title": "Gintama",
+    "year": "2006",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/f7vK8pzZIqhyA8sYmBpWmp9Ae7.jpg",
+    "overview": "In a world where aliens have invaded Edo Period Japan, skyscrapers, trains and motor bikes have replaced the simple life of Earth inhabitants. One man however, still carries the soul of a samurai, Gintoki Sakata, otherwise known as Yorozuya Gin-san. As reckless as he is, Gintoki carries his own resolve and is ready to take on any challenge with his fellow companions."
+  },
+  {
+    "id": 890,
+    "imdb_id": "tt0112159",
+    "rank": 230,
+    "title": "Shinseiki Evangelion",
+    "year": "1995",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/y2ah9t0navXyIvoHg1uIbIHO3tt.jpg",
+    "overview": "At the turn of the century, the Angels returned to Earth, seeking to wipe out humanity in an apocalyptic fury. Devastated, mankind's last remnants moved underground to wait for the day when the Angels would come back to finish the job. Fifteen years later, that day has come... but this time, humanity is ready to fight back with terrifying bio-mechanical weapons known as the Evangelions. Watch as Shinji, Rei, Asuka and the rest of the mysterious shadow agency Nerv battle to save earth from total annihilation."
+  },
+  {
+    "id": 61663,
+    "imdb_id": "tt3895150",
+    "rank": 231,
+    "title": "Shigatsu wa kimi no uso",
+    "year": "2014",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/92P9cD5uOzLVgx0QDTnwkXffjEG.jpg",
+    "overview": "Kousei Arima was a genius pianist until his mother's sudden death took away his ability to play. Each day was dull for Kousei. But, then he meets a violinist named Kaori Miyazono who has an eccentric playing style. Can the heartfelt sounds of the girl's violin lead the boy to play the piano again?"
+  },
+  {
+    "id": 78154,
+    "imdb_id": "tt7278862",
+    "rank": 232,
+    "title": "L&apos;amica geniale",
+    "year": "2018",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/73JsZG2jXe5yYZ5k49HP8oPh7rq.jpg",
+    "overview": "When the most important friend in her life seems to have disappeared without a trace, Elena Greco, a now-elderly woman immersed in a house full of books, turns on her computer and starts writing the story of their friendship."
+  },
+  {
+    "id": 2508,
+    "imdb_id": "tt0075537",
+    "rank": 233,
+    "title": "Mind Your Language",
+    "year": "1977",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/58RfYeIwDnJFbahMEy2yCDWyRAY.jpg",
+    "overview": "Jeremy Brown, a language teacher, tries to make a living by teaching English to immigrants. With pupils from India, France, China, and many other countries, his lessons do not always go as planned."
+  },
+  {
+    "id": 32900,
+    "imdb_id": "tt1513168",
+    "rank": 234,
+    "title": "Through the Wormhole",
+    "year": "2010",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Documentary"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/cEziWNr1n1HKAuKhngF2n4engOR.jpg",
+    "overview": "Hosted by Morgan Freeman, Through the Wormhole explores the deepest mysteries of existence - the questions that have puzzled mankind for eternity. What are we made of? What was there before the beginning? Are we really alone? Is there a creator? These questions have been pondered by the most exquisite minds of the human race. Now, science has evolved to the point where hard facts and evidence may be able to provide us with answers instead of philosophical theories. Through the Wormhole brings together the brightest minds and best ideas from the very edges of science - Astrophysics, Astrobiology, Quantum Mechanics, String Theory, and more - to reveal the extraordinary truth of our Universe."
+  },
+  {
+    "id": 32962,
+    "imdb_id": "tt1492966",
+    "rank": 235,
+    "title": "Louie",
+    "year": "2010",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/ubWj0BLRV1UDP8ELnTr2is2Wl0Y.jpg",
+    "overview": "Louis C.K. stars as a fictionalized version of himself; a comedian and newly divorced father raising his two daughters in New York City."
+  },
+  {
+    "id": 3796,
+    "imdb_id": "tt0290988",
+    "rank": 236,
+    "title": "Trailer Park Boys",
+    "year": "2001",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Crime"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nIcIwVTYcZnW1BDzexGfFO7KmX1.jpg",
+    "overview": "Follow the booze-fueled misadventures of three longtime pals and petty serial criminals who run scams from their Nova Scotia trailer park."
+  },
+  {
+    "id": 61662,
+    "imdb_id": "tt3526078",
+    "rank": 237,
+    "title": "Schitt$ Creek",
+    "year": "2015",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/iRfSzrPS5VYWQv7KVSEg2BZZL6C.jpg",
+    "overview": "Formerly filthy rich video store magnate Johnny Rose, his soap star wife Moira, and their two kids, \u00fcber-hipster son David and socialite daughter Alexis, suddenly find themselves broke and forced to live in Schitt's Creek, a small depressing town they once bought as a joke."
+  },
+  {
+    "id": 212204,
+    "imdb_id": "tt27446493",
+    "rank": 238,
+    "title": "Banjjagineun Woteomellon",
+    "year": "2023",
+    "vote_average": 8.8,
+    "imdb_rating": "8.8",
+    "rotten_tomatoes": "98%",
+    "genres": [
+      "Comedy",
+      "Drama",
+      "Fantasy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bwTzW1wTgUxUOQruhT8DvinUYgR.jpg",
+    "overview": "A CODA (child of deaf adult) student born with a gift for music crash lands at an unfamiliar place after time traveling through a suspicious music shop. There, he forms the band Watermelon Sugar with other mysterious youths."
+  },
+  {
+    "id": 67699,
+    "imdb_id": "tt5851616",
+    "rank": 239,
+    "title": "Tash Ma Tash",
+    "year": "1993",
+    "vote_average": 9.0,
+    "imdb_rating": "9",
+    "rotten_tomatoes": "99%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nNN3uCp36v2NjACs6MlWKauBMwL.jpg",
+    "overview": "Saudi Arabia's most iconic comedy series, running 19 seasons from 1993 to 2023. Starring beloved duo Nasser Al-Qasabi and Abdullah Al-Sadhan, each episode delivers a self-contained satirical sketch skewering a different facet of Saudi society \u2014 from bureaucracy and extremism to marriage, gender relations, and corruption. A Ramadan institution and a landmark of Arab television."
+  },
+  {
+    "id": 2996,
+    "imdb_id": "tt0290978",
+    "rank": 240,
+    "title": "The Office",
+    "year": "2001",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Drama"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/oX2JKE1RzAONMbYlujHx0hRAJo1.jpg",
+    "overview": "Nightmare boss. Tedious colleagues. Pointless tasks. Welcome to Wernham Hogg. Fancy a tea break with David Brent? Classic comedy from the archive."
+  },
+  {
+    "id": 73586,
+    "imdb_id": "tt4236770",
+    "rank": 241,
+    "title": "Yellowstone",
+    "year": "2018",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Drama",
+      "Western"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/peNC0eyc3TQJa6x4TdKcBPNP4t0.jpg",
+    "overview": "Follow the violent world of the Dutton family, who controls the largest contiguous ranch in the United States. Led by their patriarch John Dutton, the family defends their property against constant attack by land developers, an Indian reservation, and America\u2019s first National Park."
+  },
+  {
+    "id": 34549,
+    "imdb_id": "tt1877368",
+    "rank": 242,
+    "title": "The Great British Bake Off",
+    "year": "2010",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Game-Show",
+      "Reality-TV"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/bNa02AorKSBRfWfVPmsL7SJrdfs.jpg",
+    "overview": "This British television baking competition selects from amongst its competitors the best amateur baker. The series is credited with reinvigorating interest in baking throughout the UK, and many of its participants, including winners, have gone on to start a career based on baking."
+  },
+  {
+    "id": 63,
+    "imdb_id": "tt0118273",
+    "rank": 243,
+    "title": "Brass Eye",
+    "year": "1997",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/nCWMA285aPbdQ8x9ZcqSolOzUoo.jpg",
+    "overview": "Investigative reporter Chris Morris puts modern Britain under the spotlight, and smacks the issues of the day till they bleed. He tackles weighty issues including animals, drugs, sex and skewered celebrities and politicians alike - and in a later episode in 2001, paedophiles."
+  },
+  {
+    "id": 60550,
+    "imdb_id": "tt3212600",
+    "rank": 244,
+    "title": "Mahabharat",
+    "year": "2013",
+    "vote_average": 8.7,
+    "imdb_rating": "8.7",
+    "rotten_tomatoes": "97%",
+    "genres": [
+      "Drama",
+      "History",
+      "War"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/l4Kwq6rcXejuCglNCm8LoMzpK85.jpg",
+    "overview": "Mahabharat is a 2013 drama TV series on Star Plus based on Indian legendary epic of the same name. It has been produced by Swastik Pictures and features actors such as Saurabh Raj Jain as Lord Krishna, Shaheer Sheikh as Arjuna, Pooja Sharma as Draupadi, Aham Sharma as Karna and Arav Chowdhary as Bhishma Pitamah. The producers had creative associations with writer Salim Khan, author Devdutt Pattanaik, designer Bhanu Athaiya, music directors Ajay-Atul and Ismail Darbar, action director Ram Shetty and set designer Omang Kumar. The casting of the show is done by Sahil Ansari, Mahesh Chandra Bhatt, Arun Mitra. It started broadcasting on 16 September 2013."
+  },
+  {
+    "id": 126506,
+    "imdb_id": "tt12074628",
+    "rank": 245,
+    "title": "Smiling Friends",
+    "year": "2020",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Short",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/q3CSxl3G06MBc73TpHWwBYYTPxL.jpg",
+    "overview": "Smiling Friends Inc. is a small company whose main purpose is to bring happiness and make people smile. The series follows the day-to-day lives and misadventures of its representatives, the lazy, cynical Charlie, and the cheerful, optimistic Pim, as they try to cheer up and comfort the troubled people who call their company's hotline. They receive seemingly simple requests but the jobs turn out to be more complicated than they seem, making it difficult to bring happiness to the world."
+  },
+  {
+    "id": 56590,
+    "imdb_id": "tt2244495",
+    "rank": 246,
+    "title": "The Eric Andre Show",
+    "year": "2012",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Comedy",
+      "Reality-TV",
+      "Talk-Show"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/mXmZJy8AtOF5s5SMW3WfAVxYG7V.jpg",
+    "overview": "A comedic talk show from an alternate reality featuring unstable hosts, a variety of celebrities\u2014both real and fake\u2014and unusual studio action."
+  },
+  {
+    "id": 2604,
+    "imdb_id": "tt0373732",
+    "rank": 247,
+    "title": "The Boondocks",
+    "year": "2005",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Comedy"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/vAvT2RXjOpgH0COriRm9riPqA0m.jpg",
+    "overview": "When Robert \u201cGranddad\u201d Freeman becomes legal guardian to his two grandsons, he moves from the tough south side of Chicago to the upscale neighborhood of Woodcrest (a.k.a. \"The Boondocks\") so he can enjoy his golden years in safety and comfort. But with Huey, a 10-year-old leftist revolutionary, and his eight-year-old misfit brother, Riley, suburbia is about to be shaken up."
+  },
+  {
+    "id": 63639,
+    "imdb_id": "tt3230854",
+    "rank": 248,
+    "title": "The Expanse",
+    "year": "2015",
+    "vote_average": 8.5,
+    "imdb_rating": "8.5",
+    "rotten_tomatoes": "95%",
+    "genres": [
+      "Drama",
+      "Mystery",
+      "Sci-Fi"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/5vQlVWkIMPhZ88OWchJsgwGEK9.jpg",
+    "overview": "A thriller set two hundred years in the future following the case of a missing young woman who brings a hardened detective and a rogue ship's captain together in a race across the solar system to expose the greatest conspiracy in human history."
+  },
+  {
+    "id": 3163,
+    "imdb_id": "tt0310455",
+    "rank": 249,
+    "title": "Foyle&apos;s War",
+    "year": "2002",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Crime",
+      "Drama",
+      "Mystery"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/dNqHn5UCoa2vodPv5g1nfQE89R4.jpg",
+    "overview": "As WW2 rages around the world, DCS Foyle fights his own war on the home-front as he investigates crimes on the south coast of England. Foyle's War opens in southern England in the year 1940. Later series sees the retired detective working as an MI5 agent operating in the aftermath of the war."
+  },
+  {
+    "id": 317885,
+    "imdb_id": "tt0203082",
+    "rank": 250,
+    "title": "Rur\u00f4ni Kenshin: Meiji kenkaku romantan - Tsuioku-hen",
+    "year": "1999",
+    "vote_average": 8.6,
+    "imdb_rating": "8.6",
+    "rotten_tomatoes": "96%",
+    "genres": [
+      "Animation",
+      "Action",
+      "Adventure"
+    ],
+    "media_type": "tv",
+    "poster_url": "https://image.tmdb.org/t/p/w500/eisX6v7DQugyk0tQaJamuSMVKuM.jpg",
+    "overview": "Rurouni Kenshin: Trust & Betrayal details the origins of the man who would bear the name of Hitokiri Battosai long before he swore his oath not to kill and before he earned his reputation as an assassin. The young man's heart is divided between justice and corruption, while the fate of a nation rests on his actions."
+  }
+]

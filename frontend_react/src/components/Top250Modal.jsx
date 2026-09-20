@@ -270,49 +270,84 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
                         )}
                       </div>
 
-                      {/* Card Quick Actions */}
+                      {/* Card Quick Actions with Tooltips */}
                       <div className="absolute top-2 right-2 flex items-center gap-1 z-10">
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            const added = await toggleWatchlist(movie);
-                            if (onShowToast) {
-                              onShowToast({
-                                message: added ? `Added "${movie.title}" to Watchlist` : `Removed from Watchlist`,
-                                movie
-                              });
-                            }
-                          }}
-                          className={`rounded-full p-1.5 transition-all active:scale-90 ${
-                            isWatchlist
-                              ? 'bg-amber-500 text-black shadow'
-                              : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
-                          }`}
-                          title={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
-                        >
-                          <Bookmark className={`w-3 h-3 ${isWatchlist ? 'fill-black' : ''}`} />
-                        </button>
+                        {/* Not Interested */}
+                        <div className="relative group/tip">
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await toggleNotInterested(movie);
+                              if (onShowToast) {
+                                onShowToast({
+                                  message: `Marked "${movie.title}" as Not Interested`,
+                                  movie
+                                });
+                              }
+                            }}
+                            className="rounded-full p-1.5 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100"
+                            title="Not interested (Hide)"
+                          >
+                            <EyeOff className="w-3 h-3" />
+                          </button>
+                          <span className="pointer-events-none absolute top-full mt-1 right-0 z-30 hidden group-hover/tip:inline-flex items-center px-2 py-0.5 rounded bg-zinc-950/95 border border-zinc-700 text-[10px] font-medium text-zinc-200 shadow-xl whitespace-nowrap">
+                            Not Interested
+                          </span>
+                        </div>
 
-                        <button
-                          onClick={async (e) => {
-                            e.stopPropagation();
-                            const watched = await toggleWatched(movie);
-                            if (onShowToast) {
-                              onShowToast({
-                                message: watched ? `Marked "${movie.title}" as Watched` : `Removed from Watched`,
-                                movie
-                              });
-                            }
-                          }}
-                          className={`rounded-full p-1.5 transition-all active:scale-90 ${
-                            isWatched
-                              ? 'bg-emerald-600 text-white shadow'
-                              : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
-                          }`}
-                          title={isWatched ? "Watched" : "Mark as Watched"}
-                        >
-                          <Check className="w-3 h-3 stroke-[2.5]" />
-                        </button>
+                        {/* Watchlist */}
+                        <div className="relative group/tip">
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              const added = await toggleWatchlist(movie);
+                              if (onShowToast) {
+                                onShowToast({
+                                  message: added ? `Added "${movie.title}" to Watchlist` : `Removed from Watchlist`,
+                                  movie
+                                });
+                              }
+                            }}
+                            className={`rounded-full p-1.5 transition-all active:scale-90 ${
+                              isWatchlist
+                                ? 'bg-amber-500 text-black shadow'
+                                : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
+                            }`}
+                            title={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
+                          >
+                            <Bookmark className={`w-3 h-3 ${isWatchlist ? 'fill-black' : ''}`} />
+                          </button>
+                          <span className="pointer-events-none absolute top-full mt-1 right-0 z-30 hidden group-hover/tip:inline-flex items-center px-2 py-0.5 rounded bg-zinc-950/95 border border-zinc-700 text-[10px] font-medium text-zinc-200 shadow-xl whitespace-nowrap">
+                            {isWatchlist ? 'In Watchlist' : 'Add to Watchlist'}
+                          </span>
+                        </div>
+
+                        {/* Watched */}
+                        <div className="relative group/tip">
+                          <button
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              const watched = await toggleWatched(movie);
+                              if (onShowToast) {
+                                onShowToast({
+                                  message: watched ? `Marked "${movie.title}" as Watched` : `Removed from Watched`,
+                                  movie
+                                });
+                              }
+                            }}
+                            className={`rounded-full p-1.5 transition-all active:scale-90 ${
+                              isWatched
+                                ? 'bg-emerald-600 text-white shadow'
+                                : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
+                            }`}
+                            title={isWatched ? "Watched" : "Mark as Watched"}
+                          >
+                            <Check className="w-3 h-3 stroke-[2.5]" />
+                          </button>
+                          <span className="pointer-events-none absolute top-full mt-1 right-0 z-30 hidden group-hover/tip:inline-flex items-center px-2 py-0.5 rounded bg-zinc-950/95 border border-zinc-700 text-[10px] font-medium text-zinc-200 shadow-xl whitespace-nowrap">
+                            {isWatched ? 'Watched (Undo)' : 'Mark as Watched'}
+                          </span>
+                        </div>
                       </div>
                     </div>
 

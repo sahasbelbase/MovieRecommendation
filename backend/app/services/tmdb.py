@@ -1,4 +1,6 @@
 import asyncio
+import os
+import json
 import httpx
 import logging
 import time
@@ -320,88 +322,20 @@ class TMDBService:
         cached_list = _get_from_cache(cache_key)
 
         if not cached_list:
-            all_raw = []
-            if category == "movies":
-                # Fetch top-rated movies across 13 pages (13 * 20 = 260)
-                tasks = [self._fetch("/movie/top_rated", {"page": p}) for p in range(1, 14)]
-                pages_data = await asyncio.gather(*tasks, return_exceptions=True)
-                for p_data in pages_data:
-                    if isinstance(p_data, dict) and "results" in p_data:
-                        all_raw.extend(p_data["results"])
+            # 1. Load authoritative official IMDb Top 250 dataset from local data store
+            data_file = os.path.join(os.path.dirname(__file__), "..", "data", f"imdb_top250_{category}.json")
+            if os.path.exists(data_file):
+                try:
+                    with open(data_file, "r", encoding="utf-8") as f:
+                        cached_list = json.load(f)
+                except Exception as e:
+                    logger.warning(f"Failed to load {data_file}: {e}")
 
-                seen = set()
-                formatted_items = []
-                for m in all_raw:
-                    if m.get("id") and m["id"] not in seen:
-                        seen.add(m["id"])
-                        item = self._format_item(m, default_type="movie")
-                        item["media_type"] = "movie"
-                        formatted_items.append(item)
-
-                formatted_items.sort(key=lambda x: (x.get("vote_average", 0), x.get("vote_count", 0)), reverse=True)
-                cached_list = formatted_items[:250]
-
-            elif category == "tv":
-                # Fetch top-rated TV shows across 13 pages
-                tasks = [self._fetch("/tv/top_rated", {"page": p}) for p in range(1, 14)]
-                pages_data = await asyncio.gather(*tasks, return_exceptions=True)
-                for p_data in pages_data:
-                    if isinstance(p_data, dict) and "results" in p_data:
-                        all_raw.extend(p_data["results"])
-
-                seen = set()
-                formatted_items = []
-                for m in all_raw:
-                    if m.get("id") and m["id"] not in seen:
-                        seen.add(m["id"])
-                        item = self._format_item(m, default_type="tv")
-                        formatted_items.append(item)
-
-                formatted_items.sort(key=lambda x: (x.get("vote_average", 0), x.get("vote_count", 0)), reverse=True)
-                cached_list = formatted_items[:250]
-
-            elif category == "anime":
-                # Fetch top-rated anime series and movies
-                tv_tasks = [
-                    self._fetch("/discover/tv", {
-                        "page": p,
-                        "with_origin_country": "JP",
-                        "with_genres": "16",
-                        "sort_by": "vote_average.desc",
-                        "vote_count.gte": "120"
-                    }) for p in range(1, 10)
-                ]
-                movie_tasks = [
-                    self._fetch("/discover/movie", {
-                        "page": p,
-                        "with_origin_country": "JP",
-                        "with_genres": "16",
-                        "sort_by": "vote_average.desc",
-                        "vote_count.gte": "200"
-                    }) for p in range(1, 6)
-                ]
-                pages_data = await asyncio.gather(*(tv_tasks + movie_tasks), return_exceptions=True)
-                for p_data in pages_data:
-                    if isinstance(p_data, dict) and "results" in p_data:
-                        all_raw.extend(p_data["results"])
-
-                seen = set()
-                formatted_items = []
-                for m in all_raw:
-                    if m.get("id") and m["id"] not in seen:
-                        seen.add(m["id"])
-                        item = self._format_item(m, default_type="anime")
-                        item["media_type"] = "anime"
-                        formatted_items.append(item)
-
-                formatted_items.sort(key=lambda x: (x.get("vote_average", 0), x.get("vote_count", 0)), reverse=True)
-                cached_list = formatted_items[:250]
-
-            # If TMDB was offline or returned nothing, load rich curated fallback
+            # 2. If data file was not found, use rich curated fallback
             if not cached_list:
                 cached_list = self._get_fallback_top_250(category)
 
-            # Assign ranks 1 to 250 and ensure Rotten Tomatoes score
+            # Assign ranks 1 to 250 and guarantee Rotten Tomatoes score
             for idx, item in enumerate(cached_list):
                 item["rank"] = idx + 1
                 if not item.get("rotten_tomatoes"):
