@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff } from 'lucide-react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
@@ -19,29 +19,37 @@ const COUNTRY_OPTIONS = [
 
 const EMBED_SERVERS = [
   {
+    id: 'vidlink_pro',
+    name: 'Server 1 (VidLink HD ⭐)',
+    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+      : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+  },
+  {
     id: 'vidsrc_sbs',
-    name: 'Server 1 (VidSrc)',
-    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.sbs/embed/tv/${id}/1/1` : `https://vidsrc.sbs/embed/movie/${id}`
+    name: 'Server 2 (VidSrc)',
+    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}` : `https://vidsrc.sbs/embed/movie/${id}`
   },
   {
     id: 'vidsrc_pro',
-    name: 'Server 2 (Pro)',
-    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.pro/embed/tv/${id}/1/1` : `https://vidsrc.pro/embed/movie/${id}`
+    name: 'Server 3 (Pro)',
+    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` : `https://vidsrc.pro/embed/movie/${id}`
   },
   {
     id: 'vidsrc_cc',
-    name: 'Server 3 (HD)',
-    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.cc/v2/embed/tv/${id}/1/1` : `https://vidsrc.cc/v2/embed/movie/${id}`
+    name: 'Server 4 (HD)',
+    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}`
   },
   {
     id: 'vidsrc_me',
-    name: 'Server 4 (Fast)',
-    getUrl: (id, type) => type === 'tv' ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=1&episode=1` : `https://vidsrc.me/embed/movie?tmdb=${id}`
+    name: 'Server 5 (Fast)',
+    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`
   },
 ];
 
 export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
  const {
+  user,
   watchedIds,
   watchedMovies,
   toggleWatched,
@@ -61,6 +69,10 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
  const [showTrailerPlayer, setShowTrailerPlayer] = useState(false);
  const [showStreamPlayer, setShowStreamPlayer] = useState(false);
  const [streamServerIndex, setStreamServerIndex] = useState(0);
+ const [selectedSeason, setSelectedSeason] = useState(1);
+ const [selectedEpisode, setSelectedEpisode] = useState(1);
+ const [seasonData, setSeasonData] = useState(null);
+ const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
 
  const watchedRecord = watchedMovies.find(m => m.id === movie.id);
@@ -139,6 +151,9 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
   if (!movie?.id) return;
   setLoading(true);
   setShowTrailerPlayer(false);
+  setShowStreamPlayer(false);
+  setSelectedSeason(1);
+  setSelectedEpisode(1);
 
   const fetchData = async () => {
    try {
@@ -191,6 +206,31 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
   };
  }, [movie.id, mediaType, country, movie.title, details?.title]);
 
+ // Dynamically fetch TV Series / Anime Season Episodes for Netflix-style selector
+ useEffect(() => {
+  if (!movie?.id || !['tv', 'anime', 'kdrama'].includes(mediaType)) return;
+  let isMounted = true;
+  setEpisodesLoading(true);
+
+  const fetchSeasonEpisodes = async () => {
+   try {
+    const res = await api.get(`/movies/${movie.id}/season/${selectedSeason}`);
+    if (isMounted) {
+     setSeasonData(res.data);
+    }
+   } catch (err) {
+    console.warn(`Failed fetching season ${selectedSeason} episodes:`, err);
+   } finally {
+    if (isMounted) setEpisodesLoading(false);
+   }
+  };
+
+  fetchSeasonEpisodes();
+  return () => {
+   isMounted = false;
+  };
+ }, [movie?.id, mediaType, selectedSeason]);
+
  const activeTrailer = trailers.length > 0 ? trailers[0] : null;
 
  const handleWatchedToggle = async () => {
@@ -238,6 +278,11 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
          <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-xs z-10">
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
            <span className="text-zinc-400 font-mono text-[11px] hidden sm:inline">Stream Server:</span>
+           {['tv', 'anime', 'kdrama'].includes(mediaType) && (
+            <span className="px-2 py-0.5 rounded bg-purple-950/80 border border-purple-700/50 text-purple-300 font-mono text-[11px] font-bold shrink-0">
+             S{selectedSeason} E{selectedEpisode}
+            </span>
+           )}
            {EMBED_SERVERS.map((srv, idx) => (
             <button
              key={srv.id}
@@ -254,7 +299,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
           </div>
           <button
            onClick={() => setShowStreamPlayer(false)}
-           className="text-zinc-400 hover:text-white px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] shrink-0"
+           className="text-zinc-400 hover:text-white px-2 py-1 rounded-md bg-zinc-800 hover:bg-zinc-700 text-[11px] shrink-0 ml-2"
           >
            Close Stream ✕
           </button>
@@ -263,8 +308,8 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
          {/* Ad-Shielded Sandboxed Player */}
          <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
           <iframe
-           key={`${EMBED_SERVERS[streamServerIndex].id}_${movie.id}`}
-           src={EMBED_SERVERS[streamServerIndex].getUrl(movie.id, mediaType)}
+           key={`${EMBED_SERVERS[streamServerIndex].id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
+           src={EMBED_SERVERS[streamServerIndex].getUrl(movie.id, mediaType, selectedSeason, selectedEpisode)}
            title={`${movie.title} Stream`}
            allow="autoplay; encrypted-media; picture-in-picture"
            allowFullScreen
@@ -294,7 +339,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
            onClick={() => {
             if (!user) {
              if (onRequireAuth) onRequireAuth();
-             if (onShowToast) onShowToast({ message: 'Please sign in to stream full movies & series 🍿' });
+             if (onShowToast) onShowToast({ message: 'Please sign in to stream full titles' });
              return;
             }
             setShowTrailerPlayer(false);
@@ -303,7 +348,11 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-purple-950/60 transition-all active:scale-95"
           >
            <Play className="w-4 h-4 fill-white" />
-           <span>Play Full Movie (Stream 🍿)</span>
+           <span>
+            {['tv', 'anime', 'kdrama'].includes(mediaType)
+             ? `Play S${selectedSeason} E${selectedEpisode}`
+             : 'Play Stream'}
+           </span>
           </button>
           {activeTrailer && (
            <button
@@ -325,7 +374,7 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
            }}
            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-amber-950/60 transition-all active:scale-95"
           >
-           <span>🍿</span>
+           <Users className="w-4 h-4 text-amber-100" />
            <span>Watch Party</span>
           </button>
          </div>
@@ -382,12 +431,12 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
           </span>
          )}
 
-         {/* Rotten Tomatoes Badge */}
-         {(details?.rotten_tomatoes || movie.rotten_tomatoes) && (
-          <span className="flex items-center gap-1 text-rose-400 font-semibold bg-rose-950/40 px-2 py-0.5 rounded border border-rose-800/40">
-           🍅 {details?.rotten_tomatoes || movie.rotten_tomatoes} Rotten Tomatoes
-          </span>
-         )}
+          {/* Rotten Tomatoes Badge */}
+          {(details?.rotten_tomatoes || movie.rotten_tomatoes) && (
+           <span className="flex items-center gap-1 text-rose-400 font-semibold bg-rose-950/40 px-2 py-0.5 rounded border border-rose-800/40 font-mono text-[11px]">
+            Rotten Tomatoes {details?.rotten_tomatoes || movie.rotten_tomatoes}%
+           </span>
+          )}
 
          {/* IMDb / Critic Rating */}
          {(details?.imdb_rating || movie.imdb_rating || movie.vote_average > 0) && (
@@ -594,6 +643,186 @@ export default function MovieModal({ movie, onClose, onSelectMovie, onShowToast,
         {details?.overview || movie.overview || "No synopsis available for this title."}
        </p>
       </div>
+
+      {/* Netflix-Style TV Series & Anime Season & Episode Selector */}
+      {['tv', 'anime', 'kdrama'].includes(mediaType) && (
+       <div className="space-y-4 pt-4 pb-2 border-t border-b border-zinc-800/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+         <div className="flex items-center gap-2.5">
+          <div className="p-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400">
+           <Layers className="w-4 h-4" />
+          </div>
+          <div>
+           <h3 className="text-sm font-bold text-white tracking-wide flex items-center gap-2">
+            Episodes
+            {episodesLoading && (
+             <span className="text-[11px] font-normal text-purple-400 animate-pulse font-mono">
+              Loading season...
+             </span>
+            )}
+           </h3>
+           <p className="text-[11px] text-zinc-400 font-sans">
+            Select a season & episode to start streaming directly
+           </p>
+          </div>
+         </div>
+
+         {/* Season Selector Dropdown */}
+         <div className="relative self-start sm:self-auto">
+          <select
+           value={selectedSeason}
+           onChange={(e) => {
+            setSelectedSeason(Number(e.target.value));
+            setSelectedEpisode(1);
+           }}
+           className="appearance-none bg-zinc-900 border border-zinc-700 hover:border-purple-500/60 text-white text-xs sm:text-sm font-bold rounded-xl pl-3.5 pr-9 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500/40 cursor-pointer shadow-lg transition-all"
+          >
+           {(details?.seasons?.length > 0
+            ? details.seasons
+            : Array.from({ length: details?.seasons_count || 1 }, (_, i) => ({
+               season_number: i + 1,
+               name: `Season ${i + 1}`,
+               episode_count: 0
+              }))
+           ).map((s) => (
+            <option key={s.season_number} value={s.season_number}>
+             {s.name || `Season ${s.season_number}`} {s.episode_count ? `(${s.episode_count} eps)` : ''}
+            </option>
+           ))}
+          </select>
+          <ChevronDown className="w-4 h-4 text-purple-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+         </div>
+        </div>
+
+        {/* Episode Cards List */}
+        {episodesLoading ? (
+         <div className="space-y-3">
+          {[1, 2, 3].map((i) => (
+           <div key={i} className="h-24 rounded-2xl bg-zinc-900/60 border border-zinc-800/80 animate-pulse p-3 flex gap-4">
+            <div className="w-36 aspect-video bg-zinc-800/60 rounded-xl shrink-0" />
+            <div className="flex-1 space-y-2 py-1">
+             <div className="h-4 w-1/3 bg-zinc-800/60 rounded" />
+             <div className="h-3 w-2/3 bg-zinc-800/40 rounded" />
+            </div>
+           </div>
+          ))}
+         </div>
+        ) : seasonData?.episodes?.length > 0 ? (
+         <div className="space-y-2.5 max-h-[380px] overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-zinc-800 hover:scrollbar-thumb-purple-600">
+          {seasonData.episodes.map((ep) => {
+           const isSelected = selectedSeason === ep.season_number && selectedEpisode === ep.episode_number;
+           return (
+            <div
+             key={ep.id || ep.episode_number}
+             onClick={() => {
+              if (!user) {
+               if (onRequireAuth) onRequireAuth();
+               if (onShowToast) onShowToast({ message: 'Please sign in to stream full episodes' });
+               return;
+              }
+              setSelectedEpisode(ep.episode_number);
+              setShowTrailerPlayer(false);
+              setShowStreamPlayer(true);
+              const container = document.querySelector('.overflow-y-auto');
+              if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+             }}
+             className={`group flex flex-col sm:flex-row items-start sm:items-center gap-3.5 p-3 rounded-2xl border transition-all cursor-pointer ${
+              isSelected
+               ? 'bg-purple-950/40 border-purple-500/70 shadow-lg shadow-purple-950/30'
+               : 'bg-zinc-900/50 hover:bg-zinc-900 border-zinc-800/80 hover:border-zinc-700'
+             }`}
+            >
+             {/* Thumbnail */}
+             <div className="relative w-full sm:w-40 aspect-video rounded-xl overflow-hidden shrink-0 bg-zinc-950 shadow-inner">
+              {ep.still_url ? (
+               <img
+                src={ep.still_url}
+                alt={ep.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+               />
+              ) : (
+               <div className="w-full h-full flex flex-col items-center justify-center text-zinc-600 bg-zinc-900 p-2 text-center">
+                <Tv className="w-6 h-6 mb-1 text-zinc-700" />
+                <span className="text-[10px] font-mono">Episode {ep.episode_number}</span>
+               </div>
+              )}
+              {/* Play Overlay */}
+              <div className={`absolute inset-0 bg-black/40 flex items-center justify-center transition-opacity ${
+               isSelected ? 'opacity-100 bg-purple-950/60' : 'opacity-0 group-hover:opacity-100'
+              }`}>
+               <div className={`w-9 h-9 rounded-full flex items-center justify-center shadow-lg transition-transform ${
+                isSelected ? 'bg-purple-600 text-white scale-110' : 'bg-white/90 text-black group-hover:scale-110'
+               }`}>
+                <Play className="w-4 h-4 fill-current translate-x-0.5" />
+               </div>
+              </div>
+              <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-black/80 backdrop-blur-xs text-[10px] font-mono font-bold text-white border border-white/10">
+               E{ep.episode_number}
+              </span>
+             </div>
+
+             {/* Episode Details */}
+             <div className="flex-1 min-w-0 space-y-1">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+               <h5 className={`text-xs sm:text-sm font-bold transition-colors ${
+                isSelected ? 'text-purple-300' : 'text-white group-hover:text-purple-300'
+               }`}>
+                {ep.episode_number}. {ep.name || `Episode ${ep.episode_number}`}
+               </h5>
+               <div className="flex items-center gap-2">
+                {ep.vote_average > 0 && (
+                 <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800/40">
+                  <Star className="w-3 h-3 fill-amber-400 stroke-none" />
+                  {ep.vote_average.toFixed(1)}
+                 </span>
+                )}
+                {ep.runtime > 0 && (
+                 <span className="flex items-center gap-1 text-[11px] font-mono text-zinc-400">
+                  <Clock className="w-3 h-3 text-zinc-500" />
+                  {ep.runtime}m
+                 </span>
+                )}
+               </div>
+              </div>
+
+              {ep.overview && (
+               <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed font-sans">
+                {ep.overview}
+               </p>
+              )}
+
+              <div className="flex items-center justify-between pt-0.5 text-[11px] text-zinc-500 font-mono">
+               {ep.air_date ? <span>Aired: {ep.air_date}</span> : <span />}
+               <span className={`font-semibold ${isSelected ? 'text-purple-400' : 'text-zinc-400 group-hover:text-purple-300'}`}>
+                {isSelected ? 'Playing Now' : 'Click to Stream'}
+               </span>
+              </div>
+             </div>
+            </div>
+           );
+          })}
+         </div>
+        ) : (
+         <div className="p-4 rounded-xl bg-zinc-900/40 border border-zinc-800 text-center space-y-2">
+          <p className="text-xs text-zinc-400 font-mono">Season {selectedSeason} details ready for streaming.</p>
+          <button
+           onClick={() => {
+            if (!user) {
+             if (onRequireAuth) onRequireAuth();
+             if (onShowToast) onShowToast({ message: 'Please sign in to stream full episodes' });
+             return;
+            }
+            setShowStreamPlayer(true);
+           }}
+           className="px-4 py-2 rounded-xl bg-purple-600 text-white text-xs font-semibold hover:bg-purple-500 transition-colors shadow-lg shadow-purple-950/50"
+          >
+           Play Season {selectedSeason} Stream
+          </button>
+         </div>
+        )}
+       </div>
+      )}
 
       {/* Streaming Availability (Where to Stream & Direct Platform Access) */}
       <div className="p-4 sm:p-5 rounded-2xl bg-zinc-900/80 border border-zinc-800 space-y-4 shadow-lg">

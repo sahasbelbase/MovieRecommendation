@@ -1381,23 +1381,23 @@ export default function WatchPartyModal({
          }
          setActiveTab('embed');
          if (isScreenSharing) stopScreenShare();
-         const embedSrc = movie.media_type === 'tv'
-          ? `https://vidsrc.sbs/embed/tv/${movie.id}/1/1`
-          : `https://vidsrc.sbs/embed/movie/${movie.id}`;
+         const embedSrc = ['tv', 'anime', 'kdrama'].includes(movie?.media_type)
+          ? `https://vidlink.pro/tv/${movie.id}/1/1?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+          : `https://vidlink.pro/movie/${movie.id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`;
          const newSrc = {
           type: 'embed',
           src: embedSrc,
           title: `${movie.title || 'Movie'} (Full Stream)`
          };
          setVideoSource(newSrc);
-         if (wsRef.current?.readyState === WebSocket.OPEN) {
-          wsRef.current.send(
-           JSON.stringify({
-            type: 'CHANGE_SOURCE',
-            payload: { source: newSrc }
-           })
-          );
-         }
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+           wsRef.current.send(
+            JSON.stringify({
+             type: 'CHANGE_SOURCE',
+             payload: { source: newSrc }
+            })
+           );
+          }
         }}
         className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
          activeTab === 'embed'
@@ -1406,7 +1406,7 @@ export default function WatchPartyModal({
         }`}
        >
         <Play className="w-3.5 h-3.5 fill-current" />
-        <span>Full Movie (VidSrc 🍿)</span>
+        <span>Full Movie (VidLink 🍿)</span>
        </button>
       )}
 

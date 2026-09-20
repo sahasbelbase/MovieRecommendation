@@ -65,7 +65,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
       }
       setIsGenerating(false);
       if (onShowToast) {
-        onShowToast({ message: `Generated 3-part cool alias: ${coolName} 🍿` });
+        onShowToast({ message: `Generated alias: ${coolName}` });
       }
     }, 180);
   };
@@ -83,7 +83,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
   const handleShareApp = async () => {
     const shareUrl = typeof window !== 'undefined' ? window.location.origin : 'https://cinematch.app';
     const shareData = {
-      title: 'Cinematch - Watch Movies & Parties with Friends 🍿',
+      title: 'Cinematch - Watch Movies & Parties with Friends',
       text: `Join me on Cinematch! Match movies, share live screens, and watch together:`,
       url: shareUrl,
     };
@@ -91,7 +91,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
     if (typeof navigator !== 'undefined' && navigator.share) {
       try {
         await navigator.share(shareData);
-        if (onShowToast) onShowToast({ message: 'Invitation shared! 🚀' });
+        if (onShowToast) onShowToast({ message: 'Invitation shared successfully' });
         return;
       } catch (err) {
         if (err.name !== 'AbortError') console.warn('Native share error:', err);
@@ -103,7 +103,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
       await navigator.clipboard.writeText(shareUrl);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
-      if (onShowToast) onShowToast({ message: 'Cinematch link copied to clipboard! 📋' });
+      if (onShowToast) onShowToast({ message: 'Cinematch link copied to clipboard' });
     } catch (_) {
       if (onShowToast) onShowToast({ message: `Link: ${shareUrl}` });
     }
