@@ -29,12 +29,64 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [libraryId, setLibraryId] = useState(() => getOrCreateLibraryId());
   const [isCloudSynced, setIsCloudSynced] = useState(false);
-  const [watchedIds, setWatchedIds] = useState(new Set());
-  const [watchedMovies, setWatchedMovies] = useState([]);
-  const [unwatchedIds, setUnwatchedIds] = useState(new Set());
-  const [unwatchedMovies, setUnwatchedMovies] = useState([]);
-  const [watchlistIds, setWatchlistIds] = useState(new Set());
-  const [watchlistMovies, setWatchlistMovies] = useState([]);
+
+  // Instant local read for zero-latency UI on page refresh/hard refresh
+  const [watchedMovies, setWatchedMovies] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_watched') || localStorage.getItem('cinematch_guest_watched');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [watchedIds, setWatchedIds] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_watched') || localStorage.getItem('cinematch_guest_watched');
+      const list = cached ? JSON.parse(cached) : [];
+      return new Set(list.map(m => m.id));
+    } catch {
+      return new Set();
+    }
+  });
+
+  const [watchlistMovies, setWatchlistMovies] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_watchlist') || localStorage.getItem('cinematch_guest_watchlist');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [watchlistIds, setWatchlistIds] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_watchlist') || localStorage.getItem('cinematch_guest_watchlist');
+      const list = cached ? JSON.parse(cached) : [];
+      return new Set(list.map(m => m.id));
+    } catch {
+      return new Set();
+    }
+  });
+
+  const [unwatchedMovies, setUnwatchedMovies] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_unwatched') || localStorage.getItem('cinematch_guest_unwatched');
+      return cached ? JSON.parse(cached) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [unwatchedIds, setUnwatchedIds] = useState(() => {
+    try {
+      const cached = localStorage.getItem('cinematch_cached_unwatched') || localStorage.getItem('cinematch_guest_unwatched');
+      const list = cached ? JSON.parse(cached) : [];
+      return new Set(list.map(m => m.id));
+    } catch {
+      return new Set();
+    }
+  });
 
   // Load guest watched, unwatched, and watchlist from localStorage & Firestore on mount
   useEffect(() => {
@@ -44,19 +96,19 @@ export const AuthProvider = ({ children }) => {
       let localWatchlist = [];
       let localUnwatched = [];
       try {
-        const savedWatched = localStorage.getItem('cinematch_guest_watched');
+        const savedWatched = localStorage.getItem('cinematch_cached_watched') || localStorage.getItem('cinematch_guest_watched');
         if (savedWatched) {
           localWatched = JSON.parse(savedWatched);
           setWatchedMovies(localWatched);
           setWatchedIds(new Set(localWatched.map(m => m.id)));
         }
-        const savedUnwatched = localStorage.getItem('cinematch_guest_unwatched');
+        const savedUnwatched = localStorage.getItem('cinematch_cached_unwatched') || localStorage.getItem('cinematch_guest_unwatched');
         if (savedUnwatched) {
           localUnwatched = JSON.parse(savedUnwatched);
           setUnwatchedMovies(localUnwatched);
           setUnwatchedIds(new Set(localUnwatched.map(m => m.id)));
         }
-        const savedWatchlist = localStorage.getItem('cinematch_guest_watchlist');
+        const savedWatchlist = localStorage.getItem('cinematch_cached_watchlist') || localStorage.getItem('cinematch_guest_watchlist');
         if (savedWatchlist) {
           localWatchlist = JSON.parse(savedWatchlist);
           setWatchlistMovies(localWatchlist);
@@ -119,7 +171,24 @@ export const AuthProvider = ({ children }) => {
       const activeLibId = firebaseUid || user?.uid || getOrCreateLibraryId();
       const driveToken = customDriveToken || getStoredDriveToken();
 
-      // 1. Try loading from personal Google Drive if authorized
+      // 1. Authoritative backend API fetch (FastAPI database has the user's saved items!)
+      let apiWatched = [];
+      let apiWatchlist = [];
+      let apiUnwatched = [];
+      try {
+        const [wRes, wlRes, uwRes] = await Promise.all([
+          api.get('/users/watched').catch(() => ({ data: [] })),
+          api.get('/users/watchlist').catch(() => ({ data: [] })),
+          api.get('/users/unwatched').catch(() => ({ data: [] }))
+        ]);
+        apiWatched = Array.isArray(wRes.data) ? wRes.data : [];
+        apiWatchlist = Array.isArray(wlRes.data) ? wlRes.data : [];
+        apiUnwatched = Array.isArray(uwRes.data) ? uwRes.data : [];
+      } catch (err) {
+        console.warn("Backend library fetch notice:", err);
+      }
+
+      // 2. Personal Google Drive (if authorized and enabled)
       let driveData = null;
       if (driveToken) {
         try {
@@ -129,44 +198,42 @@ export const AuthProvider = ({ children }) => {
         }
       }
 
-      // 2. Check Firestore cloud data
+      // 3. Cloud Firestore
       const cloudData = await loadLibraryFromCloud(activeLibId);
 
-      const driveWatched = driveData?.watched || [];
-      const driveWatchlist = driveData?.watchlist || [];
-      const driveUnwatched = driveData?.unwatched || [];
+      // 4. Local storage caches
+      let localCachedWatched = [];
+      let localCachedWatchlist = [];
+      let localCachedUnwatched = [];
+      try {
+        const sW = localStorage.getItem('cinematch_cached_watched') || localStorage.getItem('cinematch_guest_watched');
+        if (sW) localCachedWatched = JSON.parse(sW);
+        const sWl = localStorage.getItem('cinematch_cached_watchlist') || localStorage.getItem('cinematch_guest_watchlist');
+        if (sWl) localCachedWatchlist = JSON.parse(sWl);
+        const sUw = localStorage.getItem('cinematch_cached_unwatched') || localStorage.getItem('cinematch_guest_unwatched');
+        if (sUw) localCachedUnwatched = JSON.parse(sUw);
+      } catch (e) {}
 
-      const cloudWatched = cloudData?.watched || [];
-      const cloudWatchlist = cloudData?.watchlist || [];
-      const cloudUnwatched = cloudData?.unwatched || [];
-
-      // 3. Read any guest items
-      const savedGuest = localStorage.getItem('cinematch_guest_watched');
-      const guestItems = savedGuest ? JSON.parse(savedGuest) : [];
-
-      const savedGuestWatchlist = localStorage.getItem('cinematch_guest_watchlist');
-      const guestWlItems = savedGuestWatchlist ? JSON.parse(savedGuestWatchlist) : [];
-
-      const savedGuestUnwatched = localStorage.getItem('cinematch_guest_unwatched');
-      const guestUnwatchedItems = savedGuestUnwatched ? JSON.parse(savedGuestUnwatched) : [];
-
-      // Combine unique watched from all sources (Drive + Firestore + Guest)
+      // Combine unique watched across ALL sources: Backend API + Drive + Firestore + Local
       const watchedMap = new Map();
-      driveWatched.forEach(m => watchedMap.set(m.id, m));
-      cloudWatched.forEach(m => watchedMap.set(m.id, m));
-      guestItems.forEach(m => watchedMap.set(m.id, m));
+      apiWatched.forEach(m => watchedMap.set(m.id, m));
+      (driveData?.watched || []).forEach(m => watchedMap.set(m.id, m));
+      (cloudData?.watched || []).forEach(m => watchedMap.set(m.id, m));
+      localCachedWatched.forEach(m => watchedMap.set(m.id, m));
 
       // Combine unique watchlist
       const watchlistMap = new Map();
-      driveWatchlist.forEach(m => watchlistMap.set(m.id, m));
-      cloudWatchlist.forEach(m => watchlistMap.set(m.id, m));
-      guestWlItems.forEach(m => watchlistMap.set(m.id, m));
+      apiWatchlist.forEach(m => watchlistMap.set(m.id, m));
+      (driveData?.watchlist || []).forEach(m => watchlistMap.set(m.id, m));
+      (cloudData?.watchlist || []).forEach(m => watchlistMap.set(m.id, m));
+      localCachedWatchlist.forEach(m => watchlistMap.set(m.id, m));
 
       // Combine unique unwatched
       const unwatchedMap = new Map();
-      driveUnwatched.forEach(m => unwatchedMap.set(m.id, m));
-      cloudUnwatched.forEach(m => unwatchedMap.set(m.id, m));
-      guestUnwatchedItems.forEach(m => unwatchedMap.set(m.id, m));
+      apiUnwatched.forEach(m => unwatchedMap.set(m.id, m));
+      (driveData?.unwatched || []).forEach(m => unwatchedMap.set(m.id, m));
+      (cloudData?.unwatched || []).forEach(m => unwatchedMap.set(m.id, m));
+      localCachedUnwatched.forEach(m => unwatchedMap.set(m.id, m));
 
       const mergedWatched = Array.from(watchedMap.values());
       const mergedWatchlist = Array.from(watchlistMap.values());
@@ -180,35 +247,44 @@ export const AuthProvider = ({ children }) => {
       setUnwatchedIds(new Set(mergedUnwatched.map(m => m.id)));
       setIsCloudSynced(true);
 
-      // Save directly to user's Google Drive if authorized
-      if (driveToken) {
-        saveToGoogleDrive(driveToken, {
+      // Save to local cache so next refresh is instantaneous
+      try {
+        localStorage.setItem('cinematch_cached_watched', JSON.stringify(mergedWatched));
+        localStorage.setItem('cinematch_cached_watchlist', JSON.stringify(mergedWatchlist));
+        localStorage.setItem('cinematch_cached_unwatched', JSON.stringify(mergedUnwatched));
+      } catch (e) {}
+
+      // Forward any local items that aren't yet on the backend server
+      const backendWatchedIds = new Set(apiWatched.map(m => m.id));
+      for (const item of mergedWatched) {
+        if (!backendWatchedIds.has(item.id)) {
+          api.post('/users/watched', { movie: item, rating: item.rating || 8.0 }).catch(() => {});
+        }
+      }
+
+      const backendWatchlistIds = new Set(apiWatchlist.map(m => m.id));
+      for (const item of mergedWatchlist) {
+        if (!backendWatchlistIds.has(item.id)) {
+          api.post('/users/watchlist', { movie: item }).catch(() => {});
+        }
+      }
+
+      // Save merged state to Firestore and Drive (only if there are items to prevent accidental wiping)
+      if (mergedWatched.length > 0 || mergedWatchlist.length > 0 || mergedUnwatched.length > 0) {
+        await saveLibraryToCloud(activeLibId, {
           watched: mergedWatched,
           watchlist: mergedWatchlist,
           unwatched: mergedUnwatched
-        }).catch(() => {});
+        });
+
+        if (driveToken) {
+          saveToGoogleDrive(driveToken, {
+            watched: mergedWatched,
+            watchlist: mergedWatchlist,
+            unwatched: mergedUnwatched
+          }).catch(() => {});
+        }
       }
-
-      // Also save to Firestore cloud storage
-      await saveLibraryToCloud(activeLibId, {
-        watched: mergedWatched,
-        watchlist: mergedWatchlist,
-        unwatched: mergedUnwatched
-      });
-
-      // Forward to backend API if available
-      try {
-        for (const item of guestItems) {
-          api.post('/users/watched', { movie: item, rating: item.rating || 8.0 }).catch(() => {});
-        }
-        for (const item of guestWlItems) {
-          api.post('/users/watchlist', { movie: item }).catch(() => {});
-        }
-      } catch (e) {}
-
-      localStorage.removeItem('cinematch_guest_watched');
-      localStorage.removeItem('cinematch_guest_watchlist');
-      localStorage.removeItem('cinematch_guest_unwatched');
     } catch (err) {
       console.error("Failed to sync titles to account:", err);
     }
@@ -304,15 +380,18 @@ export const AuthProvider = ({ children }) => {
       }
     }
     localStorage.removeItem('cinematch_token');
+    localStorage.removeItem('cinematch_cached_watched');
+    localStorage.removeItem('cinematch_cached_watchlist');
+    localStorage.removeItem('cinematch_cached_unwatched');
+    localStorage.removeItem('cinematch_guest_watched');
+    localStorage.removeItem('cinematch_guest_unwatched');
+    localStorage.removeItem('cinematch_guest_watchlist');
     setStoredDriveToken(null);
     setUser(null);
     const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
     const freshGuestId = `USER-${randomCode}`;
     setLibraryId(freshGuestId);
     setStoredLibraryId(freshGuestId);
-    localStorage.removeItem('cinematch_guest_watched');
-    localStorage.removeItem('cinematch_guest_unwatched');
-    localStorage.removeItem('cinematch_guest_watchlist');
     setWatchedMovies([]);
     setWatchedIds(new Set());
     setUnwatchedMovies([]);
@@ -349,6 +428,8 @@ export const AuthProvider = ({ children }) => {
       const finalId = cloudData.id || cleanId;
       setLibraryId(finalId);
       setStoredLibraryId(finalId);
+      localStorage.setItem('cinematch_cached_watched', JSON.stringify(loadedWatched));
+      localStorage.setItem('cinematch_cached_watchlist', JSON.stringify(loadedWatchlist));
       localStorage.setItem('cinematch_guest_watched', JSON.stringify(loadedWatched));
       localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(loadedWatchlist));
       setIsCloudSynced(true);
@@ -365,9 +446,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Seamlessly persist to both Google Cloud Firestore and User's Google Drive (if authorized)
+  // Seamlessly persist to Local Cache, Google Cloud Firestore, and User's Google Drive
   const persistLibrary = (libId, { watched, watchlist, unwatched }) => {
+    // 1. Instant local persistence for zero-latency across refresh
+    try {
+      localStorage.setItem('cinematch_cached_watched', JSON.stringify(watched));
+      localStorage.setItem('cinematch_cached_watchlist', JSON.stringify(watchlist));
+      localStorage.setItem('cinematch_cached_unwatched', JSON.stringify(unwatched));
+      localStorage.setItem('cinematch_guest_watched', JSON.stringify(watched));
+      localStorage.setItem('cinematch_guest_watchlist', JSON.stringify(watchlist));
+      localStorage.setItem('cinematch_guest_unwatched', JSON.stringify(unwatched));
+    } catch (e) {}
+
+    // 2. Google Cloud Firestore
     saveLibraryToCloud(libId, { watched, watchlist, unwatched });
+
+    // 3. Personal Google Drive (if authorized and enabled)
     const driveToken = getStoredDriveToken();
     if (driveToken) {
       saveToGoogleDrive(driveToken, { watched, watchlist, unwatched }).catch(e => {

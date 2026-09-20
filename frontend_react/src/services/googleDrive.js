@@ -2,29 +2,50 @@
  * Google Drive API Service
  * Securely saves and loads the user's movie library (watched list + watchlist)
  * directly in their personal Google Drive Application Data storage.
+ * 
+ * Features intelligent circuit-breaking: if Google Drive API is disabled in GCP
+ * or unauthorized (403/401), it gracefully ceases requests for the session,
+ * allowing the FastAPI backend and Firestore cloud storage to take over seamlessly.
  */
 
 const FILE_NAME = 'cinematch_movie_library.json';
 const TOKEN_KEY = 'cinematch_gdrive_token';
+const DISABLED_KEY = 'cinematch_gdrive_disabled';
 
 export function setStoredDriveToken(token) {
   if (token) {
     sessionStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(TOKEN_KEY, token);
+    sessionStorage.removeItem(DISABLED_KEY);
   } else {
     sessionStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(TOKEN_KEY);
+    sessionStorage.removeItem(DISABLED_KEY);
   }
 }
 
 export function getStoredDriveToken() {
+  if (typeof window !== 'undefined' && sessionStorage.getItem(DISABLED_KEY) === 'true') {
+    return null;
+  }
   return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY);
+}
+
+function handleDriveError(status, message = "") {
+  if (status === 403) {
+    sessionStorage.setItem(DISABLED_KEY, 'true');
+    console.info("Google Drive API paused (SERVICE_DISABLED or permission denied). Using backend & cloud store fallback.");
+  } else if (status === 401) {
+    setStoredDriveToken(null);
+  }
 }
 
 /**
  * Searches for an existing library file in the user's Google Drive AppData folder.
  */
 async function findLibraryFile(token) {
+  if (!token || sessionStorage.getItem(DISABLED_KEY) === 'true') return null;
+
   try {
     const url = `https://www.googleapis.com/drive/v3/files?spaces=appDataFolder&q=name='${FILE_NAME}' and trashed=false&fields=files(id,name,modifiedTime)`;
     const res = await fetch(url, {
@@ -34,14 +55,8 @@ async function findLibraryFile(token) {
     });
 
     if (!res.ok) {
-      // If appDataFolder isn't accessible, try standard files space
-      const fallbackUrl = `https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}' and trashed=false&fields=files(id,name,modifiedTime)`;
-      const fallbackRes = await fetch(fallbackUrl, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (!fallbackRes.ok) return null;
-      const fbData = await fallbackRes.json();
-      return fbData.files && fbData.files.length > 0 ? fbData.files[0] : null;
+      handleDriveError(res.status);
+      return null;
     }
 
     const data = await res.json();
@@ -60,7 +75,7 @@ async function findLibraryFile(token) {
  * Returns { watched: [...], watchlist: [...], unwatched: [...] } or null.
  */
 export async function loadFromGoogleDrive(token) {
-  if (!token) return null;
+  if (!token || sessionStorage.getItem(DISABLED_KEY) === 'true') return null;
 
   try {
     const file = await findLibraryFile(token);
@@ -72,7 +87,10 @@ export async function loadFromGoogleDrive(token) {
       }
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      handleDriveError(res.status);
+      return null;
+    }
     const content = await res.json();
     return content;
   } catch (err) {
@@ -85,7 +103,7 @@ export async function loadFromGoogleDrive(token) {
  * Saves movie library directly to the user's Google Drive.
  */
 export async function saveToGoogleDrive(token, { watched = [], watchlist = [], unwatched = [] }) {
-  if (!token) return false;
+  if (!token || sessionStorage.getItem(DISABLED_KEY) === 'true') return false;
 
   const payload = {
     app: "MovieRecommendation",
@@ -110,7 +128,11 @@ export async function saveToGoogleDrive(token, { watched = [], watchlist = [], u
         },
         body: JSON.stringify(payload)
       });
-      return res.ok;
+      if (!res.ok) {
+        handleDriveError(res.status);
+        return false;
+      }
+      return true;
     } else {
       // Create new file in Google Drive AppData folder using multipart upload
       const boundary = '-------cinematch_boundary_' + Date.now();
@@ -144,30 +166,8 @@ export async function saveToGoogleDrive(token, { watched = [], watchlist = [], u
       });
 
       if (!res.ok) {
-        // Fallback: create in standard drive folder if appDataFolder is restricted
-        const stdMetadata = {
-          name: FILE_NAME,
-          mimeType: 'application/json',
-          description: 'Personal Cinema Library Watchlist and History'
-        };
-        const stdBody =
-          delimiter +
-          'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
-          JSON.stringify(stdMetadata) +
-          delimiter +
-          'Content-Type: application/json\r\n\r\n' +
-          JSON.stringify(payload) +
-          closeDelim;
-
-        const stdRes = await fetch(createUrl, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': `multipart/related; boundary=${boundary}`
-          },
-          body: stdBody
-        });
-        return stdRes.ok;
+        handleDriveError(res.status);
+        return false;
       }
 
       return true;
