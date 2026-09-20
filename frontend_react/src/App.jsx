@@ -28,7 +28,7 @@ const GENRES = [
 ];
 
 export default function App() {
-  const { user, watchedMovies, watchlistMovies, notInterestedMovies, toggleWatched, toggleWatchlist } = useAuth();
+  const { user, loading: authLoading, watchedMovies, watchlistMovies, notInterestedMovies, toggleWatched, toggleWatchlist } = useAuth();
 
   const [feed, setFeed] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -50,6 +50,7 @@ export default function App() {
     movie: null,
     videoSource: null,
   });
+  const [pendingPartyCode, setPendingPartyCode] = useState(null);
 
   const handleStartWatchParty = (movie, roomCode = null) => {
     const code = roomCode || Math.random().toString(36).substring(2, 6).toUpperCase();
@@ -59,7 +60,25 @@ export default function App() {
       movie: movie || null,
       videoSource: null,
     });
+    if (!user) {
+      setPendingPartyCode({ code, movie });
+      showToast({ message: 'Please sign in to join or host a Watch Party 🍿' });
+      return;
+    }
   };
+
+  // Resume pending watch party after user signs in
+  useEffect(() => {
+    if (user && pendingPartyCode) {
+      setWatchPartyData({
+        isOpen: true,
+        roomCode: pendingPartyCode.code,
+        movie: pendingPartyCode.movie || null,
+        videoSource: null,
+      });
+      setPendingPartyCode(null);
+    }
+  }, [user, pendingPartyCode]);
   const [toast, setToast] = useState(null);
   const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
   const [selectedGenre, setSelectedGenre] = useState("All");
@@ -124,21 +143,27 @@ export default function App() {
 
   // Handle direct share link: ?room=CODE or ?party=CODE
   useEffect(() => {
+    if (authLoading) return;
     const params = new URLSearchParams(window.location.search);
     const roomParam = params.get('room');
     const partyParam = params.get('party') || params.get('theater');
     if (partyParam) {
+      const code = partyParam.toUpperCase();
       setWatchPartyData({
         isOpen: true,
-        roomCode: partyParam.toUpperCase(),
+        roomCode: code,
         movie: null,
         videoSource: null,
       });
+      if (!user) {
+        setPendingPartyCode({ code, movie: null });
+        showToast({ message: 'Please sign in to join the Watch Party! 🍿' });
+      }
     } else if (roomParam) {
       setInitialRoomCode(roomParam.toUpperCase());
       setIsMovieNightOpen(true);
     }
-  }, []);
+  }, [authLoading, user]);
 
   // Toast helper
   const showToast = (toastObj) => {
@@ -551,6 +576,7 @@ export default function App() {
         movie={watchPartyData.movie}
         initialVideoSource={watchPartyData.videoSource}
         onShowToast={showToast}
+        onRequireAuth={() => setIsAuthOpen(true)}
       />
 
       <Toast

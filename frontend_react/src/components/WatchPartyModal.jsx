@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   X, Play, Pause, RotateCcw, Volume2, VolumeX, Maximize2, Minimize2,
   Users, MessageSquare, Send, Sparkles, Share2, Copy, Check,
-  Monitor, ExternalLink, RefreshCw, Crown, Film, Radio, Tv
+  Monitor, ExternalLink, RefreshCw, Crown, Film, Radio, Tv, Lock
 } from 'lucide-react';
 import api, { getWsUrl } from '../api/client';
 import { useAuth } from '../context/AuthContext';
@@ -24,16 +24,13 @@ export default function WatchPartyModal({
   movie: propMovie,
   initialVideoSource = null,
   onShowToast,
+  onRequireAuth,
 }) {
   const { user } = useAuth();
 
-  // User identity
-  const [myUserId] = useState(() => {
-    return user?.uid || localStorage.getItem('movienight_uid') || `user_${Math.random().toString(36).substring(2, 9)}`;
-  });
-  const [myUserName] = useState(() => {
-    return user?.displayName || localStorage.getItem('movienight_name') || 'Guest Cinephile';
-  });
+  // User identity strictly requires authenticated user
+  const myUserId = user?.uid || '';
+  const myUserName = user?.displayName || user?.email?.split('@')[0] || 'Cinephile';
 
   // Room & theater state
   const [roomCode, setRoomCode] = useState(propRoomCode ? propRoomCode.toUpperCase() : '');
@@ -123,7 +120,7 @@ export default function WatchPartyModal({
 
   // 2. Connect WebSocket for real-time synchronization
   useEffect(() => {
-    if (!isOpen || !roomCode) return;
+    if (!isOpen || !roomCode || !user) return;
 
     initTheater();
 
@@ -159,7 +156,7 @@ export default function WatchPartyModal({
       Object.values(peerConnectionsRef.current).forEach((pc) => pc.close());
       peerConnectionsRef.current = {};
     };
-  }, [isOpen, roomCode, initTheater]);
+  }, [isOpen, roomCode, user, initTheater]);
 
   // 3. Handle incoming WebSocket events
   const handleServerEvent = async (data) => {
@@ -681,6 +678,58 @@ export default function WatchPartyModal({
   };
 
   if (!isOpen) return null;
+
+  if (!user) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-xl animate-fade-in select-none">
+        <div className="relative w-full max-w-md bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 text-center space-y-6 shadow-2xl">
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white transition-all"
+          >
+            <X className="w-5 h-5" />
+          </button>
+          
+          <div className="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-tr from-rose-600 to-amber-500 p-0.5 shadow-xl shadow-rose-950/60">
+            <div className="w-full h-full bg-zinc-950 rounded-[22px] flex items-center justify-center text-3xl">
+              🍿
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xl font-bold text-white flex items-center justify-center gap-2">
+              <Lock className="w-5 h-5 text-amber-400" />
+              <span>Sign In Required</span>
+            </h3>
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed">
+              Watch Party rooms feature synchronized video playback, live chat, and reaction cannons. Please sign in with your Cinematch account to join {roomCode ? <strong className="text-amber-400 font-mono">room {roomCode}</strong> : 'the party'}!
+            </p>
+          </div>
+
+          <div className="pt-2 flex flex-col gap-3">
+            <button
+              onClick={() => {
+                if (onRequireAuth) {
+                  onRequireAuth();
+                } else {
+                  onClose();
+                }
+              }}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-bold text-sm shadow-xl shadow-rose-950/60 transition-all active:scale-95"
+            >
+              Sign In to Join Watch Party
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs font-semibold transition-all"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-0 sm:p-4 bg-black/95 backdrop-blur-xl animate-fade-in select-none">
