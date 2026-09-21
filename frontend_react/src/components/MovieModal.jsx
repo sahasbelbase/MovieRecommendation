@@ -132,6 +132,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const isNotInterested = notInterestedIds?.has(movieId);
  const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : (movie.genres?.some(g => (typeof g === 'string' ? ['Animation', 'Anime'].includes(g) : ['Animation', 'Anime'].includes(g?.name))) ? 'tv' : 'movie'));
  const effectiveMediaType = details?.media_type || initialMediaType;
+ const mediaType = effectiveMediaType;
  const isSeries = ['tv', 'anime', 'kdrama'].includes(effectiveMediaType) || (details?.seasons_count && details.seasons_count > 0) || (details?.seasons && details.seasons.length > 0) || Boolean(movie.first_air_date) || Boolean(details?.first_air_date);
 
  const availableServers = useMemo(() => EMBED_SERVERS.filter(s => !s.mediaTypes || s.mediaTypes.includes(effectiveMediaType)), [effectiveMediaType]);
@@ -461,7 +462,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
           <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
            {streamStatusData?.is_nepali && streamStatusData?.has_youtube_full_movie ? (
             <iframe
-             key={`youtube_full_${movie.id}`}
+             key={`youtube_full_${movieId}`}
              src={`https://www.youtube.com/embed/${streamStatusData.youtube_video.key}?autoplay=1`}
              title={`${movie.title} Full Movie`}
              allow="autoplay; encrypted-media; picture-in-picture"
@@ -496,8 +497,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
             </div>
            ) : (
             <iframe
-             key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}_${audioTrack}`}
-             src={availableServers[streamServerIndex]?.getUrl(movie.id, effectiveMediaType, selectedSeason, selectedEpisode, audioTrack)}
+             key={`${availableServers[streamServerIndex]?.id}_${movieId}_s${selectedSeason}_e${selectedEpisode}_${audioTrack}`}
+             src={availableServers[streamServerIndex]?.getUrl(movieId, effectiveMediaType, selectedSeason, selectedEpisode, audioTrack)}
              title={`${movie.title} Stream`}
              allow="autoplay; encrypted-media; picture-in-picture"
              allowFullScreen

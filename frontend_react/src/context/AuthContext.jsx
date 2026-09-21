@@ -557,7 +557,8 @@ export const AuthProvider = ({ children }) => {
 
   // Toggle Watched status with optimistic UI updates & Firestore cloud persistence
   const toggleWatched = async (movie, rating = null, review = null) => {
-    const movieId = movie.id;
+    const movieId = movie?.id || movie?.item_id || movie?.tmdb_id || movie?.movieId;
+    if (!movieId) return false;
     const isWatched = watchedIds.has(movieId);
     const activeLibId = libraryId || getOrCreateLibraryId(user);
 
@@ -566,7 +567,7 @@ export const AuthProvider = ({ children }) => {
       const nextIds = new Set(watchedIds);
       nextIds.delete(movieId);
       setWatchedIds(nextIds);
-      const nextMovies = watchedMovies.filter(m => m.id !== movieId);
+      const nextMovies = watchedMovies.filter(m => (m.id || m.tmdb_id || m.item_id) !== movieId);
       setWatchedMovies(nextMovies);
 
       // Save to Cloud Firestore & Google Drive
@@ -590,7 +591,7 @@ export const AuthProvider = ({ children }) => {
     } else {
       // Mark as watched
       const record = {
-        id: movie.id,
+        id: movieId,
         title: movie.title,
         poster_url: movie.poster_url,
         year: movie.year,

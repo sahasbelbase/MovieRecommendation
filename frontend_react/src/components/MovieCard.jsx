@@ -4,9 +4,10 @@ import { useAuth } from '../context/AuthContext';
 
 export default function MovieCard({ movie, onSelect, onShowToast, isVip = false }) {
  const { user, watchedIds, toggleWatched, watchlistIds, toggleWatchlist, notInterestedIds, toggleNotInterested } = useAuth();
- const isWatched = watchedIds.has(movie.id);
- const isWatchlist = watchlistIds.has(movie.id);
- const isNotInterested = notInterestedIds?.has(movie.id);
+ const movieId = movie?.id || movie?.item_id || movie?.tmdb_id || movie?.movieId;
+ const isWatched = watchedIds.has(movieId);
+ const isWatchlist = watchlistIds.has(movieId);
+ const isNotInterested = notInterestedIds?.has(movieId);
 
  const handleWatchedClick = async (e) => {
   e.stopPropagation();
