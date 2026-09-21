@@ -355,7 +355,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    <div className="fixed inset-0" onClick={onClose} />
 
    {/* Modal Card (Widescreen IMAX Layout) */}
-   <div className="relative w-full max-w-6xl xl:max-w-7xl bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto max-h-[95dvh] sm:max-h-[92vh] flex flex-col transition-all duration-300">
+   <div className="relative w-[96vw] max-w-[1750px] 2xl:max-w-[1920px] h-[94vh] max-h-[94vh] bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto flex flex-col transition-all duration-300">
     {/* Close Button */}
     <button
      onClick={onClose}
@@ -478,7 +478,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
            >
             <Play className="w-4 h-4 fill-white" />
             <span>
-             {['tv', 'anime', 'kdrama'].includes(mediaType)
+             {isSeries
                ? `Play S${selectedSeason} E${selectedEpisode}`
                : 'Play Stream'}
             </span>
