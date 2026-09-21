@@ -448,43 +448,46 @@ export default function App() {
         ))}
        </div>
       </div>
-     ) : feed?.sections && feed.sections.length > 0 ? (
-      feed.sections.map((section, idx) => {
-       // Filter section items: strictly exclude any watched or watchlist titles, plus active category/genre
-       const movies = (section.movies || []).filter((m) => {
-        // Strictly exclude any title already in watched list or watchlist
-        if (excludedIds.has(Number(m.id))) {
-         return false;
-        }
-
-        // 1. Strict category filter
-        if (selectedMediaCategory!== "all") {
-         const mType = m.media_type || "movie";
-         if (selectedMediaCategory === "anime" && mType!== "anime") return false;
-         if (selectedMediaCategory === "tv" && mType!== "tv" && mType!== "kdrama") return false;
-         if (selectedMediaCategory === "movie" && mType!== "movie") return false;
-        }
-
-        // 2. Genre matching: if user selected a genre, backend returned dedicated discovery sections
-        if (selectedGenre!== "All") {
-         if (section.title?.toLowerCase().includes(selectedGenre.toLowerCase())) {
+      ) : (() => {
+       const validSections = (feed?.sections || []).map((section) => {
+        const movies = (section.movies || []).filter((m) => {
+         if (excludedIds.has(Number(m.id))) {
+          return false;
+         }
+         if (selectedMediaCategory !== "all") {
+          const mType = m.media_type || "movie";
+          if (selectedMediaCategory === "anime" && mType !== "anime") return false;
+          if (selectedMediaCategory === "tv" && mType !== "tv" && mType !== "kdrama") return false;
+          if (selectedMediaCategory === "movie" && mType !== "movie") return false;
+         }
+         if (selectedGenre !== "All") {
+          if (section.title?.toLowerCase().includes(selectedGenre.toLowerCase())) {
+           return true;
+          }
+          if (m.genres && m.genres.length > 0) {
+           return m.genres.some((g) =>
+            g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
+            selectedGenre.toLowerCase().includes(g.toLowerCase())
+           );
+          }
           return true;
          }
-         if (m.genres && m.genres.length > 0) {
-          return m.genres.some((g) =>
-           g.toLowerCase().includes(selectedGenre.toLowerCase()) ||
-           selectedGenre.toLowerCase().includes(g.toLowerCase())
-          );
-         }
          return true;
-        }
+        });
+        return { ...section, movies };
+       }).filter(s => s.movies && s.movies.length > 0);
 
-        return true;
-       });
+       if (validSections.length === 0) {
+        return (
+         <div className="h-64 flex flex-col items-center justify-center text-center space-y-3 px-4">
+          <Film className="w-10 h-10 text-zinc-600 stroke-1" />
+          <p className="text-sm font-medium text-zinc-300">No unwatched titles found for this category.</p>
+          <p className="text-xs text-zinc-500 max-w-sm">You are a true cinema master! Try switching categories or clearing filters to discover more.</p>
+         </div>
+        );
+       }
 
-       if (movies.length === 0) return null;
-
-       return (
+       return validSections.map((section, idx) => (
         <section key={idx} className="space-y-4">
          <div className="flex items-baseline justify-between">
           <div>
@@ -499,7 +502,7 @@ export default function App() {
 
          {/* Media Grid */}
          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-4">
-          {movies.map((movie) => (
+          {section.movies.map((movie) => (
            <MovieCard
             key={`${movie.media_type || 'movie'}_${movie.id}`}
             movie={movie}
@@ -509,15 +512,9 @@ export default function App() {
           ))}
          </div>
         </section>
-       );
-      })
-     ) : (
-      <div className="h-64 flex flex-col items-center justify-center text-center space-y-3">
-       <Film className="w-10 h-10 text-zinc-600 stroke-1" />
-       <p className="text-sm font-medium text-zinc-300">No titles found for this category.</p>
-      </div>
-     )}
-    </main>
+       ));
+      })()}
+     </main>
 
     {/* Interactive Social Footer */}
     <Footer

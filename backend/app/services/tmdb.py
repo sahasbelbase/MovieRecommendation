@@ -216,93 +216,216 @@ class TMDBService:
 
         return {}
 
-    async def get_trending_all(self, time_window: str = "week", page: int = 1) -> List[dict]:
-        """Stream trending across Movies, TV Shows, Anime, and K-Dramas"""
-        data = await self._fetch(f"/trending/all/{time_window}", {"page": page})
-        results = [
-            self._format_item(m)
-            for m in data.get("results", [])
-            if m.get("media_type") != "person"
-        ]
+    async def get_trending_all(self, time_window: str = "week", page: int = 1, pages: int = 3) -> List[dict]:
+        """Stream trending across Movies, TV Shows, Anime, and K-Dramas with multi-page parallel fetching"""
+        if pages <= 1:
+            data = await self._fetch(f"/trending/all/{time_window}", {"page": page})
+            return [self._format_item(m) for m in data.get("results", []) if m.get("media_type") != "person"]
+
+        responses = await asyncio.gather(*[
+            self._fetch(f"/trending/all/{time_window}", {"page": p}) for p in range(page, page + pages)
+        ])
+        results = []
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("media_type") != "person" and m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    results.append(self._format_item(m))
         return results
 
-    async def get_trending_movies(self, time_window: str = "week", page: int = 1) -> List[dict]:
-        data = await self._fetch(f"/trending/movie/{time_window}", {"page": page})
-        return [self._format_item(m, default_type="movie") for m in data.get("results", [])]
+    async def get_trending_movies(self, time_window: str = "week", page: int = 1, pages: int = 3) -> List[dict]:
+        if pages <= 1:
+            data = await self._fetch(f"/trending/movie/{time_window}", {"page": page})
+            return [self._format_item(m, default_type="movie") for m in data.get("results", [])]
 
-    async def get_trending_tv(self, time_window: str = "week", page: int = 1) -> List[dict]:
-        data = await self._fetch(f"/trending/tv/{time_window}", {"page": page})
-        return [self._format_item(m, default_type="tv") for m in data.get("results", [])]
+        responses = await asyncio.gather(*[
+            self._fetch(f"/trending/movie/{time_window}", {"page": p}) for p in range(page, page + pages)
+        ])
+        results = []
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    results.append(self._format_item(m, default_type="movie"))
+        return results
 
-    async def get_trending_anime(self, page: int = 1) -> List[dict]:
+    async def get_trending_tv(self, time_window: str = "week", page: int = 1, pages: int = 3) -> List[dict]:
+        if pages <= 1:
+            data = await self._fetch(f"/trending/tv/{time_window}", {"page": page})
+            return [self._format_item(m, default_type="tv") for m in data.get("results", [])]
+
+        responses = await asyncio.gather(*[
+            self._fetch(f"/trending/tv/{time_window}", {"page": p}) for p in range(page, page + pages)
+        ])
+        results = []
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    results.append(self._format_item(m, default_type="tv"))
+        return results
+
+    async def get_trending_anime(self, page: int = 1, pages: int = 3) -> List[dict]:
         """Stream top trending Japanese Anime"""
-        data = await self._fetch(
-            "/discover/tv",
-            {
-                "page": page,
-                "with_origin_country": "JP",
-                "with_genres": "16",
-                "sort_by": "popularity.desc",
-            }
-        )
+        if pages <= 1:
+            data = await self._fetch(
+                "/discover/tv",
+                {
+                    "page": page,
+                    "with_origin_country": "JP",
+                    "with_genres": "16",
+                    "sort_by": "popularity.desc",
+                }
+            )
+            items = []
+            for m in data.get("results", []):
+                formatted = self._format_item(m, default_type="anime")
+                formatted["media_type"] = "anime"
+                items.append(formatted)
+            return items
+
+        responses = await asyncio.gather(*[
+            self._fetch(
+                "/discover/tv",
+                {
+                    "page": p,
+                    "with_origin_country": "JP",
+                    "with_genres": "16",
+                    "sort_by": "popularity.desc",
+                }
+            ) for p in range(page, page + pages)
+        ])
         items = []
-        for m in data.get("results", []):
-            formatted = self._format_item(m, default_type="anime")
-            formatted["media_type"] = "anime"
-            items.append(formatted)
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    formatted = self._format_item(m, default_type="anime")
+                    formatted["media_type"] = "anime"
+                    items.append(formatted)
         return items
 
-    async def get_top_rated_anime(self, page: int = 1) -> List[dict]:
+    async def get_top_rated_anime(self, page: int = 1, pages: int = 3) -> List[dict]:
         """Stream all-time top-rated Japanese Anime"""
-        data = await self._fetch(
-            "/discover/tv",
-            {
-                "page": page,
-                "with_origin_country": "JP",
-                "with_genres": "16",
-                "sort_by": "vote_average.desc",
-                "vote_count.gte": "200",
-            }
-        )
+        if pages <= 1:
+            data = await self._fetch(
+                "/discover/tv",
+                {
+                    "page": page,
+                    "with_origin_country": "JP",
+                    "with_genres": "16",
+                    "sort_by": "vote_average.desc",
+                    "vote_count.gte": "200",
+                }
+            )
+            items = []
+            for m in data.get("results", []):
+                formatted = self._format_item(m, default_type="anime")
+                formatted["media_type"] = "anime"
+                items.append(formatted)
+            return items
+
+        responses = await asyncio.gather(*[
+            self._fetch(
+                "/discover/tv",
+                {
+                    "page": p,
+                    "with_origin_country": "JP",
+                    "with_genres": "16",
+                    "sort_by": "vote_average.desc",
+                    "vote_count.gte": "200",
+                }
+            ) for p in range(page, page + pages)
+        ])
         items = []
-        for m in data.get("results", []):
-            formatted = self._format_item(m, default_type="anime")
-            formatted["media_type"] = "anime"
-            items.append(formatted)
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    formatted = self._format_item(m, default_type="anime")
+                    formatted["media_type"] = "anime"
+                    items.append(formatted)
         return items
 
-    async def get_trending_kdrama(self, page: int = 1) -> List[dict]:
+    async def get_trending_kdrama(self, page: int = 1, pages: int = 3) -> List[dict]:
         """Stream top trending Korean Dramas (K-Dramas)"""
-        data = await self._fetch(
-            "/discover/tv",
-            {
-                "page": page,
-                "with_origin_country": "KR",
-                "sort_by": "popularity.desc",
-            }
-        )
+        if pages <= 1:
+            data = await self._fetch(
+                "/discover/tv",
+                {
+                    "page": page,
+                    "with_origin_country": "KR",
+                    "sort_by": "popularity.desc",
+                }
+            )
+            items = []
+            for m in data.get("results", []):
+                formatted = self._format_item(m, default_type="kdrama")
+                formatted["media_type"] = "kdrama"
+                items.append(formatted)
+            return items
+
+        responses = await asyncio.gather(*[
+            self._fetch(
+                "/discover/tv",
+                {
+                    "page": p,
+                    "with_origin_country": "KR",
+                    "sort_by": "popularity.desc",
+                }
+            ) for p in range(page, page + pages)
+        ])
         items = []
-        for m in data.get("results", []):
-            formatted = self._format_item(m, default_type="kdrama")
-            formatted["media_type"] = "kdrama"
-            items.append(formatted)
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    formatted = self._format_item(m, default_type="kdrama")
+                    formatted["media_type"] = "kdrama"
+                    items.append(formatted)
         return items
 
-    async def get_top_rated(self, media_type: str = "movie", page: int = 1) -> List[dict]:
+    async def get_top_rated(self, media_type: str = "movie", page: int = 1, pages: int = 3) -> List[dict]:
         """Fetch top-rated movies or TV series"""
         clean_type = "movie" if media_type == "movie" else "tv"
-        data = await self._fetch(f"/{clean_type}/top_rated", {"page": page})
-        return [self._format_item(m, default_type=clean_type) for m in data.get("results", [])]
+        if pages <= 1:
+            data = await self._fetch(f"/{clean_type}/top_rated", {"page": page})
+            return [self._format_item(m, default_type=clean_type) for m in data.get("results", [])]
 
-    async def get_rotten_tomatoes_picks(self, limit: int = 10) -> List[dict]:
+        responses = await asyncio.gather(*[
+            self._fetch(f"/{clean_type}/top_rated", {"page": p}) for p in range(page, page + pages)
+        ])
+        results = []
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    results.append(self._format_item(m, default_type=clean_type))
+        return results
+
+    async def get_rotten_tomatoes_picks(self, limit: int = 30, pages: int = 3) -> List[dict]:
         """Curates Certified Fresh / Critically Acclaimed titles (IMDb >= 8.2 & RT >= 90%)"""
-        data = await self._fetch("/movie/top_rated", {"page": 1})
+        responses = await asyncio.gather(*[
+            self._fetch("/movie/top_rated", {"page": p}) for p in range(1, pages + 1)
+        ])
         picks = []
-        for m in data.get("results", [])[:limit]:
-            formatted = self._format_item(m, default_type="movie")
-            # Enhance with high RT score
-            formatted["rotten_tomatoes"] = f"{min(99, int(formatted['vote_average'] * 11.2))}%"
-            picks.append(formatted)
+        seen = set()
+        for data in responses:
+            for m in data.get("results", []):
+                if m.get("id") and m.get("id") not in seen:
+                    seen.add(m.get("id"))
+                    formatted = self._format_item(m, default_type="movie")
+                    formatted["rotten_tomatoes"] = f"{min(99, int(formatted['vote_average'] * 11.2))}%"
+                    picks.append(formatted)
+                    if len(picks) >= limit:
+                        break
         return picks
 
     async def get_now_playing(self, page: int = 1) -> List[dict]:
@@ -696,8 +819,8 @@ class TMDBService:
             logger.error(f"Error fetching person credits for {person_id}: {e}")
             return {}
 
-    async def get_details(self, item_id: int, media_type: str = "movie") -> dict:
-        """Fetch rich details including OMDb Rotten Tomatoes & IMDb scores"""
+    async def get_details(self, item_id: int, media_type: str = "movie", include_omdb: bool = False) -> dict:
+        """Fetch rich details including OMDb Rotten Tomatoes & IMDb scores if requested"""
         endpoint_type = "tv" if media_type in ["tv", "anime", "kdrama"] else "movie"
         data = await self._fetch(f"/{endpoint_type}/{item_id}")
         if not data:
@@ -712,14 +835,15 @@ class TMDBService:
         formatted = self._format_item(data, default_type=endpoint_type)
         imdb_id = data.get("imdb_id")
 
-        # Fetch official Rotten Tomatoes & IMDb scores from OMDb
-        omdb_ratings = await self.get_omdb_ratings(imdb_id=imdb_id, title=formatted["title"], year=formatted["year"])
-        if omdb_ratings.get("rotten_tomatoes"):
-            formatted["rotten_tomatoes"] = omdb_ratings["rotten_tomatoes"]
-        if omdb_ratings.get("imdb_rating"):
-            formatted["imdb_rating"] = omdb_ratings["imdb_rating"]
-        if omdb_ratings.get("metascore"):
-            formatted["metascore"] = omdb_ratings["metascore"]
+        if include_omdb:
+            # Fetch official Rotten Tomatoes & IMDb scores from OMDb
+            omdb_ratings = await self.get_omdb_ratings(imdb_id=imdb_id, title=formatted["title"], year=formatted["year"])
+            if omdb_ratings.get("rotten_tomatoes"):
+                formatted["rotten_tomatoes"] = omdb_ratings["rotten_tomatoes"]
+            if omdb_ratings.get("imdb_rating"):
+                formatted["imdb_rating"] = omdb_ratings["imdb_rating"]
+            if omdb_ratings.get("metascore"):
+                formatted["metascore"] = omdb_ratings["metascore"]
 
         formatted.update({
             "tagline": data.get("tagline", ""),

@@ -1463,14 +1463,9 @@ export default function WatchPartyModal({
        <span>Movie Trailer</span>
       </button>
 
-      {movie?.id && movie?.media_type === 'anime' && (
+      {user && isVip && movie?.id && movie?.media_type === 'anime' && (
        <button
         onClick={() => {
-         if (!user) {
-          if (onRequireAuth) onRequireAuth();
-          if (onShowToast) onShowToast({ message: 'Please sign in to stream full movies 🍿' });
-          return;
-         }
          setActiveTab('embed');
          if (isScreenSharing) stopScreenShare();
          
@@ -1501,14 +1496,9 @@ export default function WatchPartyModal({
        </button>
       )}
 
-      {movie?.id && (
+      {user && isVip && movie?.id && (
        <button
         onClick={() => {
-         if (!user) {
-          if (onRequireAuth) onRequireAuth();
-          if (onShowToast) onShowToast({ message: 'Please sign in to stream full movies 🍿' });
-          return;
-         }
          setActiveTab('embed');
          if (isScreenSharing) stopScreenShare();
          const embedSrc = ['tv', 'anime', 'kdrama'].includes(movie?.media_type)

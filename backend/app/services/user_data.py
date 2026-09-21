@@ -173,11 +173,19 @@ class UserDataService:
         and not-interested movie IDs.
         Used to ensure titles are never repeatedly shown in Swipe Mode or recommendation cards.
         """
-        watched = await self.get_watched_ids(user_id)
-        unwatched = await self.get_unwatched_ids(user_id)
-        watchlist = await self.get_watchlist_ids(user_id)
-        not_interested = await self.get_not_interested_ids(user_id)
-        return list(set(watched + unwatched + watchlist + not_interested))
+        import asyncio
+        results = await asyncio.gather(
+            self.get_watched_ids(user_id),
+            self.get_unwatched_ids(user_id),
+            self.get_watchlist_ids(user_id),
+            self.get_not_interested_ids(user_id),
+            return_exceptions=True
+        )
+        combined = []
+        for res in results:
+            if isinstance(res, list):
+                combined.extend(res)
+        return list(set(combined))
 
     async def unmark_watched(self, user_id: str, movie_id: int) -> bool:
         """Removes a movie from the user's watched list"""
