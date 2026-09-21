@@ -19,24 +19,8 @@ const COUNTRY_OPTIONS = [
 
 const EMBED_SERVERS = [
   {
-    id: 'anify_hd',
-    name: 'Server 1 (Anify HD)',
-    mediaTypes: ['anime', 'tv'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => `https://anify.to/embed/${id}/${e}?mode=${audio === 'dub' ? 'dub' : 'sub'}`
-  },
-  {
-    id: 'anime_vidsrc_me',
-    name: 'Server 2 (VidSrc Anime)',
-    mediaTypes: ['anime', 'tv', 'movie', 'kdrama'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}&audio=${audio}`
-      : `https://vidsrc.me/embed/movie?tmdb=${id}`
-  },
-  {
-    id: 'vidlink_pro',
-    name: 'Server 3 (VidLink HD)',
+    id: 'vidlink_hd',
+    name: 'Server 1 (VidLink HD)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null, // VidLink requires non-sandboxed frame to render player without error
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
@@ -44,26 +28,55 @@ const EMBED_SERVERS = [
       : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
   },
   {
-    id: 'vidsrc_sbs',
-    name: 'Server 4 (VidSrc)',
+    id: 'vidsrc_to',
+    name: 'Server 2 (VidSrc TO)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}` : `https://vidsrc.sbs/embed/movie/${id}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}`
+      : `https://vidsrc.to/embed/movie/${id}`
+  },
+  {
+    id: 'vidsrc_me',
+    name: 'Server 3 (VidSrc ME)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}&audio=${audio}`
+      : `https://vidsrc.me/embed/movie?tmdb=${id}`
+  },
+  {
+    id: 'embed_2cc',
+    name: 'Server 4 (2Embed)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}`
+      : `https://2embed.cc/embed/${id}`
+  },
+  {
+    id: 'vidsrc_sbs',
+    name: 'Server 5 (VidSrc SBS)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}`
+      : `https://vidsrc.sbs/embed/movie/${id}`
   },
   {
     id: 'vidsrc_pro',
-    name: 'Server 5 (Pro)',
+    name: 'Server 6 (VidSrc Pro)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` : `https://vidsrc.pro/embed/movie/${id}`
-  },
-  {
-    id: 'vidsrc_cc',
-    name: 'Server 6 (HD)',
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
+      : `https://vidsrc.pro/embed/movie/${id}`
   },
 ];
 
 export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth, autoPlayStream = false }) {
+ if (!movie || !movie.id) return null;
+
  const {
   user,
   watchedIds,
@@ -93,6 +106,19 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
 
+ // Reset modal states on movie selection change to prevent stale render flashes
+ useEffect(() => {
+  setDetails(null);
+  setCredits(null);
+  setTrailers([]);
+  setProviders(null);
+  setSeasonData(null);
+  setStreamStatusData(null);
+  setStreamServerIndex(0);
+  setShowTrailerPlayer(false);
+  setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
+ }, [movie.id, autoPlayStream, user, isVip]);
+
  // Episode sorting, range chunking & search jump for long-running series / anime
  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
  const [selectedChunkIndex, setSelectedChunkIndex] = useState(0);
@@ -103,7 +129,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const isWatched = watchedIds.has(movie.id);
  const isWatchlist = watchlistIds.has(movie.id);
  const isNotInterested = notInterestedIds?.has(movie.id);
- const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : (movie.genres?.some(g => typeof g === 'string' && ['Animation', 'Anime'].includes(g)) ? 'tv' : 'movie'));
+ const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : (movie.genres?.some(g => (typeof g === 'string' ? ['Animation', 'Anime'].includes(g) : ['Animation', 'Anime'].includes(g?.name))) ? 'tv' : 'movie'));
  const effectiveMediaType = details?.media_type || initialMediaType;
  const isSeries = ['tv', 'anime', 'kdrama'].includes(effectiveMediaType) || (details?.seasons_count && details.seasons_count > 0) || (details?.seasons && details.seasons.length > 0) || Boolean(movie.first_air_date) || Boolean(details?.first_air_date);
 
