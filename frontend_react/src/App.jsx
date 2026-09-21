@@ -18,7 +18,7 @@ import Footer from './components/Footer';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
- { id: "all", label: "Watch", shortLabel: "Watch" },
+ { id: "all", label: "Discover", shortLabel: "Discover" },
  { id: "movie", label: "Movies", shortLabel: "Movies" },
  { id: "tv", label: "TV Series", shortLabel: "TV" },
  { id: "anime", label: "Anime", shortLabel: "Anime" }

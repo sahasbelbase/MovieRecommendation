@@ -1060,6 +1060,40 @@ class TMDBService:
             results = data.get("results", [])
         return [self._format_item(m, default_type=endpoint_type) for m in results]
 
+    async def _search_youtube_full_movie(self, title: str, is_nepali: bool = False) -> Optional[dict]:
+        """
+        Queries YouTube search for official full movie uploads when not registered in TMDB videos.
+        """
+        import urllib.parse
+        import re
+        query_str = f"{title} Nepali full movie" if is_nepali else f"{title} full movie"
+        query_encoded = urllib.parse.quote(query_str)
+        url = f"https://www.youtube.com/results?search_query={query_encoded}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9"
+        }
+
+        try:
+            async with httpx.AsyncClient(timeout=4.0, follow_redirects=True) as client:
+                resp = await client.get(url, headers=headers)
+                if resp.status_code == 200:
+                    html = resp.text
+                    video_ids = re.findall(r'"videoId":"([a-zA-Z0-9_-]{11})"', html)
+                    if video_ids:
+                        # Deduplicate while preserving order
+                        unique_ids = list(dict.fromkeys(video_ids))
+                        key = unique_ids[0]
+                        return {
+                            "key": key,
+                            "name": f"{title} Full Movie (YouTube Release)",
+                            "site": "YouTube",
+                            "type": "Full Movie"
+                        }
+        except Exception as err:
+            logger.warning(f"YouTube full movie search error for {title}: {err}")
+        return None
+
     async def get_movie_stream_status(self, item_id: int, media_type: str = "movie") -> dict:
         """
         Determines stream availability, regional origin, and YouTube full movie fallback.
@@ -1080,8 +1114,8 @@ class TMDBService:
         orig_lang = data.get("original_language", "")
         origin_countries = data.get("origin_country", [])
         prod_countries = [c.get("iso_3166_1") for c in data.get("production_countries", []) if isinstance(c, dict) and c.get("iso_3166_1")]
-        is_nepali = (orig_lang == "ne") or ("NP" in origin_countries) or ("NP" in prod_countries)
         title = data.get("title") or data.get("name") or ""
+        is_nepali = (orig_lang == "ne") or ("NP" in origin_countries) or ("NP" in prod_countries) or ("nepali" in title.lower())
 
         # Fetch TMDB videos to find full movie or official YouTube release
         videos = await self.get_videos(item_id, media_type=media_type)
@@ -1092,6 +1126,10 @@ class TMDBService:
             if "full movie" in v_name or "full feature" in v_name or "nepali movie" in v_name or "nepali full" in v_name:
                 youtube_full_movie = v
                 break
+
+        # Fallback: Query YouTube search if TMDB videos lack full movie key (especially for Nepali titles)
+        if not youtube_full_movie:
+            youtube_full_movie = await self._search_youtube_full_movie(title, is_nepali=is_nepali)
 
         res = {
             "movie_id": item_id,

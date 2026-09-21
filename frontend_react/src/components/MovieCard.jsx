@@ -71,33 +71,46 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
     )}
 
     {/* Netflix-Style 1-Click Hover Action Overlay */}
-    <div className="absolute inset-0 bg-black/60 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-2 p-3 z-20 pointer-events-none group-hover:pointer-events-auto">
-     {user && isVip && (
+    <div className="absolute inset-x-0 bottom-0 top-12 bg-gradient-to-t from-black/90 via-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-end gap-2 p-3 z-20 pointer-events-none group-hover:pointer-events-auto rounded-b-lg">
+     {user && isVip ? (
+      <div className="w-full flex items-center gap-2">
+       <button
+        onClick={(e) => {
+         e.stopPropagation();
+         onSelect(movie, true);
+        }}
+        className="flex-1 py-1.5 px-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/60 transition-transform active:scale-95"
+       >
+        <Play className="w-3.5 h-3.5 fill-current" />
+        <span>Play</span>
+       </button>
+       <button
+        onClick={(e) => {
+         e.stopPropagation();
+         onSelect(movie, false);
+        }}
+        className="py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1 border border-zinc-700/60 transition-transform active:scale-95"
+       >
+        <Info className="w-3.5 h-3.5" />
+        <span>Details</span>
+       </button>
+      </div>
+     ) : (
       <button
        onClick={(e) => {
         e.stopPropagation();
-        onSelect(movie, true);
+        onSelect(movie, false);
        }}
-       className="w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/60 transition-transform active:scale-95"
+       className="w-full py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1.5 border border-zinc-700/60 transition-transform active:scale-95"
       >
-       <Play className="w-3.5 h-3.5 fill-current" />
-       <span>Play Now</span>
+       <Info className="w-3.5 h-3.5" />
+       <span>Details</span>
       </button>
      )}
-     <button
-      onClick={(e) => {
-       e.stopPropagation();
-       onSelect(movie, false);
-      }}
-      className="w-full py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1.5 border border-zinc-700/60 transition-transform active:scale-95"
-     >
-      <Info className="w-3.5 h-3.5" />
-      <span>Details</span>
-     </button>
     </div>
 
-    {/* Quick Actions: Not Interested, Watchlist & Watched */}
-    <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">
+    {/* Quick Actions: Not Interested, Watchlist & Watched (z-30 ensures top layer clickability) */}
+    <div className="absolute top-2 right-2 flex items-center gap-1.5 z-30">
      {/* Not Interested Tooltip & Button */}
      <div className="relative group/tip">
       <button

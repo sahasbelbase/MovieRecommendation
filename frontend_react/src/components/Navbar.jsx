@@ -422,7 +422,7 @@ export default function Navbar({
               }`}
             >
               <Compass className="w-4 h-4 text-rose-400" />
-              <span>Watch</span>
+              <span>{isVip ? 'Watch' : 'Discover'}</span>
             </button>
 
             <button
