@@ -549,14 +549,19 @@ export default function Navbar({
               const input = e.target.elements.roomCode.value;
               const trimmed = input.trim();
               if (trimmed === '9999') {
+                if (!user) {
+                  if (onOpenAuthModal) onOpenAuthModal();
+                  alert('Please sign in first to activate VIP Access');
+                  return;
+                }
                 localStorage.setItem('vip_activated', 'true');
                 if (onVipActivated) onVipActivated();
-                alert('VIP Access Activated 🤫');
+                alert('VIP Access Activated');
                 e.target.reset();
               } else if (trimmed === '0000') {
                 localStorage.removeItem('vip_activated');
                 if (onVipDeactivated) onVipDeactivated();
-                alert('VIP Access Deactivated 🔒');
+                alert('VIP Access Deactivated');
                 e.target.reset();
               } else if (trimmed.length === 4) {
                 window.location.href = `/?party=${trimmed.toUpperCase()}`;
@@ -763,15 +768,21 @@ export default function Navbar({
                 const input = e.target.elements.roomCode.value;
                 const trimmed = input.trim();
                 if (trimmed === '9999') {
+                  if (!user) {
+                    setIsProfileMenuOpen(false);
+                    if (onOpenAuthModal) onOpenAuthModal();
+                    alert('Please sign in first to activate VIP Access');
+                    return;
+                  }
                   localStorage.setItem('vip_activated', 'true');
                   if (onVipActivated) onVipActivated();
-                  alert('VIP Access Activated 🤫');
+                  alert('VIP Access Activated');
                   e.target.reset();
                   setIsProfileMenuOpen(false);
                 } else if (trimmed === '0000') {
                   localStorage.removeItem('vip_activated');
                   if (onVipDeactivated) onVipDeactivated();
-                  alert('VIP Access Deactivated 🔒');
+                  alert('VIP Access Deactivated');
                   e.target.reset();
                   setIsProfileMenuOpen(false);
                 } else if (trimmed.length === 4) {

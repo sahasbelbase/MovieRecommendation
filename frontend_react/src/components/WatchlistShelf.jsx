@@ -2,16 +2,16 @@ import React from 'react';
 import { Bookmark, ChevronDown, ChevronUp, Check, Trash2, Film, Star, ExternalLink } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export default function WatchlistShelf({
+ export default function WatchlistShelf({
  isExpanded,
  onToggleExpand,
  onSelectMovie,
  onOpenDrawer,
  onShowToast
 }) {
- const { watchlistMovies, toggleWatchlist, toggleWatched } = useAuth();
+ const { user, watchlistMovies, toggleWatchlist, toggleWatched } = useAuth();
 
- if (!isExpanded) {
+ if (!user || !isExpanded) {
   return null;
  }
 

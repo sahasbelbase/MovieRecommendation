@@ -235,14 +235,16 @@ export default function App() {
 
    {/* Content Area */}
    <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden">
-    {/* Watchlist Shelf (Placed right below Navigation with vertical scroll) */}
-    <WatchlistShelf
-     isExpanded={isWatchlistShelfOpen}
-     onToggleExpand={() => setIsWatchlistShelfOpen(prev =>!prev)}
-     onSelectMovie={(m) => setSelectedMovie(m)}
-     onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
-     onShowToast={showToast}
-    />
+     {/* Watchlist Shelf (Hidden for signed-out users) */}
+     {user && (
+      <WatchlistShelf
+       isExpanded={isWatchlistShelfOpen}
+       onToggleExpand={() => setIsWatchlistShelfOpen(prev => !prev)}
+       onSelectMovie={(m) => setSelectedMovie(m)}
+       onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
+       onShowToast={showToast}
+      />
+     )}
 
     {/* Main Container */}
     <main className="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-5 sm:py-8 pb-24 md:pb-8 space-y-6 sm:space-y-8">
