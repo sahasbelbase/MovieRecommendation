@@ -5,29 +5,36 @@ import api from '../api/client';
 import MovieCard from './MovieCard';
 
 const COUNTRY_OPTIONS = [
- { code: 'NP', label: '🇳🇵 Nepal' },
- { code: 'US', label: '🇺🇸 United States' },
- { code: 'GB', label: '🇬🇧 United Kingdom' },
- { code: 'CA', label: '🇨🇦 Canada' },
- { code: 'AU', label: '🇦🇺 Australia' },
- { code: 'JP', label: '🇯🇵 Japan' },
- { code: 'KR', label: '🇰🇷 South Korea' },
- { code: 'IN', label: '🇮🇳 India' },
- { code: 'DE', label: '🇩🇪 Germany' },
- { code: 'FR', label: '🇫🇷 France' },
+ { code: 'NP', label: 'Nepal' },
+ { code: 'US', label: 'United States' },
+ { code: 'GB', label: 'United Kingdom' },
+ { code: 'CA', label: 'Canada' },
+ { code: 'AU', label: 'Australia' },
+ { code: 'JP', label: 'Japan' },
+ { code: 'KR', label: 'South Korea' },
+ { code: 'IN', label: 'India' },
+ { code: 'DE', label: 'Germany' },
+ { code: 'FR', label: 'France' },
 ];
 
 const EMBED_SERVERS = [
   {
+    id: 'anify_hd',
+    name: 'Server 1 (Anify HD)',
+    mediaTypes: ['anime'],
+    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    getUrl: (id, type, s = 1, e = 1) => `https://anify.to/embed/${id}/${e}`
+  },
+  {
     id: 'anime_vidsrc_me',
-    name: 'Server 1 (Anime HD ⭐)',
+    name: 'Server 2 (VidSrc Anime)',
     mediaTypes: ['anime'],
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => `https://anime.vidsrc.me/embed/anime?tmdb=${id}`
   },
   {
     id: 'vidlink_pro',
-    name: 'Server 2 (VidLink HD)',
+    name: 'Server 3 (VidLink HD)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null, // VidLink requires non-sandboxed frame to render player without error
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type)
@@ -36,31 +43,25 @@ const EMBED_SERVERS = [
   },
   {
     id: 'vidsrc_sbs',
-    name: 'Server 2 (VidSrc)',
+    name: 'Server 4 (VidSrc)',
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}` : `https://vidsrc.sbs/embed/movie/${id}`
   },
   {
     id: 'vidsrc_pro',
-    name: 'Server 3 (Pro)',
+    name: 'Server 5 (Pro)',
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` : `https://vidsrc.pro/embed/movie/${id}`
   },
   {
     id: 'vidsrc_cc',
-    name: 'Server 4 (HD)',
+    name: 'Server 6 (HD)',
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
     getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}`
   },
-  {
-    id: 'vidsrc_me',
-    name: 'Server 5 (Fast)',
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}` : `https://vidsrc.me/embed/movie?tmdb=${id}`
-  },
 ];
 
-export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth }) {
+export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth, autoPlayStream = false }) {
  const {
   user,
   watchedIds,
@@ -80,8 +81,10 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [providersLoading, setProvidersLoading] = useState(false);
  const [similarItems, setSimilarItems] = useState([]);
  const [showTrailerPlayer, setShowTrailerPlayer] = useState(false);
- const [showStreamPlayer, setShowStreamPlayer] = useState(false);
+ const [showStreamPlayer, setShowStreamPlayer] = useState(Boolean(autoPlayStream && user && isVip));
  const [streamServerIndex, setStreamServerIndex] = useState(0);
+ const [streamStatusData, setStreamStatusData] = useState(null);
+ const [checkingStreamStatus, setCheckingStreamStatus] = useState(false);
  const [selectedSeason, setSelectedSeason] = useState(1);
  const [selectedEpisode, setSelectedEpisode] = useState(1);
  const [seasonData, setSeasonData] = useState(null);
@@ -231,29 +234,47 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   useEffect(() => {
    if (!user || !isVip) return;
    if (!movie?.id || !['tv', 'anime', 'kdrama'].includes(mediaType)) return;
-  let isMounted = true;
-  setEpisodesLoading(true);
-  setSelectedChunkIndex(0);
-  setEpisodeSearchQuery('');
+   let isMounted = true;
+   setEpisodesLoading(true);
+   setSelectedChunkIndex(0);
+   setEpisodeSearchQuery('');
 
-  const fetchSeasonEpisodes = async () => {
-   try {
-    const res = await api.get(`/movies/${movie.id}/season/${selectedSeason}`);
-    if (isMounted) {
-     setSeasonData(res.data);
+   const fetchSeasonEpisodes = async () => {
+    try {
+     const res = await api.get(`/movies/${movie.id}/season/${selectedSeason}`);
+     if (isMounted) {
+      setSeasonData(res.data);
+     }
+    } catch (err) {
+     console.warn(`Failed fetching season ${selectedSeason} episodes:`, err);
+    } finally {
+     if (isMounted) setEpisodesLoading(false);
     }
-   } catch (err) {
-    console.warn(`Failed fetching season ${selectedSeason} episodes:`, err);
-   } finally {
-    if (isMounted) setEpisodesLoading(false);
-   }
-  };
+   };
 
-  fetchSeasonEpisodes();
-  return () => {
-   isMounted = false;
-  };
- }, [movie?.id, mediaType, selectedSeason]);
+   fetchSeasonEpisodes();
+   return () => {
+    isMounted = false;
+   };
+  }, [user, isVip, movie?.id, mediaType, selectedSeason]);
+
+  // Dynamically fetch stream status (YouTube full movie fallback or regional unindexed check)
+  useEffect(() => {
+   if (!user || !isVip || !movie?.id || !showStreamPlayer) return;
+   let isMounted = true;
+   setCheckingStreamStatus(true);
+   api.get(`/movies/${movie.id}/stream-status?media_type=${mediaType}`)
+    .then((res) => {
+     if (isMounted) setStreamStatusData(res.data);
+    })
+    .catch((err) => console.warn('Stream status error:', err))
+    .finally(() => {
+     if (isMounted) setCheckingStreamStatus(false);
+    });
+   return () => {
+    isMounted = false;
+   };
+  }, [user, isVip, movie?.id, mediaType, showStreamPlayer]);
 
  const activeTrailer = trailers.length > 0 ? trailers[0] : null;
 
@@ -376,19 +397,56 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
           </button>
          </div>
 
-         {/* Stream Player */}
-         <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
-          <iframe
-           key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
-           src={availableServers[streamServerIndex]?.getUrl(movie.id, mediaType, selectedSeason, selectedEpisode)}
-           title={`${movie.title} Stream`}
-           allow="autoplay; encrypted-media; picture-in-picture"
-           allowFullScreen
-           {...(availableServers[streamServerIndex]?.sandbox ? { sandbox: availableServers[streamServerIndex].sandbox } : {})}
-           className="w-full h-full border-0"
-          />
+          {/* Stream Player Container */}
+          <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
+           {streamStatusData?.has_youtube_full_movie ? (
+            <iframe
+             key={`youtube_full_${movie.id}`}
+             src={`https://www.youtube.com/embed/${streamStatusData.youtube_video.key}?autoplay=1`}
+             title={`${movie.title} Full Movie`}
+             allow="autoplay; encrypted-media; picture-in-picture"
+             allowFullScreen
+             className="w-full h-full border-0"
+            />
+           ) : streamStatusData?.stream_status === 'unavailable' || (streamStatusData?.is_nepali && !streamStatusData?.has_youtube_full_movie) ? (
+            <div className="flex flex-col items-center justify-center h-full p-6 text-center bg-zinc-950/95 border border-zinc-800 space-y-4">
+             <div className="p-3.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400">
+              <Tv className="w-8 h-8" />
+             </div>
+             <div className="space-y-1.5 max-w-md">
+              <h4 className="text-base font-bold text-white tracking-wide">
+               Stream Unavailable in HD Server
+              </h4>
+              <p className="text-xs text-zinc-400 leading-relaxed font-sans">
+               This title (<strong className="text-zinc-200">{movie.title}</strong>) is not currently indexed on global HD embed servers. Official YouTube releases or partner providers can be accessed below.
+              </p>
+             </div>
+             <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+              <a
+               href={`https://www.youtube.com/results?search_query=${encodeURIComponent((movie.title || '') + ' full movie')}`}
+               target="_blank"
+               rel="noopener noreferrer"
+               className="flex items-center gap-2 px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-semibold text-xs transition-all shadow-md active:scale-95"
+              >
+               <Film className="w-4 h-4" />
+               <span>Search Full Movie on YouTube</span>
+               <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+             </div>
+            </div>
+           ) : (
+            <iframe
+             key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
+             src={availableServers[streamServerIndex]?.getUrl(movie.id, mediaType, selectedSeason, selectedEpisode)}
+             title={`${movie.title} Stream`}
+             allow="autoplay; encrypted-media; picture-in-picture"
+             allowFullScreen
+             {...(availableServers[streamServerIndex]?.sandbox ? { sandbox: availableServers[streamServerIndex].sandbox } : {})}
+             className="w-full h-full border-0"
+            />
+           )}
+          </div>
          </div>
-        </div>
        ) : showTrailerPlayer && activeTrailer ? (
         <iframe
          src={`${activeTrailer.embed_url}?autoplay=1`}

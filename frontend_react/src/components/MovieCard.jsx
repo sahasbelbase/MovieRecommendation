@@ -1,8 +1,8 @@
 import React from 'react';
-import { Star, Check, Bookmark, Film, Tv, EyeOff } from 'lucide-react';
+import { Star, Check, Bookmark, Film, Tv, EyeOff, Play, Info } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
-export default function MovieCard({ movie, onSelect, onShowToast }) {
+export default function MovieCard({ movie, onSelect, onShowToast, isVip = false }) {
  const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist, notInterestedIds, toggleNotInterested } = useAuth();
  const isWatched = watchedIds.has(movie.id);
  const isWatchlist = watchlistIds.has(movie.id);
@@ -52,7 +52,7 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
  return (
   <div
    onClick={() => onSelect(movie)}
-   className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.02] cursor-pointer"
+   className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.03] cursor-pointer shadow-sm hover:shadow-xl"
   >
    {/* Poster with 2:3 Aspect Ratio */}
    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-zinc-800 flex items-center justify-center">
@@ -61,7 +61,7 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
       src={movie.poster_url}
       alt={movie.title}
       loading="lazy"
-      className="h-full w-full object-cover transition-opacity duration-200"
+      className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
      />
     ) : (
      <div className="flex flex-col items-center justify-center text-zinc-600 gap-2 p-4 text-center">
@@ -69,6 +69,32 @@ export default function MovieCard({ movie, onSelect, onShowToast }) {
       <span className="text-xs line-clamp-2">{movie.title}</span>
      </div>
     )}
+
+    {/* Netflix-Style 1-Click Hover Action Overlay */}
+    <div className="absolute inset-0 bg-black/60 backdrop-blur-xs opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center gap-2 p-3 z-20 pointer-events-none group-hover:pointer-events-auto">
+     {user && isVip && (
+      <button
+       onClick={(e) => {
+        e.stopPropagation();
+        onSelect(movie, true);
+       }}
+       className="w-full py-2 px-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/60 transition-transform active:scale-95"
+      >
+       <Play className="w-3.5 h-3.5 fill-current" />
+       <span>Play Now</span>
+      </button>
+     )}
+     <button
+      onClick={(e) => {
+       e.stopPropagation();
+       onSelect(movie, false);
+      }}
+      className="w-full py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1.5 border border-zinc-700/60 transition-transform active:scale-95"
+     >
+      <Info className="w-3.5 h-3.5" />
+      <span>Details</span>
+     </button>
+    </div>
 
     {/* Quick Actions: Not Interested, Watchlist & Watched */}
     <div className="absolute top-2 right-2 flex items-center gap-1.5 z-10">

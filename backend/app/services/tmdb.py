@@ -845,7 +845,15 @@ class TMDBService:
             if omdb_ratings.get("metascore"):
                 formatted["metascore"] = omdb_ratings["metascore"]
 
+        orig_lang = data.get("original_language", "")
+        origin_countries = data.get("origin_country", [])
+        prod_countries = [c.get("iso_3166_1") for c in data.get("production_countries", []) if isinstance(c, dict) and c.get("iso_3166_1")]
+        is_nepali = (orig_lang == "ne") or ("NP" in origin_countries) or ("NP" in prod_countries)
+
         formatted.update({
+            "is_nepali": is_nepali,
+            "original_language": orig_lang,
+            "origin_country": origin_countries,
             "tagline": data.get("tagline", ""),
             "runtime": data.get("runtime") or (data.get("episode_run_time", [0])[0] if data.get("episode_run_time") else 0),
             "seasons_count": data.get("number_of_seasons"),
@@ -1051,5 +1059,88 @@ class TMDBService:
             data = await self._fetch(f"/{endpoint_type}/{item_id}/similar", {"page": page})
             results = data.get("results", [])
         return [self._format_item(m, default_type=endpoint_type) for m in results]
+
+    async def get_movie_stream_status(self, item_id: int, media_type: str = "movie") -> dict:
+        """
+        Determines stream availability, regional origin, and YouTube full movie fallback.
+        """
+        cache_key = f"stream_status_{media_type}_{item_id}"
+        cached = _get_from_cache(cache_key)
+        if cached:
+            return cached
+
+        endpoint_type = "tv" if media_type in ["tv", "anime", "kdrama"] else "movie"
+        data = await self._fetch(f"/{endpoint_type}/{item_id}")
+        if not data:
+            data = await self._fetch(f"/movie/{item_id}")
+
+        if not data:
+            return {"status": "unavailable", "is_nepali": False, "youtube_video": None}
+
+        orig_lang = data.get("original_language", "")
+        origin_countries = data.get("origin_country", [])
+        prod_countries = [c.get("iso_3166_1") for c in data.get("production_countries", []) if isinstance(c, dict) and c.get("iso_3166_1")]
+        is_nepali = (orig_lang == "ne") or ("NP" in origin_countries) or ("NP" in prod_countries)
+        title = data.get("title") or data.get("name") or ""
+
+        # Fetch TMDB videos to find full movie or official YouTube release
+        videos = await self.get_videos(item_id, media_type=media_type)
+        youtube_full_movie = None
+
+        for v in videos:
+            v_name = (v.get("name") or "").lower()
+            if "full movie" in v_name or "full feature" in v_name or "nepali movie" in v_name or "nepali full" in v_name:
+                youtube_full_movie = v
+                break
+
+        res = {
+            "movie_id": item_id,
+            "title": title,
+            "media_type": media_type,
+            "is_nepali": is_nepali,
+            "youtube_video": youtube_full_movie,
+            "has_youtube_full_movie": youtube_full_movie is not None,
+            "stream_status": "youtube_available" if youtube_full_movie else ("regional_check" if is_nepali else "available")
+        }
+        _set_cache(cache_key, res)
+        return res
+
+    async def get_anime_streaming_sources(self, anime_id: int, episode_number: int = 1) -> dict:
+        """
+        Fetches anime streaming sources from Anify / Consumet APIs or returns fallback embed URLs.
+        """
+        cache_key = f"anime_sources_{anime_id}_{episode_number}"
+        cached = _get_from_cache(cache_key)
+        if cached:
+            return cached
+
+        embed_urls = [
+            {
+                "id": "anify_hd",
+                "name": "Anify HD (Fast ⭐)",
+                "url": f"https://anify.to/embed/{anime_id}/{episode_number}",
+                "type": "iframe"
+            },
+            {
+                "id": "vidsrc_anime",
+                "name": "VidSrc Anime",
+                "url": f"https://anime.vidsrc.me/embed/anime?tmdb={anime_id}",
+                "type": "iframe"
+            },
+            {
+                "id": "vidlink_anime",
+                "name": "VidLink Anime",
+                "url": f"https://vidlink.pro/tv/{anime_id}/{episode_number}/1?primaryColor=a855f7",
+                "type": "iframe"
+            }
+        ]
+
+        result = {
+            "anime_id": anime_id,
+            "episode_number": episode_number,
+            "sources": embed_urls
+        }
+        _set_cache(cache_key, result)
+        return result
 
 tmdb_service = TMDBService()

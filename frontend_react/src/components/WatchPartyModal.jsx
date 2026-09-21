@@ -1464,18 +1464,19 @@ export default function WatchPartyModal({
       </button>
 
       {user && isVip && movie?.id && movie?.media_type === 'anime' && (
-       <button
-        onClick={() => {
-         setActiveTab('embed');
-         if (isScreenSharing) stopScreenShare();
-         
-         const embedSrc = `https://anime.vidsrc.me/embed/anime?tmdb=${movie.id}`;
-         const newSrc = {
-          type: 'embed',
-          src: embedSrc,
-          title: `${movie.title || 'Movie'} (Anime HD)`
-         };
-         setVideoSource(newSrc);
+       <>
+        <button
+         onClick={() => {
+          setActiveTab('embed');
+          if (isScreenSharing) stopScreenShare();
+          
+          const embedSrc = `https://anify.to/embed/${movie.id}/1`;
+          const newSrc = {
+           type: 'embed',
+           src: embedSrc,
+           title: `${movie.title || 'Movie'} (Anify HD)`
+          };
+          setVideoSource(newSrc);
           if (wsRef.current?.readyState === WebSocket.OPEN) {
            wsRef.current.send(
             JSON.stringify({
@@ -1484,16 +1485,48 @@ export default function WatchPartyModal({
             })
            );
           }
-        }}
-        className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
-         activeTab === 'embed' && videoSource?.src?.includes('anime.vidsrc.me')
-          ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
-          : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-        }`}
-       >
-        <Play className="w-3.5 h-3.5 fill-current" />
-        <span>Anime (VidSrc ⭐)</span>
-       </button>
+         }}
+         className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
+          activeTab === 'embed' && videoSource?.src?.includes('anify.to')
+           ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
+           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+         }`}
+        >
+         <Play className="w-3.5 h-3.5 fill-current" />
+         <span>Anify HD</span>
+        </button>
+
+        <button
+         onClick={() => {
+          setActiveTab('embed');
+          if (isScreenSharing) stopScreenShare();
+          
+          const embedSrc = `https://anime.vidsrc.me/embed/anime?tmdb=${movie.id}`;
+          const newSrc = {
+           type: 'embed',
+           src: embedSrc,
+           title: `${movie.title || 'Movie'} (VidSrc Anime)`
+          };
+          setVideoSource(newSrc);
+          if (wsRef.current?.readyState === WebSocket.OPEN) {
+           wsRef.current.send(
+            JSON.stringify({
+             type: 'CHANGE_SOURCE',
+             payload: { source: newSrc }
+            })
+           );
+          }
+         }}
+         className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
+          activeTab === 'embed' && videoSource?.src?.includes('anime.vidsrc.me')
+           ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
+           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+         }`}
+        >
+         <Play className="w-3.5 h-3.5 fill-current" />
+         <span>VidSrc Anime</span>
+        </button>
+       </>
       )}
 
       {user && isVip && movie?.id && (
@@ -1507,7 +1540,7 @@ export default function WatchPartyModal({
          const newSrc = {
           type: 'embed',
           src: embedSrc,
-          title: `${movie.title || 'Movie'} (Full Stream)`
+          title: `${movie.title || 'Movie'} (VidLink HD)`
          };
          setVideoSource(newSrc);
           if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -1520,13 +1553,13 @@ export default function WatchPartyModal({
           }
         }}
         className={`flex items-center gap-1.5 px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-lg text-xs transition-all whitespace-nowrap ${
-         activeTab === 'embed' && (!videoSource?.src?.includes('anime.vidsrc.me'))
+         activeTab === 'embed' && (!videoSource?.src?.includes('anime.vidsrc.me') && !videoSource?.src?.includes('anify.to'))
           ? 'bg-indigo-600 text-white font-semibold shadow-md shadow-indigo-950/40'
           : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
         }`}
        >
         <Play className="w-3.5 h-3.5 fill-current" />
-        <span>{movie?.media_type === 'anime' ? 'Fallback (VidLink 🍿)' : 'Full Movie (VidLink 🍿)'}</span>
+        <span>VidLink HD</span>
        </button>
       )}
 

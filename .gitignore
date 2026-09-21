@@ -50,3 +50,6 @@ Thumbs.db
 *.swp
 *.swo
 .ipynb_checkpoints/
+
+# TV App (Smart TV build & APK)
+tv_app/

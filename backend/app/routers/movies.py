@@ -98,3 +98,12 @@ async def get_watch_providers(
 async def get_tv_season_episodes(tv_id: int, season_number: int = 1):
     return await tmdb_service.get_tv_season_episodes(tv_id, season_number)
 
+@router.get("/{movie_id}/stream-status")
+async def get_stream_status(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime|kdrama)$")):
+    return await tmdb_service.get_movie_stream_status(movie_id, media_type=media_type)
+
+@router.get("/anime/{anime_id}/sources")
+async def get_anime_sources(anime_id: int, episode: int = Query(1, ge=1)):
+    return await tmdb_service.get_anime_streaming_sources(anime_id, episode_number=episode)
+
+

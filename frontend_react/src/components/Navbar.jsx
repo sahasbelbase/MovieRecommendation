@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy, Flame, Popcorn, Compass, Database } from 'lucide-react';
+import { Search, Film, Check, Bookmark, Download, User, LogOut, X, Tv, ArrowLeft, ChevronRight, ExternalLink, Trophy, Flame, Popcorn, Compass, Database, Users, Sparkles, Play } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 
@@ -7,6 +7,8 @@ export default function Navbar({
   isVip,
   onVipActivated,
   onVipDeactivated,
+  selectedCategory = 'all',
+  onSelectCategory,
   onSelectMovie,
   onSelectActor,
   onOpenWatched,
@@ -16,6 +18,7 @@ export default function Navbar({
   onToggleWatchlistShelf,
   onOpenTop250,
   onOpenMovieNight,
+  onStartWatchParty,
 }) {
   const { user, logout, watchedMovies, watchlistMovies } = useAuth();
   const [query, setQuery] = useState('');
@@ -408,12 +411,76 @@ export default function Navbar({
           {/* Primary Navigation Links */}
           <div className="flex flex-col gap-1.5 w-full">
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-white hover:bg-zinc-800/50 transition-all active:scale-95"
+              onClick={() => {
+                if (onSelectCategory) onSelectCategory('all');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 ${
+                selectedCategory === 'all'
+                  ? 'bg-rose-600 text-white font-semibold shadow-md shadow-rose-950/40'
+                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
+              }`}
             >
               <Compass className="w-4 h-4 text-rose-400" />
-              <span>Discover</span>
+              <span>Watch</span>
             </button>
+
+            <button
+              onClick={() => {
+                if (onSelectCategory) onSelectCategory('movie');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 ${
+                selectedCategory === 'movie'
+                  ? 'bg-rose-600 text-white font-semibold shadow-md shadow-rose-950/40'
+                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
+              }`}
+            >
+              <Film className="w-4 h-4 text-rose-400" />
+              <span>Movies</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (onSelectCategory) onSelectCategory('tv');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 ${
+                selectedCategory === 'tv'
+                  ? 'bg-rose-600 text-white font-semibold shadow-md shadow-rose-950/40'
+                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
+              }`}
+            >
+              <Tv className="w-4 h-4 text-purple-400" />
+              <span>TV Series</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (onSelectCategory) onSelectCategory('anime');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 ${
+                selectedCategory === 'anime'
+                  ? 'bg-rose-600 text-white font-semibold shadow-md shadow-rose-950/40'
+                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
+              }`}
+            >
+              <Sparkles className="w-4 h-4 text-indigo-400" />
+              <span>Anime</span>
+            </button>
+
+            <button
+              onClick={() => {
+                if (onStartWatchParty) onStartWatchParty();
+                else onOpenMovieNight();
+              }}
+              className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-amber-400 hover:bg-zinc-800/50 transition-all active:scale-95"
+            >
+              <Users className="w-4 h-4 text-amber-400" />
+              <span>Watch Party</span>
+            </button>
+
             <button
               onClick={onOpenMovieNight}
               className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium text-zinc-300 hover:text-amber-400 hover:bg-zinc-800/50 transition-all active:scale-95"

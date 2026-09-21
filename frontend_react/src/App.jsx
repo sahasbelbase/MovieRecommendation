@@ -18,7 +18,7 @@ import Footer from './components/Footer';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
- { id: "all", label: "All Entertainment", shortLabel: "All" },
+ { id: "all", label: "Watch", shortLabel: "Watch" },
  { id: "movie", label: "Movies", shortLabel: "Movies" },
  { id: "tv", label: "TV Series", shortLabel: "TV" },
  { id: "anime", label: "Anime", shortLabel: "Anime" }
@@ -35,6 +35,7 @@ export default function App() {
  const [loading, setLoading] = useState(true);
  const [slowNotice, setSlowNotice] = useState(false);
  const [selectedMovie, setSelectedMovie] = useState(null);
+ const [autoPlayStream, setAutoPlayStream] = useState(false);
  const [selectedActor, setSelectedActor] = useState(null);
  const [isWatchedOpen, setIsWatchedOpen] = useState(false);
  const [libraryTab, setLibraryTab] = useState('watched');
@@ -215,15 +216,21 @@ export default function App() {
     isVip={isVip}
     onVipActivated={handleActivateVip}
     onVipDeactivated={handleDeactivateVip}
-    onSelectMovie={(m) => setSelectedMovie(m)}
+    selectedCategory={selectedMediaCategory}
+    onSelectCategory={(cat) => setSelectedMediaCategory(cat)}
+    onSelectMovie={(m, autoPlay = false) => {
+     setSelectedMovie(m);
+     setAutoPlayStream(Boolean(autoPlay));
+    }}
     onSelectActor={(a) => setSelectedActor(a)}
     onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
     onOpenDataModal={() => setIsDataOpen(true)}
     onOpenAuthModal={() => setIsAuthOpen(true)}
     onOpenSwipe={() => setIsSwipeOpen(true)}
-    onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev =>!prev)}
+    onToggleWatchlistShelf={() => setIsWatchlistShelfOpen(prev => !prev)}
     onOpenTop250={() => setIsTop250Open(true)}
     onOpenMovieNight={() => setIsMovieNightOpen(true)}
+    onStartWatchParty={(m) => handleStartWatchParty(m)}
    />
 
    {/* Content Area */}
@@ -362,15 +369,19 @@ export default function App() {
         </button>
        </div>
        <div className="flex gap-2.5 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
-        {watchlistMovies.map((movie) => (
-         <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
-          <MovieCard
-           movie={movie}
-           onSelect={(m) => setSelectedMovie(m)}
-           onShowToast={showToast}
-          />
-         </div>
-        ))}
+         {watchlistMovies.map((movie) => (
+          <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
+           <MovieCard
+            movie={movie}
+            onSelect={(m, autoPlay = false) => {
+             setSelectedMovie(m);
+             setAutoPlayStream(Boolean(autoPlay));
+            }}
+            onShowToast={showToast}
+            isVip={isVip}
+           />
+          </div>
+         ))}
        </div>
       </section>
      )}
@@ -506,8 +517,12 @@ export default function App() {
            <MovieCard
             key={`${movie.media_type || 'movie'}_${movie.id}`}
             movie={movie}
-            onSelect={(m) => setSelectedMovie(m)}
+            onSelect={(m, autoPlay = false) => {
+             setSelectedMovie(m);
+             setAutoPlayStream(Boolean(autoPlay));
+            }}
             onShowToast={showToast}
+            isVip={isVip}
            />
           ))}
          </div>
@@ -531,8 +546,15 @@ export default function App() {
      onActivateVip={handleActivateVip}
      onDeactivateVip={handleDeactivateVip}
      movie={selectedMovie}
-     onClose={() => setSelectedMovie(null)}
-     onSelectMovie={(m) => setSelectedMovie(m)}
+     autoPlayStream={autoPlayStream}
+     onClose={() => {
+      setSelectedMovie(null);
+      setAutoPlayStream(false);
+     }}
+     onSelectMovie={(m, autoPlay = false) => {
+      setSelectedMovie(m);
+      setAutoPlayStream(Boolean(autoPlay));
+     }}
      onSelectActor={(a) => setSelectedActor(a)}
      onShowToast={showToast}
      onStartWatchParty={(m) => handleStartWatchParty(m)}
