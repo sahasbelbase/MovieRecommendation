@@ -3,7 +3,7 @@ import { Star, Check, Bookmark, Film, Tv, EyeOff, Play, Info } from 'lucide-reac
 import { useAuth } from '../context/AuthContext';
 
 export default function MovieCard({ movie, onSelect, onShowToast, isVip = false }) {
- const { watchedIds, toggleWatched, watchlistIds, toggleWatchlist, notInterestedIds, toggleNotInterested } = useAuth();
+ const { user, watchedIds, toggleWatched, watchlistIds, toggleWatchlist, notInterestedIds, toggleNotInterested } = useAuth();
  const isWatched = watchedIds.has(movie.id);
  const isWatchlist = watchlistIds.has(movie.id);
  const isNotInterested = notInterestedIds?.has(movie.id);
