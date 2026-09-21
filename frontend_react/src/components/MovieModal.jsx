@@ -75,7 +75,8 @@ const EMBED_SERVERS = [
 ];
 
 export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth, autoPlayStream = false }) {
- if (!movie || !movie.id) return null;
+ const movieId = movie?.id || movie?.item_id || movie?.tmdb_id || movie?.movieId;
+ if (!movie || !movieId) return null;
 
  const {
   user,
@@ -117,7 +118,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   setStreamServerIndex(0);
   setShowTrailerPlayer(false);
   setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
- }, [movie.id, autoPlayStream, user, isVip]);
+ }, [movieId, autoPlayStream, user, isVip]);
 
  // Episode sorting, range chunking & search jump for long-running series / anime
  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
@@ -125,10 +126,10 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [episodeSearchQuery, setEpisodeSearchQuery] = useState('');
  const [audioTrack, setAudioTrack] = useState('sub'); // 'sub' | 'dub'
 
- const watchedRecord = watchedMovies.find(m => m.id === movie.id);
- const isWatched = watchedIds.has(movie.id);
- const isWatchlist = watchlistIds.has(movie.id);
- const isNotInterested = notInterestedIds?.has(movie.id);
+ const watchedRecord = watchedMovies.find(m => (m.id || m.tmdb_id || m.item_id) === movieId);
+ const isWatched = watchedIds.has(movieId);
+ const isWatchlist = watchlistIds.has(movieId);
+ const isNotInterested = notInterestedIds?.has(movieId);
  const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : (movie.genres?.some(g => (typeof g === 'string' ? ['Animation', 'Anime'].includes(g) : ['Animation', 'Anime'].includes(g?.name))) ? 'tv' : 'movie'));
  const effectiveMediaType = details?.media_type || initialMediaType;
  const isSeries = ['tv', 'anime', 'kdrama'].includes(effectiveMediaType) || (details?.seasons_count && details.seasons_count > 0) || (details?.seasons && details.seasons.length > 0) || Boolean(movie.first_air_date) || Boolean(details?.first_air_date);
@@ -202,7 +203,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
  // Fetch complete details, credits, trailers, watch providers, and similar items
  useEffect(() => {
-  if (!movie?.id) return;
+  if (!movieId) return;
   setLoading(true);
   setShowTrailerPlayer(false);
   setShowStreamPlayer(false);
@@ -215,10 +216,10 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    try {
     const reqType = initialMediaType;
     const [detailsRes, creditsRes, trailersRes, similarRes] = await Promise.allSettled([
-     api.get(`/movies/${movie.id}/details?media_type=${reqType}`),
-     api.get(`/movies/${movie.id}/credits?media_type=${reqType}`),
-     api.get(`/movies/${movie.id}/trailers?media_type=${reqType}`),
-     api.get(`/recommendations/similar/${movie.id}?media_type=${reqType}`),
+     api.get(`/movies/${movieId}/details?media_type=${reqType}`),
+     api.get(`/movies/${movieId}/credits?media_type=${reqType}`),
+     api.get(`/movies/${movieId}/trailers?media_type=${reqType}`),
+     api.get(`/recommendations/similar/${movieId}?media_type=${reqType}`),
     ]);
 
     if (detailsRes.status === 'fulfilled') setDetails(detailsRes.value.data);
@@ -233,11 +234,11 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   };
 
   fetchData();
- }, [movie.id, initialMediaType]);
+ }, [movieId, initialMediaType]);
 
  // Dynamically fetch watch providers whenever movie, effectiveMediaType, or country changes
  useEffect(() => {
-  if (!movie?.id) return;
+  if (!movieId) return;
   let isMounted = true;
   setProvidersLoading(true);
 
@@ -245,7 +246,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    try {
     const encodedTitle = encodeURIComponent(movie.title || details?.title || '');
     const res = await api.get(
-     `/movies/${movie.id}/providers?media_type=${effectiveMediaType}&country=${country}&title=${encodedTitle}`
+     `/movies/${movieId}/providers?media_type=${effectiveMediaType}&country=${country}&title=${encodedTitle}`
     );
     if (isMounted) {
      setProviders(res.data);
@@ -261,12 +262,12 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   return () => {
    isMounted = false;
   };
- }, [movie.id, effectiveMediaType, country, movie.title, details?.title]);
+ }, [movieId, effectiveMediaType, country, movie.title, details?.title]);
 
   // Dynamically fetch TV Series / Anime Season Episodes for Netflix-style selector
   useEffect(() => {
    if (!user || !isVip) return;
-   if (!movie?.id || !isSeries) return;
+   if (!movieId || !isSeries) return;
    let isMounted = true;
    setEpisodesLoading(true);
    setSelectedChunkIndex(0);
@@ -274,7 +275,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
    const fetchSeasonEpisodes = async () => {
     try {
-     const res = await api.get(`/movies/${movie.id}/season/${selectedSeason}`);
+     const res = await api.get(`/movies/${movieId}/season/${selectedSeason}`);
      if (isMounted) {
       setSeasonData(res.data);
      }
@@ -289,14 +290,14 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    return () => {
     isMounted = false;
    };
-  }, [user, isVip, movie?.id, isSeries, selectedSeason]);
+  }, [user, isVip, movieId, isSeries, selectedSeason]);
 
   // Dynamically fetch stream status (YouTube full movie fallback or regional unindexed check)
   useEffect(() => {
-   if (!user || !isVip || !movie?.id || !showStreamPlayer) return;
+   if (!user || !isVip || !movieId || !showStreamPlayer) return;
    let isMounted = true;
    setCheckingStreamStatus(true);
-   api.get(`/movies/${movie.id}/stream-status?media_type=${effectiveMediaType}`)
+   api.get(`/movies/${movieId}/stream-status?media_type=${effectiveMediaType}`)
     .then((res) => {
      if (isMounted) setStreamStatusData(res.data);
     })
@@ -307,7 +308,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    return () => {
     isMounted = false;
    };
-  }, [user, isVip, movie?.id, effectiveMediaType, showStreamPlayer]);
+  }, [user, isVip, movieId, effectiveMediaType, showStreamPlayer]);
 
  const activeTrailer = trailers.length > 0 ? trailers[0] : null;
 
