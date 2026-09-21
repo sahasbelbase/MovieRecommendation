@@ -22,7 +22,7 @@ const EMBED_SERVERS = [
     id: 'vidlink_hd',
     name: 'Server 1 (VidLink HD)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: null, // VidLink requires non-sandboxed frame to render player without error
+    sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid${audio === 'dub' ? '&dub=1' : ''}`
       : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
@@ -31,7 +31,7 @@ const EMBED_SERVERS = [
     id: 'vidsrc_to',
     name: 'Server 2 (VidSrc TO)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}`
       : `https://vidsrc.to/embed/movie/${id}`
@@ -40,7 +40,7 @@ const EMBED_SERVERS = [
     id: 'vidsrc_me',
     name: 'Server 3 (VidSrc ME)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}&audio=${audio}`
       : `https://vidsrc.me/embed/movie?tmdb=${id}`
@@ -49,7 +49,7 @@ const EMBED_SERVERS = [
     id: 'embed_2cc',
     name: 'Server 4 (2Embed)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}`
       : `https://2embed.cc/embed/${id}`
@@ -58,7 +58,7 @@ const EMBED_SERVERS = [
     id: 'vidsrc_sbs',
     name: 'Server 5 (VidSrc SBS)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}`
       : `https://vidsrc.sbs/embed/movie/${id}`
@@ -67,7 +67,7 @@ const EMBED_SERVERS = [
     id: 'vidsrc_pro',
     name: 'Server 6 (VidSrc Pro)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
+    sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
       ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
       : `https://vidsrc.pro/embed/movie/${id}`

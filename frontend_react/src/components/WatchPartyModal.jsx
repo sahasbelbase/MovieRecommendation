@@ -1750,7 +1750,6 @@ export default function WatchPartyModal({
              title={videoSource?.title || movie?.title || 'Full Movie Stream'}
              allow="autoplay; encrypted-media; picture-in-picture"
              allowFullScreen
-             {...(isVidLink ? {} : { sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms' })}
              className="w-full h-full border-0"
             />
            );
