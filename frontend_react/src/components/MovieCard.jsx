@@ -76,21 +76,25 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
      {user && isVip ? (
       <div className="w-full flex items-center gap-2">
        <button
+        type="button"
         onClick={(e) => {
          e.stopPropagation();
          onSelect(movie, true);
         }}
-        className="flex-1 py-1.5 px-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/60 transition-transform active:scale-95"
+        aria-label={`Play ${movie.title}`}
+        className="flex-1 py-1.5 px-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/60 transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
        >
         <Play className="w-3.5 h-3.5 fill-current" />
         <span>Play</span>
        </button>
        <button
+        type="button"
         onClick={(e) => {
          e.stopPropagation();
          onSelect(movie, false);
         }}
-        className="py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1 border border-zinc-700/60 transition-transform active:scale-95"
+        aria-label={`Details for ${movie.title}`}
+        className="py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1 border border-zinc-700/60 transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
        >
         <Info className="w-3.5 h-3.5" />
         <span>Details</span>
@@ -98,11 +102,13 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
       </div>
      ) : (
       <button
+       type="button"
        onClick={(e) => {
         e.stopPropagation();
         onSelect(movie, false);
        }}
-       className="w-full py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1.5 border border-zinc-700/60 transition-transform active:scale-95"
+       aria-label={`Details for ${movie.title}`}
+       className="w-full py-1.5 px-3 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 font-medium text-xs flex items-center justify-center gap-1.5 border border-zinc-700/60 transition-transform active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
       >
        <Info className="w-3.5 h-3.5" />
        <span>Details</span>
@@ -115,9 +121,10 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
      {/* Not Interested Tooltip & Button */}
      <div className="relative group/tip">
       <button
+       type="button"
        onClick={handleNotInterestedClick}
        aria-label="Not interested"
-       className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100"
+       className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
        title="Not interested (Hide permanently)"
       >
        <EyeOff className="w-3.5 h-3.5" />
@@ -130,9 +137,10 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
      {/* Watchlist Tooltip & Button */}
      <div className="relative group/tip">
       <button
+       type="button"
        onClick={handleWatchlistClick}
        aria-label={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
-       className={`rounded-full p-2 transition-all active:scale-90 ${
+       className={`rounded-full p-2 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 ${
         isWatchlist
          ? 'bg-amber-500 text-black shadow-lg shadow-amber-900/50'
          : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
@@ -149,9 +157,10 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
      {/* Watched Tooltip & Button */}
      <div className="relative group/tip">
       <button
+       type="button"
        onClick={handleWatchedClick}
        aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
-       className={`rounded-full p-2 transition-all active:scale-90 ${
+       className={`rounded-full p-2 transition-all active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
         isWatched
          ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
          : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
