@@ -167,7 +167,8 @@ export default function SwipeDeckModal({ isOpen, onClose, onCompleteCalibration,
      </div>
      <button
       onClick={onClose}
-      className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors"
+      aria-label="Close modal"
+      className="p-2 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
      >
       <X className="w-4 h-4" />
      </button>

@@ -53,7 +53,8 @@ export default function WatchedDrawer({
        </button>
        <button
         onClick={onClose}
-        className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 transition-colors"
+        aria-label="Close drawer"
+        className="p-2 rounded-lg bg-zinc-900 text-zinc-400 hover:text-white border border-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
        >
         <X className="w-4 h-4" />
        </button>

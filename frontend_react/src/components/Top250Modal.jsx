@@ -158,7 +158,8 @@ export default function Top250Modal({ isOpen, onClose, onSelectMovie, onShowToas
 
       <button
        onClick={onClose}
-       className="rounded-full p-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+       aria-label="Close modal"
+       className="rounded-full p-2 bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
       >
        <X className="w-5 h-5" />
       </button>
