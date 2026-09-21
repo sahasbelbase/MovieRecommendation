@@ -350,8 +350,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    {/* Backdrop Light-Dismiss Click Area */}
    <div className="fixed inset-0" onClick={onClose} />
 
-   {/* Modal Card */}
-   <div className="relative w-full max-w-4xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto max-h-[92dvh] sm:max-h-[90vh] flex flex-col">
+   {/* Modal Card (Widescreen IMAX Layout) */}
+   <div className="relative w-full max-w-6xl xl:max-w-7xl bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto max-h-[95dvh] sm:max-h-[92vh] flex flex-col transition-all duration-300">
     {/* Close Button */}
     <button
      onClick={onClose}
