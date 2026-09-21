@@ -21,43 +21,45 @@ const EMBED_SERVERS = [
   {
     id: 'anify_hd',
     name: 'Server 1 (Anify HD)',
-    mediaTypes: ['anime'],
+    mediaTypes: ['anime', 'tv'],
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1) => `https://anify.to/embed/${id}/${e}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => `https://anify.to/embed/${id}/${e}?mode=${audio === 'dub' ? 'dub' : 'sub'}`
   },
   {
     id: 'anime_vidsrc_me',
     name: 'Server 2 (VidSrc Anime)',
-    mediaTypes: ['anime'],
+    mediaTypes: ['anime', 'tv', 'movie', 'kdrama'],
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1) => `https://anime.vidsrc.me/embed/anime?tmdb=${id}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}&audio=${audio}`
+      : `https://vidsrc.me/embed/movie?tmdb=${id}`
   },
   {
     id: 'vidlink_pro',
     name: 'Server 3 (VidLink HD)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null, // VidLink requires non-sandboxed frame to render player without error
-    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid${audio === 'dub' ? '&dub=1' : ''}`
       : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
   },
   {
     id: 'vidsrc_sbs',
     name: 'Server 4 (VidSrc)',
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}` : `https://vidsrc.sbs/embed/movie/${id}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}` : `https://vidsrc.sbs/embed/movie/${id}`
   },
   {
     id: 'vidsrc_pro',
     name: 'Server 5 (Pro)',
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` : `https://vidsrc.pro/embed/movie/${id}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}` : `https://vidsrc.pro/embed/movie/${id}`
   },
   {
     id: 'vidsrc_cc',
     name: 'Server 6 (HD)',
     sandbox: 'allow-scripts allow-same-origin allow-presentation allow-forms',
-    getUrl: (id, type, s = 1, e = 1) => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}`
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type) ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` : `https://vidsrc.cc/v2/embed/movie/${id}`
   },
 ];
 
@@ -95,6 +97,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
  const [selectedChunkIndex, setSelectedChunkIndex] = useState(0);
  const [episodeSearchQuery, setEpisodeSearchQuery] = useState('');
+ const [audioTrack, setAudioTrack] = useState('sub'); // 'sub' | 'dub'
 
  const watchedRecord = watchedMovies.find(m => m.id === movie.id);
  const isWatched = watchedIds.has(movie.id);
@@ -350,12 +353,12 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   : 1;
 
  return (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
    {/* Backdrop Light-Dismiss Click Area */}
    <div className="fixed inset-0" onClick={onClose} />
 
    {/* Modal Card (Widescreen IMAX Layout) */}
-   <div className="relative w-[96vw] max-w-[1750px] 2xl:max-w-[1920px] h-[94vh] max-h-[94vh] bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto flex flex-col transition-all duration-300">
+   <div className="relative w-full md:w-[90vw] max-w-[1600px] max-h-[92vh] bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto flex flex-col transition-all duration-300">
     {/* Close Button */}
     <button
      onClick={onClose}
@@ -366,14 +369,14 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
     {/* Scrollable Content Container */}
     <div className="overflow-y-auto flex-1">
-      {/* Backdrop Header / Video Player */}
-      <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden">
+      {/* Backdrop Header / Video Player (Full Width 16:9 Aspect Ratio) */}
+      <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden shrink-0">
        {showStreamPlayer ? (
         <div className="relative w-full h-full bg-black flex flex-col">
          {/* Server Selector Bar */}
          <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-xs z-10">
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
-           <span className="text-zinc-400 font-mono text-[11px] hidden sm:inline">Stream Server:</span>
+           <span className="text-zinc-400 font-mono text-[11px] hidden sm:inline">Server:</span>
            {isSeries && (
             <span className="px-2 py-0.5 rounded bg-purple-950/80 border border-purple-700/50 text-purple-300 font-mono text-[11px] font-bold shrink-0">
              S{selectedSeason} E{selectedEpisode}
@@ -392,6 +395,32 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              {srv.name}
             </button>
            ))}
+
+            {/* Audio Track Toggle (SUB vs DUB) */}
+            <div className="flex items-center gap-1 border-l border-zinc-700/80 pl-2 shrink-0 ml-1">
+             <button
+              onClick={() => setAudioTrack('sub')}
+              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all ${
+               audioTrack === 'sub'
+                ? 'bg-amber-500 text-black shadow'
+                : 'bg-zinc-800 text-zinc-400 hover:text-white'
+              }`}
+              title="Subtitle mode (Japanese / Original with English Subtitles)"
+             >
+              SUB
+             </button>
+             <button
+              onClick={() => setAudioTrack('dub')}
+              className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition-all ${
+               audioTrack === 'dub'
+                ? 'bg-amber-500 text-black shadow'
+                : 'bg-zinc-800 text-zinc-400 hover:text-white'
+              }`}
+              title="English Dubbed audio track"
+             >
+              DUB
+             </button>
+            </div>
           </div>
           <button
            onClick={() => setShowStreamPlayer(false)}
@@ -440,8 +469,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
             </div>
            ) : (
             <iframe
-             key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
-             src={availableServers[streamServerIndex]?.getUrl(movie.id, effectiveMediaType, selectedSeason, selectedEpisode)}
+             key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}_${audioTrack}`}
+             src={availableServers[streamServerIndex]?.getUrl(movie.id, effectiveMediaType, selectedSeason, selectedEpisode, audioTrack)}
              title={`${movie.title} Stream`}
              allow="autoplay; encrypted-media; picture-in-picture"
              allowFullScreen

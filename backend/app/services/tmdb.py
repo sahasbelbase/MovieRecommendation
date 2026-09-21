@@ -677,13 +677,42 @@ class TMDBService:
         if media_type == "movie":
             data = await self._fetch("/search/movie", {"query": query, "page": page, "include_adult": "false"})
             return [self._format_item(m, default_type="movie") for m in data.get("results", [])]
-        elif media_type in ["tv", "anime", "kdrama"]:
+        elif media_type == "anime":
+            # Anime encompasses both Japanese animated TV series AND Japanese animated feature movies
+            tv_data, movie_data = await asyncio.gather(
+                self._fetch("/search/tv", {"query": query, "page": page, "include_adult": "false"}),
+                self._fetch("/search/movie", {"query": query, "page": page, "include_adult": "false"})
+            )
+            results = []
+            seen_ids = set()
+
+            for m in tv_data.get("results", []):
+                mid = m.get("id")
+                if not mid or mid in seen_ids:
+                    continue
+                item = self._format_item(m, default_type="anime")
+                item["media_type"] = "anime"
+                seen_ids.add(mid)
+                results.append(item)
+
+            for m in movie_data.get("results", []):
+                mid = m.get("id")
+                if not mid or mid in seen_ids:
+                    continue
+                genre_ids = m.get("genre_ids", [])
+                orig_lang = m.get("original_language", "")
+                if 16 in genre_ids or orig_lang == "ja" or "one piece" in (m.get("title") or "").lower():
+                    item = self._format_item(m, default_type="anime")
+                    item["media_type"] = "anime"
+                    seen_ids.add(mid)
+                    results.append(item)
+
+            return results
+        elif media_type in ["tv", "kdrama"]:
             data = await self._fetch("/search/tv", {"query": query, "page": page, "include_adult": "false"})
             results = []
             for m in data.get("results", []):
-                item = self._format_item(m, default_type="tv")
-                if media_type == "anime" and item.get("media_type") != "anime":
-                    continue
+                item = self._format_item(m, default_type=media_type)
                 if media_type == "kdrama" and item.get("media_type") != "kdrama":
                     continue
                 results.append(item)
