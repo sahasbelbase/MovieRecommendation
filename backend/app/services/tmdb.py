@@ -1117,19 +1117,18 @@ class TMDBService:
         title = data.get("title") or data.get("name") or ""
         is_nepali = (orig_lang == "ne") or ("NP" in origin_countries) or ("NP" in prod_countries) or ("nepali" in title.lower())
 
-        # Fetch TMDB videos to find full movie or official YouTube release
-        videos = await self.get_videos(item_id, media_type=media_type)
+        # ONLY perform YouTube full movie search for Nepali movies
         youtube_full_movie = None
+        if is_nepali:
+            videos = await self.get_videos(item_id, media_type=media_type)
+            for v in videos:
+                v_name = (v.get("name") or "").lower()
+                if "nepali movie" in v_name or "nepali full" in v_name or "full movie" in v_name:
+                    youtube_full_movie = v
+                    break
 
-        for v in videos:
-            v_name = (v.get("name") or "").lower()
-            if "full movie" in v_name or "full feature" in v_name or "nepali movie" in v_name or "nepali full" in v_name:
-                youtube_full_movie = v
-                break
-
-        # Fallback: Query YouTube search if TMDB videos lack full movie key (especially for Nepali titles)
-        if not youtube_full_movie:
-            youtube_full_movie = await self._search_youtube_full_movie(title, is_nepali=is_nepali)
+            if not youtube_full_movie:
+                youtube_full_movie = await self._search_youtube_full_movie(title, is_nepali=True)
 
         res = {
             "movie_id": item_id,
@@ -1137,8 +1136,8 @@ class TMDBService:
             "media_type": media_type,
             "is_nepali": is_nepali,
             "youtube_video": youtube_full_movie,
-            "has_youtube_full_movie": youtube_full_movie is not None,
-            "stream_status": "youtube_available" if youtube_full_movie else ("regional_check" if is_nepali else "available")
+            "has_youtube_full_movie": is_nepali and (youtube_full_movie is not None),
+            "stream_status": "youtube_available" if (is_nepali and youtube_full_movie) else ("regional_check" if is_nepali else "available")
         }
         _set_cache(cache_key, res)
         return res

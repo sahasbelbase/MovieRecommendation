@@ -100,8 +100,11 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const isWatched = watchedIds.has(movie.id);
  const isWatchlist = watchlistIds.has(movie.id);
  const isNotInterested = notInterestedIds?.has(movie.id);
- const mediaType = movie.media_type || 'movie';
- const availableServers = useMemo(() => EMBED_SERVERS.filter(s => !s.mediaTypes || s.mediaTypes.includes(mediaType)), [mediaType]);
+ const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : (movie.genres?.some(g => typeof g === 'string' && ['Animation', 'Anime'].includes(g)) ? 'tv' : 'movie'));
+ const effectiveMediaType = details?.media_type || initialMediaType;
+ const isSeries = ['tv', 'anime', 'kdrama'].includes(effectiveMediaType) || (details?.seasons_count && details.seasons_count > 0) || (details?.seasons && details.seasons.length > 0) || Boolean(movie.first_air_date) || Boolean(details?.first_air_date);
+
+ const availableServers = useMemo(() => EMBED_SERVERS.filter(s => !s.mediaTypes || s.mediaTypes.includes(effectiveMediaType)), [effectiveMediaType]);
 
  const [userRating, setUserRating] = useState(watchedRecord?.rating || 0);
  const [userReview, setUserReview] = useState(watchedRecord?.review || '');
@@ -181,11 +184,12 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
   const fetchData = async () => {
    try {
+    const reqType = initialMediaType;
     const [detailsRes, creditsRes, trailersRes, similarRes] = await Promise.allSettled([
-     api.get(`/movies/${movie.id}/details?media_type=${mediaType}`),
-     api.get(`/movies/${movie.id}/credits?media_type=${mediaType}`),
-     api.get(`/movies/${movie.id}/trailers?media_type=${mediaType}`),
-     api.get(`/recommendations/similar/${movie.id}?media_type=${mediaType}`),
+     api.get(`/movies/${movie.id}/details?media_type=${reqType}`),
+     api.get(`/movies/${movie.id}/credits?media_type=${reqType}`),
+     api.get(`/movies/${movie.id}/trailers?media_type=${reqType}`),
+     api.get(`/recommendations/similar/${movie.id}?media_type=${reqType}`),
     ]);
 
     if (detailsRes.status === 'fulfilled') setDetails(detailsRes.value.data);
@@ -200,9 +204,9 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   };
 
   fetchData();
- }, [movie.id, mediaType]);
+ }, [movie.id, initialMediaType]);
 
- // Dynamically fetch watch providers whenever movie, mediaType, or country changes
+ // Dynamically fetch watch providers whenever movie, effectiveMediaType, or country changes
  useEffect(() => {
   if (!movie?.id) return;
   let isMounted = true;
@@ -212,7 +216,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    try {
     const encodedTitle = encodeURIComponent(movie.title || details?.title || '');
     const res = await api.get(
-     `/movies/${movie.id}/providers?media_type=${mediaType}&country=${country}&title=${encodedTitle}`
+     `/movies/${movie.id}/providers?media_type=${effectiveMediaType}&country=${country}&title=${encodedTitle}`
     );
     if (isMounted) {
      setProviders(res.data);
@@ -228,12 +232,12 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   return () => {
    isMounted = false;
   };
- }, [movie.id, mediaType, country, movie.title, details?.title]);
+ }, [movie.id, effectiveMediaType, country, movie.title, details?.title]);
 
   // Dynamically fetch TV Series / Anime Season Episodes for Netflix-style selector
   useEffect(() => {
    if (!user || !isVip) return;
-   if (!movie?.id || !['tv', 'anime', 'kdrama'].includes(mediaType)) return;
+   if (!movie?.id || !isSeries) return;
    let isMounted = true;
    setEpisodesLoading(true);
    setSelectedChunkIndex(0);
@@ -256,14 +260,14 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    return () => {
     isMounted = false;
    };
-  }, [user, isVip, movie?.id, mediaType, selectedSeason]);
+  }, [user, isVip, movie?.id, isSeries, selectedSeason]);
 
   // Dynamically fetch stream status (YouTube full movie fallback or regional unindexed check)
   useEffect(() => {
    if (!user || !isVip || !movie?.id || !showStreamPlayer) return;
    let isMounted = true;
    setCheckingStreamStatus(true);
-   api.get(`/movies/${movie.id}/stream-status?media_type=${mediaType}`)
+   api.get(`/movies/${movie.id}/stream-status?media_type=${effectiveMediaType}`)
     .then((res) => {
      if (isMounted) setStreamStatusData(res.data);
     })
@@ -274,7 +278,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    return () => {
     isMounted = false;
    };
-  }, [user, isVip, movie?.id, mediaType, showStreamPlayer]);
+  }, [user, isVip, movie?.id, effectiveMediaType, showStreamPlayer]);
 
  const activeTrailer = trailers.length > 0 ? trailers[0] : null;
 
@@ -318,7 +322,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
     })
   : sortedEpisodes;
 
- const CHUNK_SIZE = 50;
+ const CHUNK_SIZE = sortedEpisodes.length > 200 ? 100 : 50;
  const shouldChunk = sortedEpisodes.length > 30 && !episodeSearchQuery.trim();
  const episodeChunks = [];
 
@@ -370,7 +374,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
          <div className="flex items-center justify-between px-3 py-1.5 bg-zinc-900/90 border-b border-zinc-800 text-xs z-10">
           <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
            <span className="text-zinc-400 font-mono text-[11px] hidden sm:inline">Stream Server:</span>
-           {['tv', 'anime', 'kdrama'].includes(mediaType) && (
+           {isSeries && (
             <span className="px-2 py-0.5 rounded bg-purple-950/80 border border-purple-700/50 text-purple-300 font-mono text-[11px] font-bold shrink-0">
              S{selectedSeason} E{selectedEpisode}
             </span>
@@ -399,7 +403,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
           {/* Stream Player Container */}
           <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
-           {streamStatusData?.has_youtube_full_movie ? (
+           {streamStatusData?.is_nepali && streamStatusData?.has_youtube_full_movie ? (
             <iframe
              key={`youtube_full_${movie.id}`}
              src={`https://www.youtube.com/embed/${streamStatusData.youtube_video.key}?autoplay=1`}
@@ -437,7 +441,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
            ) : (
             <iframe
              key={`${availableServers[streamServerIndex]?.id}_${movie.id}_s${selectedSeason}_e${selectedEpisode}`}
-             src={availableServers[streamServerIndex]?.getUrl(movie.id, mediaType, selectedSeason, selectedEpisode)}
+             src={availableServers[streamServerIndex]?.getUrl(movie.id, effectiveMediaType, selectedSeason, selectedEpisode)}
              title={`${movie.title} Stream`}
              allow="autoplay; encrypted-media; picture-in-picture"
              allowFullScreen
@@ -771,7 +775,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
       </div>
 
       {/* TV Series, Anime & K-Drama Episodes Browser with Fast Sort, Range Chunks & Jump Search (VIP Only) */}
-      {user && isVip && ['tv', 'anime', 'kdrama'].includes(mediaType) && (
+      {user && isVip && isSeries && (
        <div className="space-y-4 pt-4 pb-2 border-t border-b border-zinc-800/80">
         {/* Header & Quick Controls Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 bg-zinc-900/60 p-3 rounded-2xl border border-zinc-800/80">
