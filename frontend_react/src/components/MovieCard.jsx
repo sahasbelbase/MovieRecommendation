@@ -52,8 +52,16 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
 
  return (
   <div
+   tabIndex={0}
    onClick={() => onSelect(movie)}
-   className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.03] cursor-pointer shadow-sm hover:shadow-xl"
+   onFocus={(e) => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' })}
+   onKeyDown={(e) => {
+    if (e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 23) {
+     e.preventDefault();
+     onSelect(movie);
+    }
+   }}
+   className="group relative flex flex-col rounded-xl bg-zinc-900/60 border border-zinc-800/80 p-2.5 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900 hover:scale-[1.03] focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 focus:scale-[1.03] cursor-pointer shadow-sm hover:shadow-xl"
   >
    {/* Poster with 2:3 Aspect Ratio */}
    <div className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-zinc-800 flex items-center justify-center">

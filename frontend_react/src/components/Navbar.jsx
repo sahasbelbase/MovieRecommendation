@@ -318,14 +318,22 @@ export default function Navbar({
                   </div>
                 ) : suggestions.length > 0 ? (
                   /* General Suggestions (Movies, TV, Anime, Actors) */
-                  <div className="divide-y divide-zinc-800/50 max-h-96 overflow-y-auto">
+                  <div className="divide-y divide-zinc-800/50 max-h-[60vh] overflow-y-auto no-scrollbar scroll-smooth">
                     {suggestions.map((m) => {
                       if (m.media_type === 'person') {
                         return (
                           <div
                             key={`person_${m.id}`}
+                            tabIndex={0}
                             onClick={() => handleSelectPerson(m)}
-                            className="flex items-center justify-between gap-3 p-2.5 hover:bg-zinc-800/80 cursor-pointer transition-colors group bg-zinc-950/40"
+                            onFocus={(e) => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' })}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 23) {
+                                e.preventDefault();
+                                handleSelectPerson(m);
+                              }
+                            }}
+                            className="flex items-center justify-between gap-3 p-2.5 hover:bg-zinc-800/80 focus:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer transition-colors group bg-zinc-950/40 rounded-lg"
                           >
                             <div className="flex items-center gap-3 min-w-0">
                               <div className="w-10 h-10 rounded-full bg-zinc-800 overflow-hidden flex-shrink-0 border border-amber-700/40 flex items-center justify-center">
@@ -362,8 +370,16 @@ export default function Navbar({
                       return (
                         <div
                           key={`${m.media_type || 'movie'}_${m.id}`}
+                          tabIndex={0}
                           onClick={() => handleSelect(m)}
-                          className="flex items-center gap-3 p-2.5 hover:bg-zinc-800/70 cursor-pointer transition-colors"
+                          onFocus={(e) => e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' })}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.keyCode === 13 || e.keyCode === 23) {
+                              e.preventDefault();
+                              handleSelect(m);
+                            }
+                          }}
+                          className="flex items-center gap-3 p-2.5 hover:bg-zinc-800/70 focus:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-rose-500 cursor-pointer transition-colors rounded-lg"
                         >
                           <div className="w-9 h-13 rounded bg-zinc-800 overflow-hidden flex-shrink-0">
                             {m.poster_url ? (
