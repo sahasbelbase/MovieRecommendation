@@ -3,6 +3,7 @@ import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLi
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
+import TvVideoPlayer from './TvVideoPlayer';
 
 const isTv = typeof window !== 'undefined' && (
   Boolean(window.Capacitor) ||
@@ -94,6 +95,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [similarItems, setSimilarItems] = useState([]);
  const [showTrailerPlayer, setShowTrailerPlayer] = useState(false);
  const [showStreamPlayer, setShowStreamPlayer] = useState(Boolean(autoPlayStream && user && isVip));
+ const [showTvDirectTestPlayer, setShowTvDirectTestPlayer] = useState(false);
  const [streamServerIndex, setStreamServerIndex] = useState(0);
  const [streamStatusData, setStreamStatusData] = useState(null);
  const [checkingStreamStatus, setCheckingStreamStatus] = useState(false);
@@ -434,6 +436,15 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
             </button>
            ))}
 
+           {/* Phase 1 Direct Video Player Test Button */}
+           <button
+            onClick={() => setShowTvDirectTestPlayer(true)}
+            className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500 hover:bg-amber-400 text-black transition-all whitespace-nowrap shadow-md flex items-center gap-1 shrink-0 ml-1"
+            title="Phase 1: Test Direct VidLink MP4 Player in WebView with D-Pad controls"
+           >
+            <span>⚡ Test Direct Player (Phase 1)</span>
+           </button>
+
             {/* Audio Track Toggle (SUB vs DUB) */}
             <div className="flex items-center gap-1 border-l border-zinc-700/80 pl-2 shrink-0 ml-1">
              <button
@@ -522,6 +533,16 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              allowFullScreen
              {...(availableServers[streamServerIndex]?.sandbox ? { sandbox: availableServers[streamServerIndex].sandbox } : {})}
              className="w-full h-full border-0"
+            />
+           )}
+           {showTvDirectTestPlayer && (
+            <TvVideoPlayer
+             movieId={movieId}
+             mediaType={effectiveMediaType}
+             season={selectedSeason}
+             episode={selectedEpisode}
+             title={movie.title}
+             onClose={() => setShowTvDirectTestPlayer(false)}
             />
            )}
           </div>
