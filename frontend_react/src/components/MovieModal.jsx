@@ -25,49 +25,49 @@ const COUNTRY_OPTIONS = [
 
 const EMBED_SERVERS = [
   {
-    id: 'vidsrc_pm',
-    name: 'Server 1 (VidSrc PM)',
+    id: 'vidlink_hd',
+    name: 'Server 1 (VidLink HD)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.pm/embed/tv/${id}/${s}/${e}?autoplay=1`
-      : `https://vidsrc.pm/embed/movie/${id}?autoplay=1`
-  },
-  {
-    id: 'vidsrc_in',
-    name: 'Server 2 (VidSrc IN)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.in/embed/tv/${id}/${s}/${e}?autoplay=1`
-      : `https://vidsrc.in/embed/movie/${id}?autoplay=1`
+      ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid${audio === 'dub' ? '&dub=1' : ''}`
+      : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
   },
   {
     id: 'vidsrc_to',
-    name: 'Server 3 (VidSrc TO)',
+    name: 'Server 2 (VidSrc TO)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}?autoplay=1`
-      : `https://vidsrc.to/embed/movie/${id}?autoplay=1`
+      ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}`
+      : `https://vidsrc.to/embed/movie/${id}`
   },
   {
     id: 'vidsrc_sh',
-    name: 'Server 4 (VidSrc SH)',
+    name: 'Server 3 (VidSrc SH)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.sh/embed/tv?tmdb=${id}&season=${s}&episode=${e}&autoplay=1`
-      : `https://vidsrc.sh/embed/movie?tmdb=${id}&autoplay=1`
+      ? `https://vidsrc.sh/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
+      : `https://vidsrc.sh/embed/movie?tmdb=${id}`
   },
   {
     id: 'embed_2cc',
-    name: 'Server 5 (2Embed)',
+    name: 'Server 4 (2Embed)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}&autoplay=1`
-      : `https://2embed.cc/embed/${id}?autoplay=1`
+      ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}`
+      : `https://2embed.cc/embed/${id}`
+  },
+  {
+    id: 'vidsrc_pro',
+    name: 'Server 5 (VidSrc Pro)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    sandbox: null,
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
+      : `https://vidsrc.pro/embed/movie/${id}`
   },
 ];
 
@@ -436,14 +436,16 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
             </button>
            ))}
 
-           {/* Phase 1 Direct Video Player Test Button */}
-           <button
-            onClick={() => setShowTvDirectTestPlayer(true)}
-            className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500 hover:bg-amber-400 text-black transition-all whitespace-nowrap shadow-md flex items-center gap-1 shrink-0 ml-1"
-            title="Phase 1: Test Direct VidLink MP4 Player in WebView with D-Pad controls"
-           >
-            <span>⚡ Test Direct Player (Phase 1)</span>
-           </button>
+           {/* Phase 1 Direct Video Player Test Button (Smart TV Only) */}
+           {isTv && (
+            <button
+             onClick={() => setShowTvDirectTestPlayer(true)}
+             className="px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500 hover:bg-amber-400 text-black transition-all whitespace-nowrap shadow-md flex items-center gap-1 shrink-0 ml-1"
+             title="Phase 1: Test Direct VidLink MP4 Player in WebView with D-Pad controls"
+            >
+             <span>⚡ Test Direct Player (TV Mode)</span>
+            </button>
+           )}
 
             {/* Audio Track Toggle (SUB vs DUB) */}
             <div className="flex items-center gap-1 border-l border-zinc-700/80 pl-2 shrink-0 ml-1">
