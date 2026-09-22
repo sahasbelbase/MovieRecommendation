@@ -3,80 +3,57 @@ import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLi
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
-import TvVirtualPointer from './TvVirtualPointer';
 
 const isTv = typeof window !== 'undefined' && (
   Boolean(window.Capacitor) ||
   /TV|SmartTV|GoogleTV|AndroidTV|CrKey/i.test(navigator.userAgent)
 );
 
-const COUNTRY_OPTIONS = [
- { code: 'NP', label: 'Nepal' },
- { code: 'US', label: 'United States' },
- { code: 'GB', label: 'United Kingdom' },
- { code: 'CA', label: 'Canada' },
- { code: 'AU', label: 'Australia' },
- { code: 'JP', label: 'Japan' },
- { code: 'KR', label: 'South Korea' },
- { code: 'IN', label: 'India' },
- { code: 'DE', label: 'Germany' },
- { code: 'FR', label: 'France' },
-];
-
 const EMBED_SERVERS = [
   {
-    id: 'vidlink_hd',
-    name: 'Server 1 (VidLink HD)',
+    id: 'vidsrc_pm',
+    name: 'Server 1 (VidSrc PM)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid${audio === 'dub' ? '&dub=1' : ''}`
-      : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
+      ? `https://vidsrc.pm/embed/tv/${id}/${s}/${e}?autoplay=1`
+      : `https://vidsrc.pm/embed/movie/${id}?autoplay=1`
+  },
+  {
+    id: 'vidsrc_in',
+    name: 'Server 2 (VidSrc IN)',
+    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    sandbox: null,
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+      ? `https://vidsrc.in/embed/tv/${id}/${s}/${e}?autoplay=1`
+      : `https://vidsrc.in/embed/movie/${id}?autoplay=1`
   },
   {
     id: 'vidsrc_to',
-    name: 'Server 2 (VidSrc TO)',
+    name: 'Server 3 (VidSrc TO)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}`
-      : `https://vidsrc.to/embed/movie/${id}`
+      ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}?autoplay=1`
+      : `https://vidsrc.to/embed/movie/${id}?autoplay=1`
   },
   {
-    id: 'vidsrc_me',
-    name: 'Server 3 (VidSrc ME)',
+    id: 'vidsrc_sh',
+    name: 'Server 4 (VidSrc SH)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}&audio=${audio}`
-      : `https://vidsrc.me/embed/movie?tmdb=${id}`
+      ? `https://vidsrc.sh/embed/tv?tmdb=${id}&season=${s}&episode=${e}&autoplay=1`
+      : `https://vidsrc.sh/embed/movie?tmdb=${id}&autoplay=1`
   },
   {
     id: 'embed_2cc',
-    name: 'Server 4 (2Embed)',
+    name: 'Server 5 (2Embed)',
     mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
     getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}`
-      : `https://2embed.cc/embed/${id}`
-  },
-  {
-    id: 'vidsrc_sbs',
-    name: 'Server 5 (VidSrc SBS)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.sbs/embed/tv/${id}/${s}/${e}`
-      : `https://vidsrc.sbs/embed/movie/${id}`
-  },
-  {
-    id: 'vidsrc_pro',
-    name: 'Server 6 (VidSrc Pro)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
-    sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
-      ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
-      : `https://vidsrc.pro/embed/movie/${id}`
+      ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}&autoplay=1`
+      : `https://2embed.cc/embed/${id}?autoplay=1`
   },
 ];
 
@@ -480,8 +457,6 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
           {/* Stream Player Container */}
           <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
-           {isTv && <TvVirtualPointer isActive={showStreamPlayer} />}
-
            {/* TV Volume Sync Banner Overlay */}
            {tvVolumeInfo && (
             <div className="absolute top-4 right-4 z-40 px-3.5 py-2 rounded-xl bg-black/90 border border-purple-500/50 text-white font-mono text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in duration-150">
@@ -495,7 +470,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              key={`youtube_full_${movieId}`}
              src={`https://www.youtube.com/embed/${streamStatusData.youtube_video.key}?autoplay=1`}
              title={`${movie.title} Full Movie`}
-             allow="autoplay; encrypted-media; picture-in-picture"
+             allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
              allowFullScreen
              className="w-full h-full border-0"
             />
@@ -530,7 +505,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              key={`${availableServers[streamServerIndex]?.id}_${movieId}_s${selectedSeason}_e${selectedEpisode}_${audioTrack}`}
              src={availableServers[streamServerIndex]?.getUrl(movieId, effectiveMediaType, selectedSeason, selectedEpisode, audioTrack)}
              title={`${movie.title} Stream`}
-             allow="autoplay; encrypted-media; picture-in-picture"
+             allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
              allowFullScreen
              {...(availableServers[streamServerIndex]?.sandbox ? { sandbox: availableServers[streamServerIndex].sandbox } : {})}
              className="w-full h-full border-0"
