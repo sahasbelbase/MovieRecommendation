@@ -97,6 +97,26 @@ export default function App() {
   }
  };
 
+  // Deep-link listener for Android TV Home Screen Widget & Notifications
+  useEffect(() => {
+   const handleOpenMovieEvent = async (e) => {
+    const movieId = e?.detail?.movieId;
+    if (!movieId) return;
+    try {
+     const res = await api.get(`/movies/${movieId}/details?media_type=movie`);
+     setSelectedMovie(res.data);
+     setAutoPlayStream(true);
+    } catch (err) {
+     console.warn("Failed fetching deep-linked movie:", err);
+     setSelectedMovie({ id: movieId, title: "Media Item " + movieId });
+     setAutoPlayStream(true);
+    }
+   };
+
+   window.addEventListener('cinematch:open_movie', handleOpenMovieEvent);
+   return () => window.removeEventListener('cinematch:open_movie', handleOpenMovieEvent);
+  }, []);
+
  // Resume pending watch party after user signs in
  useEffect(() => {
   if (user && pendingPartyCode) {
