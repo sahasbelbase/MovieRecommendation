@@ -125,7 +125,7 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
       <button
        onClick={handleNotInterestedClick}
        aria-label="Not interested"
-       className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100"
+       className="rounded-full p-2 transition-all active:scale-90 bg-black/60 backdrop-blur-md text-zinc-400 hover:text-rose-400 hover:bg-black/90 border border-white/10 opacity-70 group-hover:opacity-100 focus-visible:opacity-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
        title="Not interested (Hide permanently)"
       >
        <EyeOff className="w-3.5 h-3.5" />
@@ -140,7 +140,7 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
       <button
        onClick={handleWatchlistClick}
        aria-label={isWatchlist ? "In Watchlist" : "Add to Watchlist"}
-       className={`rounded-full p-2 transition-all active:scale-90 ${
+       className={`rounded-full p-2 transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 ${
         isWatchlist
          ? 'bg-amber-500 text-black shadow-lg shadow-amber-900/50'
          : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
@@ -159,7 +159,7 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
       <button
        onClick={handleWatchedClick}
        aria-label={isWatched ? "Marked as watched" : "Mark as watched"}
-       className={`rounded-full p-2 transition-all active:scale-90 ${
+       className={`rounded-full p-2 transition-all active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 ${
         isWatched
          ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/40'
          : 'bg-black/60 backdrop-blur-md text-zinc-400 hover:text-white hover:bg-black/90 border border-white/10'
