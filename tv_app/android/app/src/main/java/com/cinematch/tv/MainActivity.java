@@ -1,6 +1,8 @@
 package com.cinematch.tv;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -16,9 +18,13 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends BridgeActivity {
 
+    private AudioManager audioManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         // Configure WebView for TV media streaming
         if (getBridge() != null && getBridge().getWebView() != null) {
@@ -67,8 +73,33 @@ public class MainActivity extends BridgeActivity {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         int keyCode = event.getKeyCode();
+        int action = event.getAction();
 
-        // Ensure TV Remote D-Pad keys are cleanly delivered to WebView
+        if (action == KeyEvent.ACTION_DOWN) {
+            // Volume synchronization
+            if (keyCode == KeyEvent.KEYCODE_VOLUME_UP || keyCode == KeyEvent.KEYCODE_VOLUME_DOWN || keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+                if (audioManager != null) {
+                    if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+                        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
+                    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
+                    } else if (keyCode == KeyEvent.KEYCODE_VOLUME_MUTE) {
+                        audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_TOGGLE_MUTE, AudioManager.FLAG_SHOW_UI);
+                    }
+                    int currentVol = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+                    int maxVol = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+                    int volPercent = (maxVol > 0) ? (currentVol * 100 / maxVol) : 0;
+                    boolean isMuted = (volPercent == 0);
+
+                    notifyWebViewVolume(volPercent, isMuted);
+                }
+                return true;
+            }
+
+            // TV Remote Key Notification
+            notifyWebViewRemoteKey(keyCode);
+        }
+
         switch (keyCode) {
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_DOWN:
@@ -87,8 +118,7 @@ public class MainActivity extends BridgeActivity {
 
             case KeyEvent.KEYCODE_BACK:
             case KeyEvent.KEYCODE_ESCAPE:
-                if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                    // Send Escape event to web javascript to trigger modal close
+                if (action == KeyEvent.ACTION_DOWN) {
                     if (getBridge() != null && getBridge().getWebView() != null) {
                         getBridge().getWebView().evaluateJavascript(
                             "window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', code: 'Escape', keyCode: 27, which: 27, bubbles: true }));",
@@ -101,6 +131,20 @@ public class MainActivity extends BridgeActivity {
 
             default:
                 return super.dispatchKeyEvent(event);
+        }
+    }
+
+    private void notifyWebViewVolume(int volPercent, boolean isMuted) {
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            String js = "window.dispatchEvent(new CustomEvent('tv:volume_change', { detail: { volume: " + volPercent + ", isMuted: " + isMuted + " } }));";
+            getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(js, null));
+        }
+    }
+
+    private void notifyWebViewRemoteKey(int keyCode) {
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            String js = "window.dispatchEvent(new CustomEvent('tv:remote_key', { detail: { keyCode: " + keyCode + " } }));";
+            getBridge().getWebView().post(() -> getBridge().getWebView().evaluateJavascript(js, null));
         }
     }
 }

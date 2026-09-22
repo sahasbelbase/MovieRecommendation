@@ -3,6 +3,12 @@ import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLi
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
+import TvVirtualPointer from './TvVirtualPointer';
+
+const isTv = typeof window !== 'undefined' && (
+  Boolean(window.Capacitor) ||
+  /TV|SmartTV|GoogleTV|AndroidTV|CrKey/i.test(navigator.userAgent)
+);
 
 const COUNTRY_OPTIONS = [
  { code: 'NP', label: 'Nepal' },
@@ -120,7 +126,21 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
  }, [movieId, autoPlayStream, user, isVip]);
 
- // Episode sorting, range chunking & search jump for long-running series / anime
+  const [tvVolumeInfo, setTvVolumeInfo] = useState(null);
+
+  // Volume Synchronization Listener for Smart TV mode
+  useEffect(() => {
+   const handleVolumeChange = (e) => {
+    const { volume, isMuted } = e.detail || {};
+    setTvVolumeInfo({ volume, isMuted });
+    setTimeout(() => setTvVolumeInfo(null), 3500);
+   };
+
+   window.addEventListener('tv:volume_change', handleVolumeChange);
+   return () => window.removeEventListener('tv:volume_change', handleVolumeChange);
+  }, []);
+
+  // Episode sorting, range chunking & search jump for long-running series / anime
  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
  const [selectedChunkIndex, setSelectedChunkIndex] = useState(0);
  const [episodeSearchQuery, setEpisodeSearchQuery] = useState('');
@@ -460,6 +480,16 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
           {/* Stream Player Container */}
           <div className="relative flex-1 w-full h-full bg-black overflow-hidden">
+           {isTv && <TvVirtualPointer isActive={showStreamPlayer} />}
+
+           {/* TV Volume Sync Banner Overlay */}
+           {tvVolumeInfo && (
+            <div className="absolute top-4 right-4 z-40 px-3.5 py-2 rounded-xl bg-black/90 border border-purple-500/50 text-white font-mono text-xs font-bold shadow-2xl flex items-center gap-2 animate-in fade-in duration-150">
+             <span className="text-purple-400">🔊</span>
+             <span>TV Volume: {tvVolumeInfo.isMuted ? 'Muted' : `${tvVolumeInfo.volume}%`}</span>
+            </div>
+           )}
+
            {streamStatusData?.is_nepali && streamStatusData?.has_youtube_full_movie ? (
             <iframe
              key={`youtube_full_${movieId}`}
