@@ -54,3 +54,6 @@ Thumbs.db
 # TV App (Smart TV build & APK)
 tv_app/
 *.apk
+*.idsig
+.wrangler/
+

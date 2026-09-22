@@ -9,6 +9,19 @@ const isTv = typeof window !== 'undefined' && (
   /TV|SmartTV|GoogleTV|AndroidTV|CrKey/i.test(navigator.userAgent)
 );
 
+const COUNTRY_OPTIONS = [
+ { code: 'NP', label: 'Nepal' },
+ { code: 'US', label: 'United States' },
+ { code: 'GB', label: 'United Kingdom' },
+ { code: 'CA', label: 'Canada' },
+ { code: 'AU', label: 'Australia' },
+ { code: 'JP', label: 'Japan' },
+ { code: 'KR', label: 'South Korea' },
+ { code: 'IN', label: 'India' },
+ { code: 'DE', label: 'Germany' },
+ { code: 'FR', label: 'France' },
+];
+
 const EMBED_SERVERS = [
   {
     id: 'vidsrc_pm',
