@@ -28,13 +28,13 @@ async def resolve_stream(
     try:
         data = await resolve_vidlink_stream(tmdb_id, media_type, season, episode)
         
-        # Build local proxy stream URL
+        # Build local proxy stream URL if direct_url resolved
         base_url = str(request.base_url).rstrip("/")
-        target_url = data["direct_url"]
-        encoded_target = urllib.parse.quote(target_url, safe="")
-        proxy_url = f"{base_url}/api/streams/proxy?url={encoded_target}"
-
-        data["proxy_url"] = proxy_url
+        target_url = data.get("direct_url")
+        if target_url:
+            encoded_target = urllib.parse.quote(target_url, safe="")
+            proxy_url = f"{base_url}/api/streams/proxy?url={encoded_target}"
+            data["proxy_url"] = proxy_url
         return data
     except Exception as e:
         logger.error(f"Error resolving stream for {media_type} {tmdb_id}: {e}")
@@ -68,7 +68,10 @@ async def proxy_stream(request: Request, url: str = Query(..., description="Enco
         upstream_res = await client.send(upstream_req, stream=True)
 
         # Forward critical headers to client
-        response_headers = {}
+        response_headers = {
+            "access-control-allow-origin": "*",
+            "access-control-expose-headers": "Content-Range, Content-Length, Accept-Ranges"
+        }
         for h in ["content-type", "content-length", "content-range", "accept-ranges"]:
             if h in upstream_res.headers:
                 response_headers[h] = upstream_res.headers[h]

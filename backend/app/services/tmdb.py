@@ -1182,21 +1182,21 @@ class TMDBService:
 
         embed_urls = [
             {
-                "id": "anify_hd",
-                "name": "Anify HD (Fast ⭐)",
-                "url": f"https://anify.to/embed/{anime_id}/{episode_number}",
+                "id": "vidlink_hd",
+                "name": "VidLink HD (Fast ⭐)",
+                "url": f"https://vidlink.pro/tv/{anime_id}/1/{episode_number}?primaryColor=a855f7&secondaryColor=121216&iconColor=ffffff&icons=vid&autoplay=true",
                 "type": "iframe"
             },
             {
-                "id": "vidsrc_anime",
-                "name": "VidSrc Anime",
-                "url": f"https://anime.vidsrc.me/embed/anime?tmdb={anime_id}",
+                "id": "vidsrc_to",
+                "name": "VidSrc TO",
+                "url": f"https://vidsrc.to/embed/tv/{anime_id}/1/{episode_number}",
                 "type": "iframe"
             },
             {
-                "id": "vidlink_anime",
-                "name": "VidLink Anime",
-                "url": f"https://vidlink.pro/tv/{anime_id}/{episode_number}/1?primaryColor=a855f7",
+                "id": "vidsrc_sh",
+                "name": "VidSrc SH",
+                "url": f"https://vidsrc.sh/embed/tv?tmdb={anime_id}&season=1&episode={episode_number}",
                 "type": "iframe"
             }
         ]
