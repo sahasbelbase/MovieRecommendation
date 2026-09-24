@@ -113,18 +113,73 @@ class RecommenderService:
 
         return deck
 
-    async def get_similar(self, item_id: int, media_type: str = "movie", user_id: Optional[str] = None, limit: int = 12) -> List[dict]:
+    async def get_similar(
+        self,
+        item_id: Any,
+        media_type: str = "movie",
+        title: Optional[str] = None,
+        genre: Optional[str] = None,
+        user_id: Optional[str] = None,
+        limit: int = 12
+    ) -> List[dict]:
         """
-        Recommends similar movies, TV series, or Anime via direct TMDB API query.
+        Recommends similar movies, TV series, or Anime via TMDB recommendations,
+        with intelligent fallbacks to title search match, genre discovery, and trending catalogs.
         Strictly excludes any item in the user's watched or skipped list.
         """
         excluded_ids = []
         if user_id:
             excluded_ids = await self.user_data.get_all_excluded_ids(user_id)
 
-        tmdb_recs = await self.tmdb.get_recommendations(item_id, media_type=media_type)
-        excluded_set = set(excluded_ids) | {item_id}
-        results = [m for m in tmdb_recs if m["id"] not in excluded_set]
+        tmdb_recs = []
+        numeric_id = None
+        try:
+            if isinstance(item_id, int) or (isinstance(item_id, str) and item_id.isdigit()):
+                numeric_id = int(item_id)
+                tmdb_recs = await self.tmdb.get_recommendations(numeric_id, media_type=media_type)
+        except Exception as e:
+            logger.warning(f"Error fetching direct TMDB recommendations for {item_id}: {e}")
+
+        # If no direct recommendations and title is provided, search TMDB for title and get its recommendations
+        if not tmdb_recs and title:
+            try:
+                search_results = await self.tmdb.search_multi(title, media_type=media_type)
+                if search_results:
+                    matched_item = search_results[0]
+                    matched_id = matched_item.get("id")
+                    if matched_id:
+                        tmdb_recs = await self.tmdb.get_recommendations(matched_id, media_type=matched_item.get("media_type", media_type))
+            except Exception as e:
+                logger.warning(f"Error resolving title search recommendations for {title}: {e}")
+
+        # Fallback to genre-based discovery (e.g. Animation / Action / Romance)
+        if not tmdb_recs:
+            try:
+                target_genre = genre or ("Animation" if media_type == "anime" else "Drama")
+                genre_items = await self.tmdb.discover_by_genre(
+                    target_genre,
+                    media_type="anime" if media_type == "anime" else media_type,
+                    sort_by="popularity.desc"
+                )
+                if genre_items:
+                    tmdb_recs = genre_items
+            except Exception as e:
+                logger.warning(f"Error discovering recommendations by genre {genre}: {e}")
+
+        # Ultimate fallback: Top trending for that media type
+        if not tmdb_recs:
+            if media_type == "anime":
+                tmdb_recs = await self.tmdb.get_trending_anime(pages=1)
+            elif media_type == "tv":
+                tmdb_recs = await self.tmdb.get_trending_tv(pages=1)
+            else:
+                tmdb_recs = await self.tmdb.get_trending_movies(pages=1)
+
+        excluded_set = set(excluded_ids)
+        if numeric_id:
+            excluded_set.add(numeric_id)
+
+        results = [m for m in tmdb_recs if m.get("id") and m["id"] not in excluded_set]
         return results[:limit]
 
     async def get_tailored_feed(self, user_id: str, media_type: Optional[str] = None, genre: Optional[str] = None) -> Dict[str, Any]:

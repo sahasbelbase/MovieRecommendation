@@ -231,7 +231,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   if ((effectiveMediaType === 'anime' || isAnimeMovie) && anikotoEmbedUrl) {
    const anikotoServer = {
     id: 'anikoto',
-    name: 'Server 0 (Anikoto Stream ⭐)',
+    name: 'Server 0 (Anime Stream ⭐)',
     sandbox: null,
     isAnikoto: true,
     getUrl: () => anikotoEmbedUrl
@@ -370,6 +370,12 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
   const fetchData = async () => {
    try {
+    const reqType = initialMediaType;
+    const movieTitle = movie?.title || '';
+    const movieGenre = (movie?.genres && movie?.genres[0]) || '';
+    const cleanGenre = typeof movieGenre === 'string' ? movieGenre : (movieGenre?.name || '');
+    const similarUrl = `/recommendations/similar/${movieId}?media_type=${reqType}${movieTitle ? `&title=${encodeURIComponent(movieTitle)}` : ''}${cleanGenre ? `&genre=${encodeURIComponent(cleanGenre)}` : ''}`;
+
     if (movie?.anikoto_id) {
      setDetails({
       id: movie.id,
@@ -386,9 +392,17 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
      });
 
      try {
-      const anikotoRes = await api.get(`/movies/anime/anikoto/${movie.anikoto_id}`);
-      if (anikotoRes.data?.data) {
-       const seriesData = anikotoRes.data.data;
+      const [anikotoRes, similarRes] = await Promise.allSettled([
+       api.get(`/movies/anime/anikoto/${movie.anikoto_id}`),
+       api.get(similarUrl)
+      ]);
+
+      if (similarRes.status === 'fulfilled' && Array.isArray(similarRes.value.data)) {
+       setSimilarItems(similarRes.value.data);
+      }
+
+      if (anikotoRes.status === 'fulfilled' && anikotoRes.value.data?.data) {
+       const seriesData = anikotoRes.value.data.data;
        const eps = (seriesData.episodes || []).map((e) => ({
         id: e.id,
         episode_number: e.number,
@@ -408,7 +422,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
         const streamUrl = (audioTrack === 'dub' && curEp.embed_url.dub) ? curEp.embed_url.dub : (curEp.embed_url.sub || curEp.embed_url.dub);
         if (streamUrl) {
          setAnikotoData({
-          sources: [{ id: 'anikoto', name: 'Server 0 (Anikoto Stream ⭐)', url: streamUrl }],
+          sources: [{ id: 'anikoto', name: 'Server 0 (Anime Stream ⭐)', url: streamUrl }],
           latest_release: {
            latest_episode: targetNum,
            updated_at: curEp.updated_at || movie.latest_episode_updated_at
@@ -424,18 +438,19 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
      return;
     }
 
-    const reqType = initialMediaType;
     const [detailsRes, creditsRes, trailersRes, similarRes] = await Promise.allSettled([
      api.get(`/movies/${movieId}/details?media_type=${reqType}`),
      api.get(`/movies/${movieId}/credits?media_type=${reqType}`),
      api.get(`/movies/${movieId}/trailers?media_type=${reqType}`),
-     api.get(`/recommendations/similar/${movieId}?media_type=${reqType}`),
+     api.get(similarUrl),
     ]);
 
     if (detailsRes.status === 'fulfilled') setDetails(detailsRes.value.data);
     if (creditsRes.status === 'fulfilled') setCredits(creditsRes.value.data);
     if (trailersRes.status === 'fulfilled') setTrailers(trailersRes.value.data);
-    if (similarRes.status === 'fulfilled') setSimilarItems(similarRes.value.data);
+    if (similarRes.status === 'fulfilled' && Array.isArray(similarRes.value.data)) {
+     setSimilarItems(similarRes.value.data);
+    }
    } catch (err) {
     console.error("Error fetching modal media details:", err);
    } finally {
@@ -905,7 +920,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
            <span className="text-purple-400 font-bold shrink-0">⭐ Recommended:</span>
            <span className="text-zinc-200 shrink-0">
             {effectiveMediaType === 'anime' || isAnimeMovie
-              ? (anikotoEmbedUrl ? 'Anikoto Anime Stream (Auto-chosen for Anime)' : 'VidLink HD with Sub/Dub (Auto-chosen for Anime)')
+              ? (anikotoEmbedUrl ? 'Anime Stream (Auto-chosen for Anime)' : 'VidLink HD with Sub/Dub (Auto-chosen for Anime)')
               : isSeries
                 ? 'AutoEmbed Multi (Auto-chosen for TV Series)'
                 : 'VidLink HD (Auto-chosen for Movies)'}
@@ -913,7 +928,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
            <span className="text-zinc-500 hidden sm:inline">• Free to switch to any server anytime</span>
           </div>
           {effectiveMediaType === 'anime' && anikotoLoading && (
-           <span className="text-[10px] text-amber-400 animate-pulse shrink-0">Checking Anikoto streams...</span>
+           <span className="text-[10px] text-amber-400 animate-pulse shrink-0">Checking anime stream servers...</span>
           )}
          </div>
 
@@ -1167,8 +1182,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
          )}
         </div>
 
-        {/* Just Released Episode Live Banner */}
-        {latestRelease && (
+        {/* Just Released Episode Live Banner (VIP Mode Only) */}
+        {isVip && latestRelease && (
          <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-950/80 to-teal-950/60 border border-emerald-500/50 text-emerald-200 text-xs font-semibold shadow-lg shadow-emerald-950/30 w-fit my-1 animate-in fade-in">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
           <span className="flex items-center gap-1.5 flex-wrap">
@@ -1637,7 +1652,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
                 }`}>
                  {ep.episode_number}. {ep.name || `Episode ${ep.episode_number}`}
                 </h5>
-                {latestRelease?.episode === ep.episode_number && (
+                {isVip && latestRelease?.episode === ep.episode_number && (
                  <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   Just Released {latestReleaseTimeAgo ? `• ${latestReleaseTimeAgo}` : ''}
@@ -1896,19 +1911,24 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
        </div>
       )}
 
-      {/* Similar Movies / Series / Anime (Excluding Watched) */}
+      {/* Recommended Movies / Series / Anime (Excluding Watched) */}
       {similarItems.length > 0 && (
        <div className="space-y-3 pt-4 border-t border-zinc-800/80">
-        <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
-         Similar {mediaType === 'anime' ? 'Anime' : mediaType === 'tv' ? 'Series' : 'Movies'} (Watched Excluded)
-        </h4>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-         {similarItems.slice(0, 4).map((simItem) => (
+        <div className="flex items-center justify-between">
+         <h4 className="text-xs font-semibold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          Recommended {mediaType === 'anime' ? 'Anime & Movies' : mediaType === 'tv' ? 'Series' : 'Movies'} (Watched Excluded)
+         </h4>
+         <span className="text-[10px] font-mono text-zinc-500">Unwatched</span>
+        </div>
+        <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-5 gap-3">
+         {similarItems.slice(0, 5).map((simItem) => (
           <MovieCard
            key={simItem.id}
            movie={simItem}
            onSelect={(m) => onSelectMovie(m)}
            onShowToast={onShowToast}
+           isVip={isVip}
           />
          ))}
         </div>

@@ -15,6 +15,7 @@ import Top250Modal from './components/Top250Modal';
 import MovieNightModal from './components/MovieNightModal';
 import WatchPartyModal, { StandaloneChatCompanion } from './components/WatchPartyModal';
 import Footer from './components/Footer';
+import { touchUserLastUsed, setUserVipInCloud, checkUserVipInCloud } from './services/userService';
 import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users, Play } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
@@ -66,15 +67,83 @@ export default function App() {
   return localStorage.getItem('vip_activated') === 'true';
  });
 
- const handleActivateVip = () => {
+ const handleActivateVip = async () => {
+  if (user?.uid) {
+    const vipCheck = await checkUserVipInCloud(user.uid);
+    if (vipCheck.exists && (vipCheck.isBlocked || vipCheck.isVip === false)) {
+      alert('VIP Access has been revoked for this account by administrator.');
+      handleDeactivateVip();
+      return false;
+    }
+    await setUserVipInCloud(user.uid, true);
+  }
   localStorage.setItem('vip_activated', 'true');
   setIsVip(true);
+  return true;
  };
 
- const handleDeactivateVip = () => {
+ const handleDeactivateVip = async () => {
+  if (user?.uid) {
+    await setUserVipInCloud(user.uid, false);
+  }
   localStorage.removeItem('vip_activated');
   setIsVip(false);
  };
+
+ // Listen for VIP state events and synchronize with Firebase table
+ useEffect(() => {
+  const onVipRevoked = () => {
+    setIsVip(false);
+  };
+  const onVipGranted = () => {
+    setIsVip(true);
+  };
+  window.addEventListener('cinematch_vip_revoked', onVipRevoked);
+  window.addEventListener('cinematch_vip_granted', onVipGranted);
+
+  return () => {
+    window.removeEventListener('cinematch_vip_revoked', onVipRevoked);
+    window.removeEventListener('cinematch_vip_granted', onVipGranted);
+  };
+ }, []);
+
+ // Periodically update user's last_used_date and verify VIP status against Firebase
+ useEffect(() => {
+  if (!user?.uid) return;
+
+  // Touch user activity on initial mount/login
+  touchUserLastUsed(user.uid);
+
+  const interval = setInterval(async () => {
+    touchUserLastUsed(user.uid);
+    const vipCheck = await checkUserVipInCloud(user.uid);
+    if (vipCheck.exists) {
+      if (vipCheck.isBlocked || vipCheck.isVip === false) {
+        setIsVip(false);
+        localStorage.removeItem('vip_activated');
+      } else if (vipCheck.isVip) {
+        setIsVip(true);
+        localStorage.setItem('vip_activated', 'true');
+      }
+    } else if (localStorage.getItem('vip_activated') === 'true') {
+      // Document was deleted by administrator in Firebase table!
+      setIsVip(false);
+      localStorage.removeItem('vip_activated');
+    }
+  }, 2 * 60 * 1000); // Check every 2 minutes
+
+  const handleVisibility = () => {
+    if (document.visibilityState === 'visible') {
+      touchUserLastUsed(user.uid);
+    }
+  };
+  document.addEventListener('visibilitychange', handleVisibility);
+
+  return () => {
+    clearInterval(interval);
+    document.removeEventListener('visibilitychange', handleVisibility);
+  };
+ }, [user?.uid]);
 
  const [initialRoomCode, setInitialRoomCode] = useState(() => {
   if (typeof window === 'undefined') return '';
@@ -549,8 +618,8 @@ export default function App() {
       </div>
      )}
 
-     {/* Anime Just Released Episodes Rail */}
-     {selectedMediaCategory === 'anime' && recentAnime.length > 0 && (
+     {/* Anime Just Released Episodes Rail (VIP Mode Only) */}
+     {selectedMediaCategory === 'anime' && isVip && recentAnime.length > 0 && (
       <section className="space-y-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-zinc-900 to-zinc-900 border border-indigo-800/40 shadow-xl">
        <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
@@ -562,7 +631,7 @@ export default function App() {
            <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">⚡ Just Released Episodes</h2>
            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-            Live from Anikoto
+            Live Updates
            </span>
           </div>
           <p className="text-xs text-zinc-400 hidden sm:block">

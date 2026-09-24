@@ -30,8 +30,10 @@ async def get_recommendation_feed(
 
 @router.get("/similar/{movie_id}")
 async def get_similar(
-    movie_id: int,
+    movie_id: str,
     media_type: str = Query("movie", pattern="^(movie|tv|anime|kdrama)$"),
+    title: Optional[str] = Query(None),
+    genre: Optional[str] = Query(None),
     limit: int = Query(12, ge=1, le=30),
     user: Optional[dict] = Depends(get_current_user_optional)
 ):
@@ -42,6 +44,8 @@ async def get_similar(
     return await recommender_service.get_similar(
         item_id=movie_id,
         media_type=media_type,
+        title=title,
+        genre=genre,
         user_id=user_id,
         limit=limit
     )

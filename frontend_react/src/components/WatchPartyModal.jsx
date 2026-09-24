@@ -1714,14 +1714,16 @@ export default function WatchPartyModal({
              </button>
             ) : (
              <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                e.preventDefault();
                const code = e.target.elements.passcode.value.trim();
                if (code === '9999') {
-                if (onActivateVip) onActivateVip();
-                if (onShowToast) onShowToast({ message: 'VIP Stream Access Unlocked 🤫' });
+                const res = await onActivateVip?.();
+                if (res !== false && onShowToast) {
+                  onShowToast({ message: 'VIP Stream Access Unlocked 🤫' });
+                }
                } else if (code === '0000') {
-                if (onDeactivateVip) onDeactivateVip();
+                await onDeactivateVip?.();
                 if (onShowToast) onShowToast({ message: 'VIP Access Deactivated 🔒' });
                } else {
                 alert('Incorrect passcode');

@@ -40,6 +40,33 @@ class UserDataService:
         with open(self.dev_cache_file, "w") as f:
             json.dump(data, f, indent=2)
 
+    def _touch_user_activity(self, user_id: str, email: Optional[str] = None):
+        """Updates last_used_date on the user's document in Firestore"""
+        if not self.db:
+            return
+        try:
+            from datetime import datetime, timezone
+            now_dt = datetime.now(timezone.utc)
+            formatted_date = now_dt.strftime("%b %d, %Y, %I:%M:%S %p UTC")
+            user_doc = self.db.collection("users").document(user_id)
+            doc_snap = user_doc.get()
+            data = {
+                "user_id": user_id,
+                "last_used_date": formatted_date,
+                "last_used_at": now_dt.isoformat(),
+                "last_used_timestamp": int(now_dt.timestamp() * 1000),
+            }
+            if email:
+                data["identifier"] = email
+            if not doc_snap.exists:
+                data["created"] = formatted_date
+                data["signed_in"] = formatted_date
+                data["provider"] = "google.com"
+                data["is_vip"] = False
+            user_doc.set(data, merge=True)
+        except Exception as e:
+            logger.debug(f"User activity touch error: {e}")
+
     async def get_watched_list(self, user_id: str) -> List[dict]:
         """Returns list of watched movies for user"""
         if self.db:
@@ -85,6 +112,7 @@ class UserDataService:
                 self.db.collection("users").document(user_id).collection("unwatched").document(str(movie_id)).delete()
                 self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id)).delete()
                 self.db.collection("users").document(user_id).collection("not_interested").document(str(movie_id)).delete()
+                self._touch_user_activity(user_id)
                 return record
             except Exception as e:
                 logger.error(f"Firestore mark_watched error: {e}")
@@ -126,6 +154,7 @@ class UserDataService:
             try:
                 doc_ref = self.db.collection("users").document(user_id).collection("unwatched").document(str(movie_id))
                 doc_ref.set(record)
+                self._touch_user_activity(user_id)
                 return record
             except Exception as e:
                 logger.error(f"Firestore mark_unwatched error: {e}")
@@ -245,6 +274,7 @@ class UserDataService:
             try:
                 doc_ref = self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id))
                 doc_ref.set(record)
+                self._touch_user_activity(user_id)
                 return record
             except Exception as e:
                 logger.error(f"Firestore add_to_watchlist error: {e}")
@@ -324,6 +354,7 @@ class UserDataService:
                 doc_ref.set(record)
                 # Remove from watchlist if present
                 self.db.collection("users").document(user_id).collection("watchlist").document(str(movie_id)).delete()
+                self._touch_user_activity(user_id)
                 return record
             except Exception as e:
                 logger.error(f"Firestore mark_not_interested error: {e}")

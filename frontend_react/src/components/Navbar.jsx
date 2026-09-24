@@ -578,7 +578,7 @@ export default function Navbar({
 
           {/* Join Party by Code (Desktop) */}
           <form
-            onSubmit={(e) => {
+            onSubmit={async (e) => {
               e.preventDefault();
               const input = e.target.elements.roomCode.value;
               const trimmed = input.trim();
@@ -588,13 +588,13 @@ export default function Navbar({
                   alert('Please sign in first to activate VIP Access');
                   return;
                 }
-                localStorage.setItem('vip_activated', 'true');
-                if (onVipActivated) onVipActivated();
-                alert('VIP Access Activated');
+                const success = await onVipActivated?.();
+                if (success !== false) {
+                  alert('VIP Access Activated');
+                }
                 e.target.reset();
               } else if (trimmed === '0000') {
-                localStorage.removeItem('vip_activated');
-                if (onVipDeactivated) onVipDeactivated();
+                await onVipDeactivated?.();
                 alert('VIP Access Deactivated');
                 e.target.reset();
               } else if (trimmed.length === 4) {
@@ -797,7 +797,7 @@ export default function Navbar({
 
             {/* Mobile Join Party by Code */}
             <form
-              onSubmit={(e) => {
+              onSubmit={async (e) => {
                 e.preventDefault();
                 const input = e.target.elements.roomCode.value;
                 const trimmed = input.trim();
@@ -808,14 +808,14 @@ export default function Navbar({
                     alert('Please sign in first to activate VIP Access');
                     return;
                   }
-                  localStorage.setItem('vip_activated', 'true');
-                  if (onVipActivated) onVipActivated();
-                  alert('VIP Access Activated');
+                  const success = await onVipActivated?.();
+                  if (success !== false) {
+                    alert('VIP Access Activated');
+                  }
                   e.target.reset();
                   setIsProfileMenuOpen(false);
                 } else if (trimmed === '0000') {
-                  localStorage.removeItem('vip_activated');
-                  if (onVipDeactivated) onVipDeactivated();
+                  await onVipDeactivated?.();
                   alert('VIP Access Deactivated');
                   e.target.reset();
                   setIsProfileMenuOpen(false);

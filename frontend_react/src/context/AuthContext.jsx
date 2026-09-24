@@ -21,6 +21,10 @@ import {
   setStoredDriveToken,
   getStoredDriveToken
 } from '../services/googleDrive';
+import {
+  syncUserProfileAndActivity,
+  touchUserLastUsed
+} from '../services/userService';
 
 const AuthContext = createContext({});
 
@@ -367,6 +371,24 @@ export const AuthProvider = ({ children }) => {
           displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || "Movie Lover",
           photoURL: firebaseUser.photoURL
         });
+
+        // Sync user profile, last_used_date, and check VIP access in Firebase table
+        try {
+          const isVipLocal = localStorage.getItem('vip_activated') === 'true';
+          const vipResult = await syncUserProfileAndActivity(firebaseUser, { isVipLocal });
+          if (vipResult) {
+            if (vipResult.isRevoked || vipResult.isVip === false) {
+              localStorage.removeItem('vip_activated');
+              window.dispatchEvent(new CustomEvent('cinematch_vip_revoked'));
+            } else if (vipResult.isVip) {
+              localStorage.setItem('vip_activated', 'true');
+              window.dispatchEvent(new CustomEvent('cinematch_vip_granted'));
+            }
+          }
+        } catch (e) {
+          console.warn("User activity sync notice:", e);
+        }
+
         await syncGuestWatchedToAccount(activeUid);
       } else {
         const mockTestUser = typeof window !== 'undefined' && window.__MOCK_TEST_USER__;
@@ -552,6 +574,11 @@ export const AuthProvider = ({ children }) => {
       saveToGoogleDrive(driveToken, { watched, watchlist, unwatched, not_interested: notInterested }).catch(e => {
         console.warn("Notice saving to Google Drive:", e);
       });
+    }
+
+    // 4. Update last_used_date in Firebase table
+    if (user?.uid) {
+      touchUserLastUsed(user.uid);
     }
   };
 
