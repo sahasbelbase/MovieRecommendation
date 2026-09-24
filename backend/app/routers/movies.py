@@ -66,18 +66,18 @@ async def get_person_credits(person_id: int):
     return data
 
 @router.get("/{movie_id}/details")
-async def get_details(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime)$")):
+async def get_details(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime|kdrama)$")):
     details = await tmdb_service.get_details(movie_id, media_type=media_type)
     if not details:
         raise HTTPException(status_code=404, detail="Media item not found")
     return details
 
 @router.get("/{movie_id}/credits")
-async def get_credits(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime)$")):
+async def get_credits(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime|kdrama)$")):
     return await tmdb_service.get_credits(movie_id, media_type=media_type)
 
 @router.get("/{movie_id}/trailers")
-async def get_trailers(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime)$")):
+async def get_trailers(movie_id: int, media_type: str = Query("movie", pattern="^(movie|tv|anime|kdrama)$")):
     return await tmdb_service.get_videos(movie_id, media_type=media_type)
 
 @router.get("/{movie_id}/providers")

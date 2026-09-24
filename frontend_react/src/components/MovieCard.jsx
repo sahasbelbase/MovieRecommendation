@@ -178,7 +178,7 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
     <div className="absolute top-2 left-2 flex items-center gap-1.5">
      {mediaType === 'anime' && (
       <span className="rounded-md bg-indigo-950/80 backdrop-blur-md px-1.5 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider text-indigo-300 border border-indigo-700/40">
-       Anime
+       {movie.is_movie || movie.stream_type === 'movie' ? 'Anime Movie' : 'Anime'}
       </span>
      )}
      {mediaType === 'tv' && (

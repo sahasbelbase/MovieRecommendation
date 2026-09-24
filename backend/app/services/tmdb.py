@@ -133,6 +133,29 @@ class TMDBService:
         vote_avg = round(float(item.get("vote_average", 0.0)), 1)
         estimated_rt = f"{min(99, max(45, int(vote_avg * 10.5)))}%" if vote_avg > 0 else None
 
+        # Accurately detect structural type (movie vs tv series)
+        has_first_air = bool(item.get("first_air_date"))
+        has_release_date = bool(item.get("release_date"))
+        has_seasons = bool(item.get("number_of_seasons") and item.get("number_of_seasons") > 0)
+        has_runtime = bool(item.get("runtime") and item.get("runtime") > 0)
+
+        if has_first_air or (has_seasons and not has_release_date):
+            is_series = True
+            is_movie = False
+            stream_type = "tv"
+        elif has_release_date or (has_runtime and not has_seasons):
+            is_series = False
+            is_movie = True
+            stream_type = "movie"
+        elif default_type in ["tv", "kdrama"]:
+            is_series = True
+            is_movie = False
+            stream_type = "tv"
+        else:
+            is_series = False
+            is_movie = True
+            stream_type = "movie"
+
         return {
             "id": item.get("id"),
             "title": title,
@@ -146,6 +169,10 @@ class TMDBService:
             "popularity": item.get("popularity", 0.0),
             "genres": genres,
             "media_type": media_type,
+            "sub_type": stream_type,
+            "stream_type": stream_type,
+            "is_series": is_series,
+            "is_movie": is_movie,
             "seasons_count": item.get("number_of_seasons"),
             "episodes_count": item.get("number_of_episodes"),
             "status": item.get("status", ""),
@@ -878,8 +905,13 @@ class TMDBService:
         origin_countries = data.get("origin_country", [])
         prod_countries = [c.get("iso_3166_1") for c in data.get("production_countries", []) if isinstance(c, dict) and c.get("iso_3166_1")]
         is_nepali = (orig_lang == "ne") or ("NP" in origin_countries) or ("NP" in prod_countries)
+        is_tv = (endpoint_type == "tv")
 
         formatted.update({
+            "is_series": is_tv,
+            "is_movie": not is_tv,
+            "stream_type": "tv" if is_tv else "movie",
+            "sub_type": "tv" if is_tv else "movie",
             "is_nepali": is_nepali,
             "original_language": orig_lang,
             "origin_country": origin_countries,
@@ -1173,37 +1205,101 @@ class TMDBService:
 
     async def get_anime_streaming_sources(self, anime_id: int, episode_number: int = 1) -> dict:
         """
-        Fetches anime streaming sources from Anify / Consumet APIs or returns fallback embed URLs.
+        Fetches anime streaming sources or returns fallback embed URLs for both anime movies and TV series.
         """
         cache_key = f"anime_sources_{anime_id}_{episode_number}"
         cached = _get_from_cache(cache_key)
         if cached:
             return cached
 
-        embed_urls = [
-            {
-                "id": "vidlink_hd",
-                "name": "VidLink HD (Fast ⭐)",
-                "url": f"https://vidlink.pro/tv/{anime_id}/1/{episode_number}?primaryColor=a855f7&secondaryColor=121216&iconColor=ffffff&icons=vid&autoplay=true",
-                "type": "iframe"
-            },
-            {
-                "id": "vidsrc_to",
-                "name": "VidSrc TO",
-                "url": f"https://vidsrc.to/embed/tv/{anime_id}/1/{episode_number}",
-                "type": "iframe"
-            },
-            {
-                "id": "vidsrc_sh",
-                "name": "VidSrc SH",
-                "url": f"https://vidsrc.sh/embed/tv?tmdb={anime_id}&season=1&episode={episode_number}",
-                "type": "iframe"
-            }
-        ]
+        # Check whether this anime ID is a movie or an episodic TV series
+        det = await self.get_details(anime_id, media_type="anime")
+        is_movie = det.get("is_movie", False) or det.get("stream_type") == "movie"
+
+        if is_movie:
+            embed_urls = [
+                {
+                    "id": "vidlink_hd",
+                    "name": "VidLink HD (Fast ⭐)",
+                    "url": f"https://vidlink.pro/movie/{anime_id}?primaryColor=a855f7&secondaryColor=121216&iconColor=ffffff&icons=vid&autoplay=true",
+                    "type": "iframe"
+                },
+                {
+                    "id": "autoembed",
+                    "name": "AutoEmbed (Multi)",
+                    "url": f"https://player.autoembed.cc/embed/movie/{anime_id}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "vidsrc_cc",
+                    "name": "VidSrc CC",
+                    "url": f"https://vidsrc.cc/v2/embed/movie/{anime_id}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "embed_su",
+                    "name": "Embed SU",
+                    "url": f"https://embed.su/embed/movie/{anime_id}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "vidsrc_to",
+                    "name": "VidSrc TO",
+                    "url": f"https://vidsrc.to/embed/movie/{anime_id}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "vidsrc_sh",
+                    "name": "VidSrc SH",
+                    "url": f"https://vidsrc.sh/embed/movie?tmdb={anime_id}",
+                    "type": "iframe"
+                }
+            ]
+        else:
+            embed_urls = [
+                {
+                    "id": "vidlink_hd",
+                    "name": "VidLink HD (Fast ⭐)",
+                    "url": f"https://vidlink.pro/tv/{anime_id}/1/{episode_number}?primaryColor=a855f7&secondaryColor=121216&iconColor=ffffff&icons=vid&autoplay=true",
+                    "type": "iframe"
+                },
+                {
+                    "id": "autoembed",
+                    "name": "AutoEmbed (Multi)",
+                    "url": f"https://player.autoembed.cc/embed/tv/{anime_id}/1/{episode_number}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "vidsrc_cc",
+                    "name": "VidSrc CC",
+                    "url": f"https://vidsrc.cc/v2/embed/tv/{anime_id}/1/{episode_number}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "embed_su",
+                    "name": "Embed SU",
+                    "url": f"https://embed.su/embed/tv/{anime_id}/1/{episode_number}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "vidsrc_to",
+                    "name": "VidSrc TO",
+                    "url": f"https://vidsrc.to/embed/tv/{anime_id}/1/{episode_number}",
+                    "type": "iframe"
+                },
+                {
+                    "id": "vidsrc_sh",
+                    "name": "VidSrc SH",
+                    "url": f"https://vidsrc.sh/embed/tv?tmdb={anime_id}&season=1&episode={episode_number}",
+                    "type": "iframe"
+                }
+            ]
 
         result = {
             "anime_id": anime_id,
-            "episode_number": episode_number,
+            "is_movie": is_movie,
+            "stream_type": "movie" if is_movie else "tv",
+            "episode_number": 1 if is_movie else episode_number,
             "sources": embed_urls
         }
         _set_cache(cache_key, result)

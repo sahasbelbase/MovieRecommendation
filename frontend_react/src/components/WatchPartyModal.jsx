@@ -1534,7 +1534,15 @@ export default function WatchPartyModal({
         onClick={() => {
          setActiveTab('embed');
          if (isScreenSharing) stopScreenShare();
-         const embedSrc = ['tv', 'anime', 'kdrama'].includes(movie?.media_type)
+         const isSeries = Boolean(
+          movie?.is_series === true ||
+          movie?.stream_type === 'tv' ||
+          (movie?.seasons_count && movie.seasons_count > 0) ||
+          Boolean(movie?.first_air_date) ||
+          ((movie?.media_type === 'tv' || movie?.media_type === 'kdrama') && !movie?.is_movie && !movie?.release_date)
+         );
+         const streamType = isSeries ? 'tv' : 'movie';
+         const embedSrc = streamType === 'tv'
           ? `https://vidlink.pro/tv/${movie.id}/1/1?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
           : `https://vidlink.pro/movie/${movie.id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`;
          const newSrc = {
@@ -1738,8 +1746,16 @@ export default function WatchPartyModal({
             )}
            </div>
           ) : (() => {
+           const isSeries = Boolean(
+            movie?.is_series === true ||
+            movie?.stream_type === 'tv' ||
+            (movie?.seasons_count && movie.seasons_count > 0) ||
+            Boolean(movie?.first_air_date) ||
+            ((movie?.media_type === 'tv' || movie?.media_type === 'kdrama') && !movie?.is_movie && !movie?.release_date)
+           );
+           const streamType = isSeries ? 'tv' : 'movie';
            const activeSrc = videoSource?.src || (movie?.id
-            ? ['tv', 'anime', 'kdrama'].includes(movie?.media_type)
+            ? streamType === 'tv'
               ? `https://vidlink.pro/tv/${movie.id}/1/1?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
               : `https://vidlink.pro/movie/${movie.id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
             : '');

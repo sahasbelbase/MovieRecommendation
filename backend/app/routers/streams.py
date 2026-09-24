@@ -27,18 +27,36 @@ async def resolve_stream(
     """
     try:
         data = await resolve_vidlink_stream(tmdb_id, media_type, season, episode)
-        
-        # Build local proxy stream URL if direct_url resolved
-        base_url = str(request.base_url).rstrip("/")
-        target_url = data.get("direct_url")
-        if target_url:
+        if data and data.get("direct_url"):
+            base_url = str(request.base_url).rstrip("/")
+            target_url = data.get("direct_url")
             encoded_target = urllib.parse.quote(target_url, safe="")
             proxy_url = f"{base_url}/api/streams/proxy?url={encoded_target}"
             data["proxy_url"] = proxy_url
-        return data
+            return data
+
+        return {
+            "status": "fallback",
+            "media_type": media_type,
+            "tmdb_id": tmdb_id,
+            "season": season,
+            "episode": episode,
+            "direct_url": None,
+            "proxy_url": None,
+            "captions": []
+        }
     except Exception as e:
-        logger.error(f"Error resolving stream for {media_type} {tmdb_id}: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.warning(f"Error resolving stream for {media_type} {tmdb_id}: {e}")
+        return {
+            "status": "fallback",
+            "media_type": media_type,
+            "tmdb_id": tmdb_id,
+            "season": season,
+            "episode": episode,
+            "direct_url": None,
+            "proxy_url": None,
+            "captions": []
+        }
 
 @router.get("/proxy")
 async def proxy_stream(request: Request, url: str = Query(..., description="Encoded target video URL")):

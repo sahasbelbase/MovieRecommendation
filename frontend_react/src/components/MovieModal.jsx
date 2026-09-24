@@ -27,45 +27,64 @@ const EMBED_SERVERS = [
   {
     id: 'vidlink_hd',
     name: 'Server 1 (VidLink HD)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
     sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => type === 'tv'
       ? `https://vidlink.pro/tv/${id}/${s}/${e}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid${audio === 'dub' ? '&dub=1' : ''}`
       : `https://vidlink.pro/movie/${id}?primaryColor=a855f7&secondaryColor=18181b&iconColor=ffffff&icons=vid`
   },
   {
-    id: 'vidsrc_to',
-    name: 'Server 2 (VidSrc TO)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    id: 'autoembed',
+    name: 'Server 2 (AutoEmbed Multi)',
     sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
+      ? `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}`
+      : `https://player.autoembed.cc/embed/movie/${id}`
+  },
+  {
+    id: 'vidsrc_cc',
+    name: 'Server 3 (VidSrc CC)',
+    sandbox: null,
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
+      ? `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`
+      : `https://vidsrc.cc/v2/embed/movie/${id}`
+  },
+  {
+    id: 'embed_su',
+    name: 'Server 4 (Embed SU)',
+    sandbox: null,
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
+      ? `https://embed.su/embed/tv/${id}/${s}/${e}`
+      : `https://embed.su/embed/movie/${id}`
+  },
+  {
+    id: 'vidsrc_to',
+    name: 'Server 5 (VidSrc TO)',
+    sandbox: null,
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
       ? `https://vidsrc.to/embed/tv/${id}/${s}/${e}`
       : `https://vidsrc.to/embed/movie/${id}`
   },
   {
     id: 'vidsrc_sh',
-    name: 'Server 3 (VidSrc SH)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    name: 'Server 6 (VidSrc SH)',
     sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
       ? `https://vidsrc.sh/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
       : `https://vidsrc.sh/embed/movie?tmdb=${id}`
   },
   {
     id: 'embed_2cc',
-    name: 'Server 4 (2Embed)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    name: 'Server 7 (2Embed)',
     sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
       ? `https://2embed.cc/embedtv/${id}&s=${s}&e=${e}`
       : `https://2embed.cc/embed/${id}`
   },
   {
     id: 'vidsrc_pro',
-    name: 'Server 5 (VidSrc Pro)',
-    mediaTypes: ['movie', 'tv', 'anime', 'kdrama'],
+    name: 'Server 8 (VidSrc Pro)',
     sandbox: null,
-    getUrl: (id, type, s = 1, e = 1, audio = 'sub') => ['tv', 'anime', 'kdrama'].includes(type)
+    getUrl: (id, type, s = 1, e = 1) => type === 'tv'
       ? `https://vidsrc.pro/embed/tv/${id}/${s}/${e}`
       : `https://vidsrc.pro/embed/movie/${id}`
   },
@@ -142,12 +161,36 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const isWatched = watchedIds.has(movieId);
  const isWatchlist = watchlistIds.has(movieId);
  const isNotInterested = notInterestedIds?.has(movieId);
- const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : (movie.genres?.some(g => (typeof g === 'string' ? ['Animation', 'Anime'].includes(g) : ['Animation', 'Anime'].includes(g?.name))) ? 'tv' : 'movie'));
+ const initialMediaType = movie.media_type || (movie.first_air_date ? 'tv' : 'movie');
  const effectiveMediaType = details?.media_type || initialMediaType;
  const mediaType = effectiveMediaType;
- const isSeries = ['tv', 'anime', 'kdrama'].includes(effectiveMediaType) || (details?.seasons_count && details.seasons_count > 0) || (details?.seasons && details.seasons.length > 0) || Boolean(movie.first_air_date) || Boolean(details?.first_air_date);
 
- const availableServers = useMemo(() => EMBED_SERVERS.filter(s => !s.mediaTypes || s.mediaTypes.includes(effectiveMediaType)), [effectiveMediaType]);
+ // Accurately determine whether this title is an episodic series (TV show / Anime TV series / K-Drama series)
+ // or a standalone movie (Feature film / Anime movie).
+ const isSeries = (() => {
+  // 1. Explicit flags from backend if available
+  if (details?.is_movie === true || movie?.is_movie === true) return false;
+  if (details?.stream_type === 'movie' || movie?.stream_type === 'movie') return false;
+  if (details?.is_series === true || movie?.is_series === true) return true;
+  if (details?.stream_type === 'tv' || movie?.stream_type === 'tv') return true;
+
+  // 2. Concrete metadata indicators
+  if ((details?.seasons_count && details.seasons_count > 0) || (details?.seasons && details.seasons.length > 0)) return true;
+  if (movie?.seasons_count && movie.seasons_count > 0) return true;
+  if (Boolean(details?.first_air_date) || Boolean(movie?.first_air_date)) return true;
+
+  // 3. Movie indicators (has release_date, runtime > 0, and no seasons or first_air_date)
+  if ((details?.release_date || movie?.release_date) && !details?.first_air_date && !movie?.first_air_date) return false;
+  if (details?.runtime > 0 && !details?.seasons_count && !details?.first_air_date) return false;
+
+  // 4. Default fallback: pure 'tv' and 'kdrama' default to series; 'anime' defaults to movie unless TV properties are present
+  return effectiveMediaType === 'tv' || effectiveMediaType === 'kdrama';
+ })();
+
+ const streamType = isSeries ? 'tv' : 'movie';
+ const isAnimeMovie = (effectiveMediaType === 'anime' || movie?.genres?.some(g => (typeof g === 'string' ? g : g?.name)?.toLowerCase() === 'animation')) && !isSeries;
+
+ const availableServers = EMBED_SERVERS;
 
  const [userRating, setUserRating] = useState(watchedRecord?.rating || 0);
  const [userReview, setUserReview] = useState(watchedRecord?.review || '');
@@ -249,7 +292,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   fetchData();
  }, [movieId, initialMediaType]);
 
- // Dynamically fetch watch providers whenever movie, effectiveMediaType, or country changes
+ // Dynamically fetch watch providers whenever movie, streamType, or country changes
  useEffect(() => {
   if (!movieId) return;
   let isMounted = true;
@@ -259,7 +302,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    try {
     const encodedTitle = encodeURIComponent(movie.title || details?.title || '');
     const res = await api.get(
-     `/movies/${movieId}/providers?media_type=${effectiveMediaType}&country=${country}&title=${encodedTitle}`
+     `/movies/${movieId}/providers?media_type=${streamType}&country=${country}&title=${encodedTitle}`
     );
     if (isMounted) {
      setProviders(res.data);
@@ -275,7 +318,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   return () => {
    isMounted = false;
   };
- }, [movieId, effectiveMediaType, country, movie.title, details?.title]);
+ }, [movieId, streamType, country, movie.title, details?.title]);
 
   // Dynamically fetch TV Series / Anime Season Episodes for Netflix-style selector
   useEffect(() => {
@@ -310,7 +353,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    if (!user || !isVip || !movieId || !showStreamPlayer) return;
    let isMounted = true;
    setCheckingStreamStatus(true);
-   api.get(`/movies/${movieId}/stream-status?media_type=${effectiveMediaType}`)
+   api.get(`/movies/${movieId}/stream-status?media_type=${streamType}`)
     .then((res) => {
      if (isMounted) setStreamStatusData(res.data);
     })
@@ -321,7 +364,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
    return () => {
     isMounted = false;
    };
-  }, [user, isVip, movieId, effectiveMediaType, showStreamPlayer]);
+  }, [user, isVip, movieId, streamType, showStreamPlayer]);
 
  const activeTrailer = trailers.length > 0 ? trailers[0] : null;
 
@@ -529,7 +572,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
            ) : (
             <iframe
              key={`${availableServers[streamServerIndex]?.id}_${movieId}_s${selectedSeason}_e${selectedEpisode}_${audioTrack}`}
-             src={availableServers[streamServerIndex]?.getUrl(movieId, effectiveMediaType, selectedSeason, selectedEpisode, audioTrack)}
+             src={availableServers[streamServerIndex]?.getUrl(movieId, streamType, selectedSeason, selectedEpisode, audioTrack)}
              title={`${movie.title} Stream`}
              allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
              allowFullScreen
@@ -540,7 +583,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
            {showTvDirectTestPlayer && (
             <TvVideoPlayer
              movieId={movieId}
-             mediaType={effectiveMediaType}
+             mediaType={streamType}
              season={selectedSeason}
              episode={selectedEpisode}
              title={movie.title}
@@ -578,7 +621,9 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
             <span>
              {isSeries
                ? `Play S${selectedSeason} E${selectedEpisode}`
-               : 'Play Stream'}
+               : isAnimeMovie
+                 ? 'Play Anime Movie'
+                 : 'Play Movie'}
             </span>
            </button>
           )}
@@ -620,12 +665,17 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
          </h2>
          {mediaType === 'anime' && (
           <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-indigo-950/80 text-indigo-300 border border-indigo-700/40">
-           Anime
+           {isAnimeMovie ? 'Anime Movie' : 'Anime Series'}
           </span>
          )}
          {mediaType === 'tv' && (
           <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-purple-950/80 text-purple-300 border border-purple-700/40">
            TV Series
+          </span>
+         )}
+         {mediaType === 'kdrama' && (
+          <span className="px-2 py-0.5 rounded-full text-[11px] font-mono font-semibold bg-pink-950/80 text-pink-300 border border-pink-700/40">
+           K-Drama
           </span>
          )}
         </div>
