@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap, Lock } from 'lucide-react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap, Lock, SkipBack, SkipForward, Sparkles } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
@@ -116,6 +116,18 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [showStreamPlayer, setShowStreamPlayer] = useState(Boolean(autoPlayStream && user && isVip));
  const [showTvDirectTestPlayer, setShowTvDirectTestPlayer] = useState(false);
  const [streamServerIndex, setStreamServerIndex] = useState(0);
+ const [userSelectedServer, setUserSelectedServer] = useState(false);
+ const [anikotoData, setAnikotoData] = useState(null);
+ const [anikotoLoading, setAnikotoLoading] = useState(false);
+ const [autoPlayNext, setAutoPlayNext] = useState(() => {
+  try {
+   return localStorage.getItem('cinematch_autoplay_next') !== 'false';
+  } catch {
+   return true;
+  }
+ });
+ const [showWatchNextCountdown, setShowWatchNextCountdown] = useState(false);
+ const [countdownSeconds, setCountdownSeconds] = useState(10);
  const [streamStatusData, setStreamStatusData] = useState(null);
  const [checkingStreamStatus, setCheckingStreamStatus] = useState(false);
  const [selectedSeason, setSelectedSeason] = useState(1);
@@ -133,6 +145,10 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   setSeasonData(null);
   setStreamStatusData(null);
   setStreamServerIndex(0);
+  setUserSelectedServer(false);
+  setAnikotoData(null);
+  setShowWatchNextCountdown(false);
+  setCountdownSeconds(10);
   setShowTrailerPlayer(false);
   setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
  }, [movieId, autoPlayStream, user, isVip]);
@@ -190,7 +206,51 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const streamType = isSeries ? 'tv' : 'movie';
  const isAnimeMovie = (effectiveMediaType === 'anime' || movie?.genres?.some(g => (typeof g === 'string' ? g : g?.name)?.toLowerCase() === 'animation')) && !isSeries;
 
- const availableServers = EMBED_SERVERS;
+ const anikotoEmbedUrl = anikotoData?.sources?.find(s => s.id === 'anikoto')?.url || null;
+
+ const availableServers = useMemo(() => {
+  const standardServers = EMBED_SERVERS;
+  if (effectiveMediaType === 'anime' || isAnimeMovie) {
+   const anikotoServer = {
+    id: 'anikoto',
+    name: anikotoEmbedUrl ? 'Server 0 (Anikoto Stream ⭐)' : 'Server 0 (Anikoto Anime)',
+    sandbox: null,
+    isAnikoto: true,
+    getUrl: () => anikotoEmbedUrl || `https://anikotoapi.site`
+   };
+   return [anikotoServer, ...standardServers];
+  }
+  return standardServers;
+ }, [effectiveMediaType, isAnimeMovie, anikotoEmbedUrl]);
+
+ // Optimal recommended server per content type:
+ // • Movies: Server 1 (VidLink HD)
+ // • TV Series: Server 2 (AutoEmbed Multi)
+ // • Anime Series & Movies: Anikoto Stream (or VidLink HD if Anikoto unindexed)
+ const recommendedServerId = useMemo(() => {
+  if (effectiveMediaType === 'anime' || isAnimeMovie) {
+   return anikotoEmbedUrl ? 'anikoto' : 'vidlink_hd';
+  }
+  if (isSeries) {
+   return 'autoembed';
+  }
+  return 'vidlink_hd';
+ }, [effectiveMediaType, isAnimeMovie, isSeries, anikotoEmbedUrl]);
+
+ // Auto-choose optimal recommended server for user unless manually overridden
+ useEffect(() => {
+  if (!userSelectedServer && availableServers.length > 0) {
+   const recIdx = availableServers.findIndex(s => s.id === recommendedServerId);
+   if (recIdx !== -1) {
+    setStreamServerIndex(recIdx);
+   }
+  }
+ }, [recommendedServerId, availableServers, userSelectedServer]);
+
+ // Reset manual choice whenever movie changes so recommendation automatically applies
+ useEffect(() => {
+  setUserSelectedServer(false);
+ }, [movieId]);
 
  const [userRating, setUserRating] = useState(watchedRecord?.rating || 0);
  const [userReview, setUserReview] = useState(watchedRecord?.review || '');
@@ -435,6 +495,118 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   ? Math.max(...rawEpisodes.map(e => e.episode_number || 0))
   : 1;
 
+ // Fetch anime stream sources from backend (integrating Anikoto API)
+ useEffect(() => {
+  if (!movieId) return;
+  if (effectiveMediaType !== 'anime' && !isAnimeMovie) {
+   setAnikotoData(null);
+   return;
+  }
+  let isMounted = true;
+  setAnikotoLoading(true);
+  const targetEp = isSeries ? selectedEpisode : 1;
+  api.get(`/movies/anime/${movieId}/sources?episode=${targetEp}&lang=${audioTrack}`)
+   .then((res) => {
+    if (isMounted && res.data) {
+     setAnikotoData(res.data);
+    }
+   })
+   .catch((err) => {
+    console.warn('Anime sources lookup:', err);
+   })
+   .finally(() => {
+    if (isMounted) setAnikotoLoading(false);
+   });
+  return () => {
+   isMounted = false;
+  };
+ }, [movieId, effectiveMediaType, isAnimeMovie, isSeries, selectedEpisode, audioTrack]);
+
+ // Next & Previous Episode resolution for TV Series and Anime
+ const { currentEpisodeObj, nextEpisodeObj, prevEpisodeObj, hasNextEpisode, hasPrevEpisode } = useMemo(() => {
+  if (!isSeries || !rawEpisodes || rawEpisodes.length === 0) {
+   return {
+    currentEpisodeObj: null,
+    nextEpisodeObj: null,
+    prevEpisodeObj: null,
+    hasNextEpisode: false,
+    hasPrevEpisode: false
+   };
+  }
+  const current = rawEpisodes.find(ep => ep.episode_number === selectedEpisode) || null;
+  const sorted = [...rawEpisodes].sort((a, b) => (a.episode_number || 0) - (b.episode_number || 0));
+  const currentIdx = sorted.findIndex(ep => ep.episode_number === selectedEpisode);
+  const prev = currentIdx > 0 ? sorted[currentIdx - 1] : null;
+  const next = currentIdx >= 0 && currentIdx < sorted.length - 1 ? sorted[currentIdx + 1] : null;
+  return {
+   currentEpisodeObj: current,
+   nextEpisodeObj: next,
+   prevEpisodeObj: prev,
+   hasNextEpisode: Boolean(next),
+   hasPrevEpisode: Boolean(prev)
+  };
+ }, [isSeries, rawEpisodes, selectedEpisode]);
+
+ const handlePlayNextEpisode = () => {
+  if (!nextEpisodeObj) return;
+  setSelectedEpisode(nextEpisodeObj.episode_number);
+  setShowWatchNextCountdown(false);
+  setCountdownSeconds(10);
+  if (onShowToast) {
+   onShowToast({
+    message: `Playing S${selectedSeason} E${nextEpisodeObj.episode_number}: ${nextEpisodeObj.name || 'Next Episode'}`,
+    movie
+   });
+  }
+ };
+
+ const handlePlayPrevEpisode = () => {
+  if (!prevEpisodeObj) return;
+  setSelectedEpisode(prevEpisodeObj.episode_number);
+  setShowWatchNextCountdown(false);
+  setCountdownSeconds(10);
+  if (onShowToast) {
+   onShowToast({
+    message: `Playing S${selectedSeason} E${prevEpisodeObj.episode_number}: ${prevEpisodeObj.name || 'Previous Episode'}`,
+    movie
+   });
+  }
+ };
+
+ // Watch Next / Autoplay countdown timer
+ useEffect(() => {
+  if (!showWatchNextCountdown) {
+   setCountdownSeconds(10);
+   return;
+  }
+  const interval = setInterval(() => {
+   setCountdownSeconds((prev) => {
+    if (prev <= 1) {
+     clearInterval(interval);
+     setShowWatchNextCountdown(false);
+     if (autoPlayNext) {
+      if (isSeries && nextEpisodeObj) {
+       handlePlayNextEpisode();
+      } else if (!isSeries && similarItems.length > 0 && onSelectMovie) {
+       const nextMovie = similarItems[0];
+       onSelectMovie(nextMovie);
+       if (onShowToast) {
+        onShowToast({
+         message: `Autoplaying similar title: ${nextMovie.title}`,
+         movie: nextMovie
+        });
+       }
+      }
+     }
+     return 10;
+    }
+    return prev - 1;
+   });
+  }, 1000);
+
+  return () => clearInterval(interval);
+ }, [showWatchNextCountdown, autoPlayNext, isSeries, nextEpisodeObj, similarItems, onSelectMovie, onShowToast]);
+
  return (
   <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
    {/* Backdrop Light-Dismiss Click Area */}
@@ -465,19 +637,35 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              S{selectedSeason} E{selectedEpisode}
             </span>
            )}
-           {availableServers.map((srv, idx) => (
-            <button
-             key={srv.id}
-             onClick={() => setStreamServerIndex(idx)}
-             className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all whitespace-nowrap ${
-              streamServerIndex === idx
-               ? 'bg-purple-600 text-white shadow-md'
-               : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-             }`}
-            >
-             {srv.name}
-            </button>
-           ))}
+           {availableServers.map((srv, idx) => {
+            const isSelected = streamServerIndex === idx;
+            const isRecommended = srv.id === recommendedServerId;
+            return (
+             <button
+              key={srv.id}
+              onClick={() => {
+               setUserSelectedServer(true);
+               setStreamServerIndex(idx);
+              }}
+              className={`relative px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all whitespace-nowrap flex items-center gap-1 ${
+               isSelected
+                ? 'bg-purple-600 text-white shadow-md'
+                : isRecommended
+                  ? 'bg-purple-950/70 border border-purple-500/50 text-purple-200 hover:bg-purple-900/60'
+                  : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
+              }`}
+             >
+              <span>{srv.name}</span>
+              {isRecommended && (
+               <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-bold uppercase tracking-wider ${
+                isSelected ? 'bg-white/25 text-white' : 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
+               }`}>
+                ⭐ Best
+               </span>
+              )}
+             </button>
+            );
+           })}
 
            {/* Phase 1 Direct Video Player Test Button (Smart TV Only) */}
            {isTv && (
@@ -515,6 +703,84 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
               DUB
              </button>
             </div>
+
+            {/* Episodic Series / Anime Prev & Next & Watch Next & Autoplay */}
+            {isSeries && (
+             <div className="flex items-center gap-1 border-l border-zinc-700/80 pl-2 shrink-0 ml-1">
+              <button
+               onClick={handlePlayPrevEpisode}
+               disabled={!hasPrevEpisode}
+               className={`px-2 py-1 rounded text-[11px] font-medium flex items-center gap-1 transition-all ${
+                hasPrevEpisode
+                 ? 'bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white'
+                 : 'bg-zinc-900/40 text-zinc-600 cursor-not-allowed'
+               }`}
+               title={hasPrevEpisode ? `Previous Episode (E${prevEpisodeObj?.episode_number})` : 'First Episode in Season'}
+              >
+               <SkipBack className="w-3 h-3" />
+               <span className="hidden sm:inline">Prev</span>
+              </button>
+
+              <button
+               onClick={handlePlayNextEpisode}
+               disabled={!hasNextEpisode}
+               className={`px-2 py-1 rounded text-[11px] font-medium flex items-center gap-1 transition-all ${
+                hasNextEpisode
+                 ? 'bg-purple-600/30 hover:bg-purple-600/50 text-purple-200 border border-purple-500/40 hover:text-white'
+                 : 'bg-zinc-900/40 text-zinc-600 cursor-not-allowed'
+               }`}
+               title={hasNextEpisode ? `Next Episode (E${nextEpisodeObj?.episode_number})` : 'Season Finale / Last Episode'}
+              >
+               <span className="hidden sm:inline">Next</span>
+               <SkipForward className="w-3 h-3" />
+              </button>
+
+              {hasNextEpisode && (
+               <button
+                onClick={() => {
+                 setShowWatchNextCountdown(true);
+                 setCountdownSeconds(10);
+                }}
+                className={`px-2 py-1 rounded text-[11px] font-bold flex items-center gap-1 transition-all ${
+                 showWatchNextCountdown
+                  ? 'bg-amber-500 text-black shadow'
+                  : 'bg-zinc-800 hover:bg-amber-500/20 text-amber-400 hover:text-amber-300 border border-amber-500/30'
+                }`}
+                title="Trigger Watch Next countdown overlay"
+               >
+                <Sparkles className="w-3 h-3" />
+                <span className="hidden md:inline">Watch Next</span>
+               </button>
+              )}
+             </div>
+            )}
+
+            {/* Autoplay Next Toggle */}
+            <button
+             onClick={() => {
+              setAutoPlayNext(prev => {
+               const nextVal = !prev;
+               try {
+                localStorage.setItem('cinematch_autoplay_next', String(nextVal));
+               } catch {}
+               if (onShowToast) {
+                onShowToast({
+                 message: nextVal ? '⚡ Autoplay next episode: ON' : '⚡ Autoplay next episode: OFF'
+                });
+               }
+               return nextVal;
+              });
+             }}
+             className={`px-2 py-1 rounded text-[10px] font-mono font-bold flex items-center gap-1 transition-all shrink-0 ml-1 ${
+              autoPlayNext
+               ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+               : 'bg-zinc-800 text-zinc-500 hover:text-zinc-300'
+             }`}
+             title={autoPlayNext ? 'Autoplay next episode is ON' : 'Autoplay next episode is OFF'}
+            >
+             <Zap className={`w-3 h-3 ${autoPlayNext ? 'fill-emerald-400 text-emerald-400' : 'text-zinc-500'}`} />
+             <span className="hidden xs:inline">{autoPlayNext ? 'Autoplay: ON' : 'Autoplay: OFF'}</span>
+            </button>
           </div>
           <button
            onClick={() => setShowStreamPlayer(false)}
@@ -522,6 +788,24 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
           >
            Close Stream ✕
           </button>
+         </div>
+
+         {/* Sub-bar with Recommended Server Auto-Choice Notice */}
+         <div className="flex items-center justify-between px-3 py-1 bg-zinc-950 border-b border-zinc-800/80 text-[10.5px] font-mono text-zinc-400">
+          <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none">
+           <span className="text-purple-400 font-bold shrink-0">⭐ Recommended:</span>
+           <span className="text-zinc-200 shrink-0">
+            {effectiveMediaType === 'anime' || isAnimeMovie
+              ? (anikotoEmbedUrl ? 'Anikoto Anime Stream (Auto-chosen for Anime)' : 'VidLink HD with Sub/Dub (Auto-chosen for Anime)')
+              : isSeries
+                ? 'AutoEmbed Multi (Auto-chosen for TV Series)'
+                : 'VidLink HD (Auto-chosen for Movies)'}
+           </span>
+           <span className="text-zinc-500 hidden sm:inline">• Free to switch to any server anytime</span>
+          </div>
+          {effectiveMediaType === 'anime' && anikotoLoading && (
+           <span className="text-[10px] text-amber-400 animate-pulse shrink-0">Checking Anikoto streams...</span>
+          )}
          </div>
 
           {/* Stream Player Container */}
@@ -579,6 +863,100 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              {...(availableServers[streamServerIndex]?.sandbox ? { sandbox: availableServers[streamServerIndex].sandbox } : {})}
              className="w-full h-full border-0"
             />
+           )}
+           {/* Floating Netflix-Style "Watch Next / Up Next" Countdown Overlay */}
+           {showWatchNextCountdown && (isSeries ? hasNextEpisode : similarItems.length > 0) && (
+            <div className="absolute bottom-4 right-4 z-40 max-w-xs sm:max-w-sm w-72 sm:w-80 bg-zinc-950/95 border border-purple-500/70 rounded-2xl p-3.5 shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-4 duration-200">
+             <div className="flex items-center justify-between pb-2 border-b border-zinc-800">
+              <div className="flex items-center gap-1.5">
+               <Sparkles className="w-3.5 h-3.5 text-purple-400 animate-spin" />
+               <span className="text-xs font-bold text-white uppercase tracking-wider">
+                Up Next in {countdownSeconds}s
+               </span>
+              </div>
+              <button
+               onClick={() => setShowWatchNextCountdown(false)}
+               className="p-1 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+               title="Cancel countdown"
+              >
+               <X className="w-3.5 h-3.5" />
+              </button>
+             </div>
+
+             {/* Content Thumbnail & Details */}
+             <div className="flex items-center gap-3 py-2.5">
+              {isSeries && nextEpisodeObj ? (
+               <>
+                <div className="relative w-20 aspect-video rounded-lg overflow-hidden bg-zinc-900 shrink-0 border border-zinc-800">
+                 {nextEpisodeObj.still_url ? (
+                  <img src={nextEpisodeObj.still_url} alt={nextEpisodeObj.name} className="w-full h-full object-cover" />
+                 ) : (
+                  <div className="w-full h-full flex items-center justify-center text-zinc-600 font-mono text-[9px]">
+                   E{nextEpisodeObj.episode_number}
+                  </div>
+                 )}
+                 <span className="absolute bottom-0.5 right-0.5 px-1 rounded bg-black/80 text-[8px] font-mono font-bold text-white">
+                  E{nextEpisodeObj.episode_number}
+                 </span>
+                </div>
+                <div className="min-w-0 flex-1">
+                 <h6 className="text-xs font-bold text-white truncate">
+                  {nextEpisodeObj.episode_number}. {nextEpisodeObj.name || `Episode ${nextEpisodeObj.episode_number}`}
+                 </h6>
+                 <p className="text-[11px] text-zinc-400 font-mono">
+                  Season {selectedSeason} • {nextEpisodeObj.runtime ? `${nextEpisodeObj.runtime}m` : 'Next Episode'}
+                 </p>
+                </div>
+               </>
+              ) : (
+               similarItems.length > 0 && (
+                <>
+                 <div className="relative w-12 aspect-[2/3] rounded-lg overflow-hidden bg-zinc-900 shrink-0 border border-zinc-800">
+                  <img src={similarItems[0].poster_url} alt={similarItems[0].title} className="w-full h-full object-cover" />
+                 </div>
+                 <div className="min-w-0 flex-1">
+                  <h6 className="text-xs font-bold text-white truncate">{similarItems[0].title}</h6>
+                  <p className="text-[11px] text-zinc-400 font-mono">
+                   {similarItems[0].year} • ★ {similarItems[0].imdb_rating || similarItems[0].vote_average?.toFixed(1) || '8.0'}
+                  </p>
+                 </div>
+                </>
+               )
+              )}
+             </div>
+
+             {/* Progress Bar */}
+             <div className="w-full h-1 bg-zinc-800 rounded-full overflow-hidden mb-2.5">
+              <div
+               className="h-full bg-gradient-to-r from-purple-500 to-amber-500 transition-all duration-1000 ease-linear"
+               style={{ width: `${((10 - countdownSeconds) / 10) * 100}%` }}
+              />
+             </div>
+
+             {/* Action Buttons */}
+             <div className="flex items-center gap-2">
+              <button
+               onClick={() => {
+                if (isSeries && nextEpisodeObj) {
+                 handlePlayNextEpisode();
+                } else if (!isSeries && similarItems.length > 0 && onSelectMovie) {
+                 setShowWatchNextCountdown(false);
+                 onSelectMovie(similarItems[0]);
+                }
+               }}
+               className="flex-1 py-1.5 px-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-all active:scale-95 shadow flex items-center justify-center gap-1.5"
+              >
+               <Play className="w-3.5 h-3.5 fill-white" />
+               <span>Watch Now</span>
+              </button>
+              <button
+               onClick={() => setShowWatchNextCountdown(false)}
+               className="py-1.5 px-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white text-xs font-medium border border-zinc-800 transition-colors"
+              >
+               Cancel
+              </button>
+             </div>
+            </div>
            )}
            {showTvDirectTestPlayer && (
             <TvVideoPlayer
@@ -1085,6 +1463,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
               setSelectedEpisode(ep.episode_number);
               setShowTrailerPlayer(false);
               setShowStreamPlayer(true);
+              setShowWatchNextCountdown(false);
+              setCountdownSeconds(10);
               const container = document.querySelector('.overflow-y-auto');
               if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
              }}

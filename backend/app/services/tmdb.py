@@ -1203,11 +1203,11 @@ class TMDBService:
         _set_cache(cache_key, res)
         return res
 
-    async def get_anime_streaming_sources(self, anime_id: int, episode_number: int = 1) -> dict:
+    async def get_anime_streaming_sources(self, anime_id: int, episode_number: int = 1, lang: str = "sub") -> dict:
         """
         Fetches anime streaming sources or returns fallback embed URLs for both anime movies and TV series.
         """
-        cache_key = f"anime_sources_{anime_id}_{episode_number}"
+        cache_key = f"anime_sources_{anime_id}_{episode_number}_{lang}"
         cached = _get_from_cache(cache_key)
         if cached:
             return cached
@@ -1295,11 +1295,27 @@ class TMDBService:
                 }
             ]
 
+        # Check Anikoto for dedicated anime stream
+        title = det.get("title", "")
+        try:
+            from .anikoto import anikoto_service
+            anikoto_embed = await anikoto_service.get_anime_episode_embed(title, episode_number=1 if is_movie else episode_number, lang=lang)
+            if anikoto_embed:
+                embed_urls.insert(0, {
+                    "id": "anikoto",
+                    "name": "Anikoto Anime (⭐ Dedicated)",
+                    "url": anikoto_embed,
+                    "type": "iframe"
+                })
+        except Exception as anikoto_err:
+            logger.debug(f"Anikoto lookup skipped for {title}: {anikoto_err}")
+
         result = {
             "anime_id": anime_id,
             "is_movie": is_movie,
             "stream_type": "movie" if is_movie else "tv",
             "episode_number": 1 if is_movie else episode_number,
+            "lang": lang,
             "sources": embed_urls
         }
         _set_cache(cache_key, result)

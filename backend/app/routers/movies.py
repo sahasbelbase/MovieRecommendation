@@ -103,7 +103,27 @@ async def get_stream_status(movie_id: int, media_type: str = Query("movie", patt
     return await tmdb_service.get_movie_stream_status(movie_id, media_type=media_type)
 
 @router.get("/anime/{anime_id}/sources")
-async def get_anime_sources(anime_id: int, episode: int = Query(1, ge=1)):
-    return await tmdb_service.get_anime_streaming_sources(anime_id, episode_number=episode)
+async def get_anime_sources(
+    anime_id: int,
+    episode: int = Query(1, ge=1),
+    lang: str = Query("sub", pattern="^(sub|dub)$")
+):
+    return await tmdb_service.get_anime_streaming_sources(anime_id, episode_number=episode, lang=lang)
+
+@router.get("/anime/anikoto/recent")
+async def get_anikoto_recent(page: int = Query(1, ge=1), per_page: int = Query(20, ge=1, le=50)):
+    """Fetches real-time recent anime episodes and updates from Anikoto API."""
+    from ..services.anikoto import anikoto_service
+    data = await anikoto_service.get_recent_anime(page=page, per_page=per_page)
+    return {"ok": True, "count": len(data), "data": data}
+
+@router.get("/anime/anikoto/{series_id}")
+async def get_anikoto_series(series_id: int):
+    """Fetches anime series episodes and embed player URLs from Anikoto."""
+    from ..services.anikoto import anikoto_service
+    data = await anikoto_service.get_series(series_id)
+    if not data:
+        raise HTTPException(status_code=404, detail="Anikoto series not found")
+    return {"ok": True, "data": data}
 
 
