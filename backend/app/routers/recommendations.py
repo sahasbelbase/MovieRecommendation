@@ -15,7 +15,7 @@ class SwipeActionRequest(BaseModel):
 
 @router.get("/feed")
 async def get_recommendation_feed(
-    media_type: Optional[str] = Query(None, pattern="^(all|movie|tv|anime)$"),
+    media_type: Optional[str] = Query(None, pattern="^(all|movie|tv|anime|trending)$"),
     genre: Optional[str] = Query(None),
     user: Optional[dict] = Depends(get_current_user_optional)
 ):

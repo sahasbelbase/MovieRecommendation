@@ -1295,18 +1295,40 @@ class TMDBService:
                 }
             ]
 
-        # Check Anikoto for dedicated anime stream
+        # Check Anikoto for dedicated anime stream and latest release details
         title = det.get("title", "")
+        latest_release = None
         try:
             from .anikoto import anikoto_service
-            anikoto_embed = await anikoto_service.get_anime_episode_embed(title, episode_number=1 if is_movie else episode_number, lang=lang)
-            if anikoto_embed:
-                embed_urls.insert(0, {
-                    "id": "anikoto",
-                    "name": "Anikoto Anime (⭐ Dedicated)",
-                    "url": anikoto_embed,
-                    "type": "iframe"
-                })
+            matched = await anikoto_service.match_anime_by_title(title)
+            if matched and matched.get("id"):
+                series_data = await anikoto_service.get_series(matched["id"])
+                if series_data and series_data.get("episodes"):
+                    eps = series_data["episodes"]
+                    target_ep_obj = next((e for e in eps if e.get("number") == (1 if is_movie else episode_number)), None)
+                    if not target_ep_obj and eps:
+                        target_ep_obj = eps[0]
+                    if target_ep_obj:
+                        embeds = target_ep_obj.get("embed_url", {})
+                        chosen_embed = embeds.get(lang) or embeds.get("sub") or embeds.get("dub")
+                        if chosen_embed:
+                            embed_urls.insert(0, {
+                                "id": "anikoto",
+                                "name": "Anikoto Anime (⭐ Dedicated)",
+                                "url": chosen_embed,
+                                "type": "iframe"
+                            })
+                    latest_ep = eps[-1] if eps else None
+                    if latest_ep:
+                        latest_release = {
+                            "series_id": matched["id"],
+                            "latest_episode": latest_ep.get("number") or matched.get("is_sub") or matched.get("is_dub"),
+                            "updated_at": latest_ep.get("updated_at") or matched.get("updated_at"),
+                            "total_episodes": len(eps),
+                            "is_sub": matched.get("is_sub"),
+                            "is_dub": matched.get("is_dub"),
+                            "slug": matched.get("slug")
+                        }
         except Exception as anikoto_err:
             logger.debug(f"Anikoto lookup skipped for {title}: {anikoto_err}")
 
@@ -1316,7 +1338,8 @@ class TMDBService:
             "stream_type": "movie" if is_movie else "tv",
             "episode_number": 1 if is_movie else episode_number,
             "lang": lang,
-            "sources": embed_urls
+            "sources": embed_urls,
+            "latest_release": latest_release
         }
         _set_cache(cache_key, result)
         return result

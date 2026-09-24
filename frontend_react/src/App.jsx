@@ -15,10 +15,11 @@ import Top250Modal from './components/Top250Modal';
 import MovieNightModal from './components/MovieNightModal';
 import WatchPartyModal, { StandaloneChatCompanion } from './components/WatchPartyModal';
 import Footer from './components/Footer';
-import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users } from 'lucide-react';
+import { RefreshCw, Film, ChevronRight, Tv, Sparkles, Flame, Github, Linkedin, Trophy, Bookmark, Users, Play } from 'lucide-react';
 
 const MEDIA_CATEGORIES = [
  { id: "all", label: "Discover", shortLabel: "Discover" },
+ { id: "trending", label: "Trending Now 🔥", shortLabel: "Trending" },
  { id: "movie", label: "Movies", shortLabel: "Movies" },
  { id: "tv", label: "TV Series", shortLabel: "TV" },
  { id: "anime", label: "Anime", shortLabel: "Anime" }
@@ -27,6 +28,22 @@ const MEDIA_CATEGORIES = [
 const GENRES = [
  "All", "Action", "Drama", "Crime", "Sci-Fi", "Comedy", "Thriller", "Romance", "Animation", "Horror", "Mystery"
 ];
+
+export function formatTimeAgo(dateString) {
+  if (!dateString) return null;
+  const iso = dateString.replace(' ', 'T') + (dateString.includes('Z') ? '' : 'Z');
+  const past = new Date(iso).getTime();
+  const now = Date.now();
+  const diffSec = Math.max(0, Math.floor((now - past) / 1000));
+  if (diffSec < 60) return 'Just now';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHours = Math.floor(diffMin / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 30) return `${diffDays}d ago`;
+  return `${Math.floor(diffDays / 30)}mo ago`;
+}
 
 export default function App() {
  const { user, loading: authLoading, watchedMovies, watchlistMovies, notInterestedMovies, toggleWatched, toggleWatchlist } = useAuth();
@@ -132,6 +149,31 @@ export default function App() {
  const [toast, setToast] = useState(null);
  const [selectedMediaCategory, setSelectedMediaCategory] = useState("all");
  const [selectedGenre, setSelectedGenre] = useState("All");
+ const [trendingSubFilter, setTrendingSubFilter] = useState('all'); // 'all' | 'movie' | 'tv'
+ const [recentAnime, setRecentAnime] = useState([]);
+ const [loadingRecentAnime, setLoadingRecentAnime] = useState(false);
+
+ // Fetch real-time recent anime episodes when viewing the Anime category
+ useEffect(() => {
+  if (selectedMediaCategory !== 'anime') return;
+  let isMounted = true;
+  setLoadingRecentAnime(true);
+  api.get('/movies/anime/anikoto/recent?page=1&per_page=24')
+   .then((res) => {
+    if (isMounted && res.data?.data) {
+     setRecentAnime(res.data.data);
+    }
+   })
+   .catch((err) => {
+    console.warn('Failed fetching Anikoto recent anime:', err);
+   })
+   .finally(() => {
+    if (isMounted) setLoadingRecentAnime(false);
+   });
+  return () => {
+   isMounted = false;
+  };
+ }, [selectedMediaCategory]);
 
  // Efficient lookup set of all excluded IDs (watched watchlist not interested)
  const excludedIds = useMemo(() => {
@@ -457,6 +499,176 @@ export default function App() {
       </div>
      </div>
 
+     {/* Trending Now Mode Header & Sub-filter Switcher (All Trending, Movies Only, TV Series Only) */}
+     {selectedMediaCategory === 'trending' && (
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-orange-950/40 via-zinc-900 to-zinc-900 border border-orange-800/40 gap-3.5 shadow-xl">
+       <div className="space-y-1">
+        <div className="flex items-center gap-2">
+         <Flame className="w-5 h-5 text-orange-400" />
+         <h1 className="text-base sm:text-lg font-bold text-white">Trending Now Worldwide</h1>
+         <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/30">
+          Live Buzz
+         </span>
+        </div>
+        <p className="text-xs text-zinc-400">
+         The most watched movies and viral TV shows dominating screens worldwide today.
+        </p>
+       </div>
+       <div className="flex items-center gap-1.5 bg-zinc-900/90 p-1 rounded-xl border border-zinc-800 shrink-0 self-start sm:self-auto">
+        <button
+         onClick={() => setTrendingSubFilter('all')}
+         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+          trendingSubFilter === 'all'
+           ? 'bg-gradient-to-r from-orange-600 to-rose-600 text-white shadow font-semibold'
+           : 'text-zinc-400 hover:text-zinc-200'
+         }`}
+        >
+         🔥 All Trending
+        </button>
+        <button
+         onClick={() => setTrendingSubFilter('movie')}
+         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+          trendingSubFilter === 'movie'
+           ? 'bg-gradient-to-r from-orange-600 to-rose-600 text-white shadow font-semibold'
+           : 'text-zinc-400 hover:text-zinc-200'
+         }`}
+        >
+         🎬 Movies Only
+        </button>
+        <button
+         onClick={() => setTrendingSubFilter('tv')}
+         className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+          trendingSubFilter === 'tv'
+           ? 'bg-gradient-to-r from-orange-600 to-rose-600 text-white shadow font-semibold'
+           : 'text-zinc-400 hover:text-zinc-200'
+         }`}
+        >
+         📺 TV Series Only
+        </button>
+       </div>
+      </div>
+     )}
+
+     {/* Anime Just Released Episodes Rail */}
+     {selectedMediaCategory === 'anime' && recentAnime.length > 0 && (
+      <section className="space-y-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-zinc-900 to-zinc-900 border border-indigo-800/40 shadow-xl">
+       <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+         <div className="p-1.5 rounded-lg bg-indigo-500/15 text-indigo-400 border border-indigo-500/30">
+          <Sparkles className="w-4 h-4 text-indigo-400" />
+         </div>
+         <div>
+          <div className="flex items-center gap-2">
+           <h2 className="text-base sm:text-lg font-bold text-white tracking-tight">⚡ Just Released Episodes</h2>
+           <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+            Live from Anikoto
+           </span>
+          </div>
+          <p className="text-xs text-zinc-400 hidden sm:block">
+           Freshly broadcast episodes updated live — click any title to watch the latest episode instantly
+          </p>
+         </div>
+        </div>
+       </div>
+
+       {/* Horizontal Carousel */}
+       <div className="flex gap-3 sm:gap-4 overflow-x-auto pb-2 pt-1 no-scrollbar snap-x snap-mandatory -mx-3.5 px-3.5 sm:mx-0 sm:px-0">
+        {recentAnime.map((item) => {
+         const timeAgo = formatTimeAgo(item.updated_at);
+         const epNum = item.is_sub || item.is_dub || 1;
+         const isDub = Boolean(item.is_dub);
+         const isSub = Boolean(item.is_sub);
+
+         const animeMovieObj = {
+          id: item.s_id || `anikoto_${item.id}`,
+          anikoto_id: item.id,
+          title: item.title,
+          name: item.title,
+          poster_path: item.poster,
+          poster: item.poster,
+          backdrop_path: item.background_image || item.poster,
+          overview: item.description,
+          media_type: 'anime',
+          is_series: !item.terms_by_type?.type?.includes('Movie'),
+          latest_episode: epNum,
+          target_episode: epNum,
+          latest_episode_updated_at: item.updated_at,
+          score: item.score,
+          vote_average: item.score ? parseFloat(item.score) : 8.0,
+          release_date: item.aired || item.year,
+          genres: item.terms_by_type?.genre || ['Animation', 'Action']
+         };
+
+         return (
+          <div
+           key={`recent_anime_${item.id}`}
+           onClick={() => {
+            setSelectedMovie(animeMovieObj);
+            setAutoPlayStream(false);
+           }}
+           className="group relative w-36 sm:w-44 shrink-0 snap-start cursor-pointer rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-indigo-500/60 overflow-hidden shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-indigo-950/40"
+          >
+           {/* Poster Image */}
+           <div className="aspect-[2/3] relative w-full overflow-hidden bg-zinc-950">
+            <img
+             src={item.poster}
+             alt={item.title}
+             loading="lazy"
+             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-transparent to-transparent opacity-80" />
+
+            {/* Episode Pill */}
+            <div className="absolute top-2 left-2 flex flex-col gap-1">
+             <span className="px-2 py-0.5 rounded-md text-[10px] font-mono font-bold bg-indigo-600/90 text-white shadow-md backdrop-blur-sm border border-indigo-400/30">
+              EP {epNum}
+             </span>
+             {isSub && !isDub && (
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-zinc-900/80 text-zinc-300 border border-zinc-700">
+               SUB
+              </span>
+             )}
+             {isDub && (
+              <span className="px-1.5 py-0.2 rounded text-[9px] font-mono font-bold bg-amber-500/90 text-black border border-amber-300">
+               DUB
+              </span>
+             )}
+            </div>
+
+            {/* Relative Time Badge */}
+            {timeAgo && (
+             <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-zinc-950/90 text-emerald-300 border border-emerald-500/40 backdrop-blur-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              {timeAgo}
+             </div>
+            )}
+
+            {/* Quick Play Hover Icon */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+             <div className="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center shadow-lg shadow-indigo-950/60 scale-90 group-hover:scale-100 transition-transform">
+              <Play className="w-5 h-5 fill-current ml-0.5" />
+             </div>
+            </div>
+           </div>
+
+           {/* Anime Card Title & Info */}
+           <div className="p-2.5 space-y-1">
+            <h3 className="text-xs font-semibold text-white truncate group-hover:text-indigo-300 transition-colors" title={item.title}>
+             {item.title}
+            </h3>
+            <div className="flex items-center justify-between text-[11px] text-zinc-400 font-mono">
+             <span>{item.score ? `★ ${item.score}` : 'Anime'}</span>
+             <span className="text-emerald-400 font-medium">{timeAgo || 'New'}</span>
+            </div>
+           </div>
+          </div>
+         );
+        })}
+       </div>
+      </section>
+     )}
+
      {/* Dynamic Recommendation Sections */}
      {loading ? (
       <div className="space-y-6">
@@ -487,7 +699,11 @@ export default function App() {
          if (excludedIds.has(Number(m.id))) {
           return false;
          }
-         if (selectedMediaCategory !== "all") {
+         if (selectedMediaCategory === "trending") {
+          const mType = m.media_type || "movie";
+          if (trendingSubFilter === "movie" && mType !== "movie") return false;
+          if (trendingSubFilter === "tv" && mType !== "tv" && mType !== "kdrama") return false;
+         } else if (selectedMediaCategory !== "all") {
           const mType = m.media_type || "movie";
           if (selectedMediaCategory === "anime" && mType !== "anime") return false;
           if (selectedMediaCategory === "tv" && mType !== "tv" && mType !== "kdrama") return false;

@@ -443,6 +443,24 @@ export default function Navbar({
 
             <button
               onClick={() => {
+                if (onSelectCategory) onSelectCategory('trending');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all active:scale-95 ${
+                selectedCategory === 'trending'
+                  ? 'bg-gradient-to-r from-orange-600 to-rose-600 text-white font-semibold shadow-md shadow-orange-950/40'
+                  : 'text-zinc-300 hover:text-white hover:bg-zinc-800/50'
+              }`}
+            >
+              <Flame className="w-4 h-4 text-orange-400" />
+              <span className="flex items-center justify-between flex-1">
+                <span>Trending Now</span>
+                <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-orange-500/20 text-orange-300 border border-orange-500/40">HOT</span>
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
                 if (onSelectCategory) onSelectCategory('movie');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
@@ -843,11 +861,30 @@ export default function Navbar({
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-zinc-800/80 px-1.5 py-1.5 flex items-center justify-around shadow-2xl safe-area-bottom">
         {/* Discover / Feed */}
         <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl text-zinc-400 hover:text-white active:text-rose-400 transition-all active:scale-95 group"
+          onClick={() => {
+            if (onSelectCategory) onSelectCategory('all');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl transition-all active:scale-95 group ${
+            selectedCategory === 'all' ? 'text-rose-400 font-semibold' : 'text-zinc-400 hover:text-white'
+          }`}
         >
           <Compass className="w-5 h-5 group-hover:text-rose-400 transition-colors" />
           <span className="text-[10px] font-medium tracking-tight">Discover</span>
+        </button>
+
+        {/* Trending Now */}
+        <button
+          onClick={() => {
+            if (onSelectCategory) onSelectCategory('trending');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+          className={`flex flex-col items-center justify-center gap-1 py-1 px-2 rounded-xl transition-all active:scale-95 group ${
+            selectedCategory === 'trending' ? 'text-orange-400 font-semibold' : 'text-zinc-400 hover:text-white'
+          }`}
+        >
+          <Flame className="w-5 h-5 text-orange-400 group-hover:scale-110 transition-transform" />
+          <span className="text-[10px] font-medium tracking-tight">Trending</span>
         </button>
 
         {/* Swipe FYP */}

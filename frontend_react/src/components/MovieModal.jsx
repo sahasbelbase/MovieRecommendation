@@ -23,6 +23,22 @@ const COUNTRY_OPTIONS = [
  { code: 'FR', label: 'France' },
 ];
 
+export function formatTimeAgo(dateString) {
+  if (!dateString) return null;
+  const iso = dateString.replace(' ', 'T') + (dateString.includes('Z') ? '' : 'Z');
+  const past = new Date(iso).getTime();
+  const now = Date.now();
+  const diffSec = Math.max(0, Math.floor((now - past) / 1000));
+  if (diffSec < 60) return 'Just now';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m ago`;
+  const diffHours = Math.floor(diffMin / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 30) return `${diffDays}d ago`;
+  return `${Math.floor(diffDays / 30)}mo ago`;
+}
+
 const EMBED_SERVERS = [
   {
     id: 'vidlink_hd',
@@ -131,7 +147,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [streamStatusData, setStreamStatusData] = useState(null);
  const [checkingStreamStatus, setCheckingStreamStatus] = useState(false);
  const [selectedSeason, setSelectedSeason] = useState(1);
- const [selectedEpisode, setSelectedEpisode] = useState(1);
+ const [selectedEpisode, setSelectedEpisode] = useState(movie?.latest_episode || movie?.target_episode || 1);
  const [seasonData, setSeasonData] = useState(null);
  const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
@@ -147,11 +163,12 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   setStreamServerIndex(0);
   setUserSelectedServer(false);
   setAnikotoData(null);
+  setSelectedEpisode(movie?.latest_episode || movie?.target_episode || 1);
   setShowWatchNextCountdown(false);
   setCountdownSeconds(10);
   setShowTrailerPlayer(false);
   setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
- }, [movieId, autoPlayStream, user, isVip]);
+ }, [movieId, autoPlayStream, user, isVip, movie?.latest_episode, movie?.target_episode]);
 
   const [tvVolumeInfo, setTvVolumeInfo] = useState(null);
 
@@ -210,13 +227,14 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
  const availableServers = useMemo(() => {
   const standardServers = EMBED_SERVERS;
-  if (effectiveMediaType === 'anime' || isAnimeMovie) {
+  // Only include Anikoto server when an actual video stream URL was successfully resolved
+  if ((effectiveMediaType === 'anime' || isAnimeMovie) && anikotoEmbedUrl) {
    const anikotoServer = {
     id: 'anikoto',
-    name: anikotoEmbedUrl ? 'Server 0 (Anikoto Stream ⭐)' : 'Server 0 (Anikoto Anime)',
+    name: 'Server 0 (Anikoto Stream ⭐)',
     sandbox: null,
     isAnikoto: true,
-    getUrl: () => anikotoEmbedUrl || `https://anikotoapi.site`
+    getUrl: () => anikotoEmbedUrl
    };
    return [anikotoServer, ...standardServers];
   }
@@ -251,6 +269,28 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  useEffect(() => {
   setUserSelectedServer(false);
  }, [movieId]);
+
+ // Real-time episode release metadata (supporting both direct Anikoto and TMDB-matched anime)
+ const latestRelease = useMemo(() => {
+  if (movie?.latest_episode && movie?.latest_episode_updated_at) {
+   return {
+    episode: movie.latest_episode,
+    updated_at: movie.latest_episode_updated_at
+   };
+  }
+  if (anikotoData?.latest_release) {
+   return {
+    episode: anikotoData.latest_release.latest_episode,
+    updated_at: anikotoData.latest_release.updated_at
+   };
+  }
+  return null;
+ }, [movie?.latest_episode, movie?.latest_episode_updated_at, anikotoData?.latest_release]);
+
+ const latestReleaseTimeAgo = useMemo(() => {
+  if (!latestRelease?.updated_at) return null;
+  return formatTimeAgo(latestRelease.updated_at);
+ }, [latestRelease?.updated_at]);
 
  const [userRating, setUserRating] = useState(watchedRecord?.rating || 0);
  const [userReview, setUserReview] = useState(watchedRecord?.review || '');
@@ -324,12 +364,66 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   setShowTrailerPlayer(false);
   setShowStreamPlayer(false);
   setSelectedSeason(1);
-  setSelectedEpisode(1);
+  setSelectedEpisode(movie?.latest_episode || movie?.target_episode || 1);
   setSelectedChunkIndex(0);
   setEpisodeSearchQuery('');
 
   const fetchData = async () => {
    try {
+    if (movie?.anikoto_id) {
+     setDetails({
+      id: movie.id,
+      title: movie.title,
+      name: movie.title,
+      overview: movie.overview || movie.description || '',
+      poster_path: movie.poster_path || movie.poster,
+      backdrop_path: movie.backdrop_path || movie.poster,
+      vote_average: movie.vote_average || 8.0,
+      release_date: movie.release_date,
+      media_type: 'anime',
+      is_series: true,
+      genres: movie.genres || ['Animation', 'Action']
+     });
+
+     try {
+      const anikotoRes = await api.get(`/movies/anime/anikoto/${movie.anikoto_id}`);
+      if (anikotoRes.data?.data) {
+       const seriesData = anikotoRes.data.data;
+       const eps = (seriesData.episodes || []).map((e) => ({
+        id: e.id,
+        episode_number: e.number,
+        season_number: 1,
+        name: e.title || `Episode ${e.number}`,
+        overview: e.jp_title || '',
+        embed_url: e.embed_url,
+        updated_at: e.updated_at
+       }));
+       setSeasonData({ episodes: eps });
+
+       const targetNum = movie.latest_episode || (eps.length > 0 ? eps[eps.length - 1].episode_number : 1);
+       setSelectedEpisode(targetNum);
+
+       const curEp = eps.find((e) => e.episode_number === targetNum) || eps[0];
+       if (curEp?.embed_url) {
+        const streamUrl = (audioTrack === 'dub' && curEp.embed_url.dub) ? curEp.embed_url.dub : (curEp.embed_url.sub || curEp.embed_url.dub);
+        if (streamUrl) {
+         setAnikotoData({
+          sources: [{ id: 'anikoto', name: 'Server 0 (Anikoto Stream ⭐)', url: streamUrl }],
+          latest_release: {
+           latest_episode: targetNum,
+           updated_at: curEp.updated_at || movie.latest_episode_updated_at
+          }
+         });
+        }
+       }
+      }
+     } catch (err) {
+      console.warn('Failed fetching Anikoto direct series:', err);
+     }
+     setLoading(false);
+     return;
+    }
+
     const reqType = initialMediaType;
     const [detailsRes, creditsRes, trailersRes, similarRes] = await Promise.allSettled([
      api.get(`/movies/${movieId}/details?media_type=${reqType}`),
@@ -350,7 +444,22 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   };
 
   fetchData();
- }, [movieId, initialMediaType]);
+ }, [movieId, initialMediaType, movie?.anikoto_id]);
+
+ // Synchronize Anikoto embed URL when episode or audio track changes on an Anikoto title
+ useEffect(() => {
+  if (!movie?.anikoto_id || !seasonData?.episodes) return;
+  const curEp = seasonData.episodes.find((e) => e.episode_number === selectedEpisode) || seasonData.episodes[0];
+  if (curEp?.embed_url) {
+   const streamUrl = (audioTrack === 'dub' && curEp.embed_url.dub) ? curEp.embed_url.dub : (curEp.embed_url.sub || curEp.embed_url.dub);
+   if (streamUrl) {
+    setAnikotoData((prev) => ({
+     ...prev,
+     sources: [{ id: 'anikoto', name: 'Server 0 (Anikoto Stream ⭐)', url: streamUrl }]
+    }));
+   }
+  }
+ }, [movie?.anikoto_id, selectedEpisode, audioTrack, seasonData]);
 
  // Dynamically fetch watch providers whenever movie, streamType, or country changes
  useEffect(() => {
@@ -497,7 +606,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
  // Fetch anime stream sources from backend (integrating Anikoto API)
  useEffect(() => {
-  if (!movieId) return;
+  if (!movieId || movie?.anikoto_id) return;
   if (effectiveMediaType !== 'anime' && !isAnimeMovie) {
    setAnikotoData(null);
    return;
@@ -1058,6 +1167,21 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
          )}
         </div>
 
+        {/* Just Released Episode Live Banner */}
+        {latestRelease && (
+         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-950/80 to-teal-950/60 border border-emerald-500/50 text-emerald-200 text-xs font-semibold shadow-lg shadow-emerald-950/30 w-fit my-1 animate-in fade-in">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+          <span className="flex items-center gap-1.5 flex-wrap">
+           <span>⚡ Episode {latestRelease.episode} Just Released</span>
+           {latestReleaseTimeAgo && (
+            <span className="px-1.5 py-0.2 rounded-md bg-emerald-900/60 text-emerald-300 font-mono text-[10px] border border-emerald-600/40">
+             {latestReleaseTimeAgo}
+            </span>
+           )}
+          </span>
+         </div>
+        )}
+
         {details?.tagline && (
          <p className="text-xs sm:text-sm italic text-zinc-400">"{details.tagline}"</p>
         )}
@@ -1507,11 +1631,19 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
              {/* Episode Details */}
              <div className="flex-1 min-w-0 space-y-1">
               <div className="flex flex-wrap items-center justify-between gap-2">
-               <h5 className={`text-xs sm:text-sm font-bold transition-colors ${
-                isSelected ? 'text-purple-300' : 'text-white group-hover:text-purple-300'
-               }`}>
-                {ep.episode_number}. {ep.name || `Episode ${ep.episode_number}`}
-               </h5>
+               <div className="flex items-center gap-2 flex-wrap">
+                <h5 className={`text-xs sm:text-sm font-bold transition-colors ${
+                 isSelected ? 'text-purple-300' : 'text-white group-hover:text-purple-300'
+                }`}>
+                 {ep.episode_number}. {ep.name || `Episode ${ep.episode_number}`}
+                </h5>
+                {latestRelease?.episode === ep.episode_number && (
+                 <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Just Released {latestReleaseTimeAgo ? `• ${latestReleaseTimeAgo}` : ''}
+                 </span>
+                )}
+               </div>
                <div className="flex items-center gap-2">
                 {ep.vote_average > 0 && (
                  <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800/40">

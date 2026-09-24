@@ -228,6 +228,30 @@ class RecommenderService:
                 ]
             }
 
+        # Explicit Trending category (Dedicated Trending Now view)
+        if media_type == "trending":
+            trending_all, trending_movies, trending_tv, trending_anime = await asyncio.gather(
+                self.tmdb.get_trending_all(time_window="day", pages=3),
+                self.tmdb.get_trending_movies(time_window="day", pages=3),
+                self.tmdb.get_trending_tv(time_window="day", pages=3),
+                self.tmdb.get_trending_anime(pages=3)
+            )
+            unwatched_all = [m for m in trending_all if m["id"] not in all_excluded_ids]
+            unwatched_movies = [m for m in trending_movies if m["id"] not in all_excluded_ids]
+            unwatched_tv = [m for m in trending_tv if m["id"] not in all_excluded_ids]
+            unwatched_anime = [m for m in trending_anime if m["id"] not in all_excluded_ids]
+            return {
+                "is_cold_start": False,
+                "needs_calibration": len(watched_list) < 3,
+                "watched_count": len(watched_list),
+                "sections": [
+                    {"title": "🔥 Top Trending Today", "subtitle": "Most watched movies and series streaming right now (Watched filtered)", "movies": unwatched_all[:18]},
+                    {"title": "🎬 Trending Movies", "subtitle": "Top films buzzing worldwide today", "movies": unwatched_movies[:18]},
+                    {"title": "📺 Trending TV Series", "subtitle": "Binge-worthy shows dominating screens right now", "movies": unwatched_tv[:18]},
+                    {"title": "⚡ Trending Anime", "subtitle": "Top trending Japanese animation right now", "movies": unwatched_anime[:18]},
+                ]
+            }
+
         if len(watched_list) < 3:
             # Under-calibrated user: Return onboarding FYP prompt + top trending across 3 pages
             trending, anime, rt_picks = await asyncio.gather(
@@ -449,6 +473,25 @@ class RecommenderService:
                     {"title": "Rotten Tomatoes & IMDb Certified Fresh", "subtitle": "85%+ Fresh critical favorites", "movies": rt_picks[:12]},
                     {"title": "Trending Movies", "subtitle": "Popular films worldwide", "movies": trending_movies[:12]},
                     {"title": "In Theaters & Fresh Cinema", "subtitle": "Current 2025–2026 releases", "movies": now_playing[:12]},
+                ]
+            }
+            _guest_feed_cache[cache_key] = (time.time(), result)
+            return result
+
+        elif media_type == "trending":
+            trending_all, trending_movies, trending_tv, trending_anime = await asyncio.gather(
+                self.tmdb.get_trending_all(time_window="day", pages=3),
+                self.tmdb.get_trending_movies(time_window="day", pages=3),
+                self.tmdb.get_trending_tv(time_window="day", pages=3),
+                self.tmdb.get_trending_anime(pages=3)
+            )
+            result = {
+                "is_guest": True,
+                "sections": [
+                    {"title": "🔥 Top Trending Today", "subtitle": "Most watched movies and series streaming right now", "movies": trending_all[:18]},
+                    {"title": "🎬 Trending Movies", "subtitle": "Top films buzzing worldwide today", "movies": trending_movies[:18]},
+                    {"title": "📺 Trending TV Series", "subtitle": "Binge-worthy shows dominating screens right now", "movies": trending_tv[:18]},
+                    {"title": "⚡ Trending Anime", "subtitle": "Top trending Japanese animation right now", "movies": trending_anime[:18]},
                 ]
             }
             _guest_feed_cache[cache_key] = (time.time(), result)
