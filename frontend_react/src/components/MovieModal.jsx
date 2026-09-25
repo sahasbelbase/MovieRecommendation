@@ -1994,7 +1994,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
        </button>
        <a href="/" className="flex items-center gap-2 text-white font-bold text-base hover:text-purple-400 transition-colors">
         <Film className="w-5 h-5 text-purple-500" />
-        <span className="tracking-tight">CineMatch</span>
+        <span className="tracking-tight">MovieRecommendation</span>
        </a>
       </div>
       <div className="flex items-center gap-2">

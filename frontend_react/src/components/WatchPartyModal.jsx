@@ -1219,8 +1219,8 @@ export default function WatchPartyModal({
  const handleShareParty = async () => {
   const url = `${window.location.origin}/?party=${roomCode}`;
   const shareData = {
-   title: `Cinematch Watch Party (Room ${roomCode})`,
-   text: ` Join my Watch Party on Cinematch (Room: ${roomCode})! Watch live screen share and chat with me:`,
+   title: `MovieRecommendation Watch Party (Room ${roomCode})`,
+   text: ` Join my Watch Party on MovieRecommendation (Room: ${roomCode})! Watch live screen share and chat with me:`,
    url: url,
   };
 
@@ -1378,7 +1378,7 @@ export default function WatchPartyModal({
 
       <div className="min-w-0">
        <h2 className="text-xs sm:text-base font-bold text-white truncate flex items-center gap-1.5">
-        <span className="truncate">{movie?.title || 'Cinematch Theater'}</span>
+        <span className="truncate">{movie?.title || 'MovieRecommendation Theater'}</span>
         {movie?.year && <span className="text-[11px] text-zinc-400 font-normal hidden sm:inline">({movie.year})</span>}
        </h2>
        <div className="flex items-center gap-1.5 text-[10px] sm:text-xs text-zinc-400 font-mono">

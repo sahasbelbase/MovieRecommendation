@@ -254,7 +254,7 @@ export default function MovieNightModal({
    try {
     await navigator.share({
      title: `Join Movie Night (Room ${currentRoom.code})`,
-     text: ` Join our Movie Night on Cinematch! Swipe movies together and find a match in Room ${currentRoom.code}:`,
+     text: ` Join our Movie Night on MovieRecommendation! Swipe movies together and find a match in Room ${currentRoom.code}:`,
      url: shareUrl,
     });
     if (onShowToast) {
@@ -294,7 +294,7 @@ export default function MovieNightModal({
  const handleShareTikTok = () => {
   if (!currentRoom?.code) return;
   const shareUrl = `${window.location.origin}/?room=${currentRoom.code}`;
-  const caption = ` Join my Movie Night on Cinematch! Code: ${currentRoom.code} ${shareUrl} #MovieNight #Cinematch #Movies #WhatToWatch`;
+  const caption = ` Join my Movie Night on MovieRecommendation! Code: ${currentRoom.code} ${shareUrl} #MovieNight #MovieRecommendation #Movies #WhatToWatch`;
   navigator.clipboard.writeText(caption);
   if (onShowToast) {
    onShowToast({ message: "TikTok caption & link copied to clipboard! Opening TikTok..." });
@@ -317,7 +317,7 @@ export default function MovieNightModal({
  const handleShareInstagram = () => {
   if (!currentRoom?.code) return;
   const shareUrl = `${window.location.origin}/?room=${currentRoom.code}`;
-  const caption = ` Join my Movie Night room on Cinematch! Code: ${currentRoom.code} ${shareUrl}`;
+  const caption = ` Join my Movie Night room on MovieRecommendation! Code: ${currentRoom.code} ${shareUrl}`;
   navigator.clipboard.writeText(caption);
   if (onShowToast) {
    onShowToast({ message: "Room link copied! Paste into your Instagram Story or DM." });
@@ -329,7 +329,7 @@ export default function MovieNightModal({
  const handleShareFacebook = () => {
   if (!currentRoom?.code) return;
   const shareUrl = `${window.location.origin}/?room=${currentRoom.code}`;
-  const quote = `Join my Movie Night group swipe room on Cinematch! Room Code: ${currentRoom.code}`;
+  const quote = `Join my Movie Night group swipe room on MovieRecommendation! Room Code: ${currentRoom.code}`;
   const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(quote)}`;
   window.open(url, '_blank', 'noopener,noreferrer,width=600,height=600');
   if (onShowToast) {
@@ -344,7 +344,7 @@ export default function MovieNightModal({
   if (typeof navigator!== 'undefined' && navigator.share) {
    try {
     await navigator.share({
-     title: `Movie Night on Cinematch (${currentRoom.code})`,
+     title: `Movie Night on MovieRecommendation (${currentRoom.code})`,
      text: `Join my Movie Night room with code ${currentRoom.code}! Swipe together to find our next movie:`,
      url: shareUrl
     });
@@ -1007,7 +1007,7 @@ export default function MovieNightModal({
         const title = activeMatchOverlay.movie?.title;
         const code = currentRoom?.code || '';
         const shareUrl = `${window.location.origin}/?room=${code}`;
-        const text = ` We mutually matched on "${title}" in Movie Night on Cinematch! Join our room (${code}) to pick what to watch: ${shareUrl}`;
+        const text = ` We mutually matched on "${title}" in Movie Night on MovieRecommendation! Join our room (${code}) to pick what to watch: ${shareUrl}`;
         if (typeof navigator!== 'undefined' && navigator.share) {
          navigator.share({ title: `We matched on ${title}!`, text, url: shareUrl }).catch(() => {});
         } else {

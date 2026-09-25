@@ -83,8 +83,8 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
   const handleShareApp = async () => {
     const shareUrl = typeof window !== 'undefined' ? window.location.origin : 'https://cinematch.app';
     const shareData = {
-      title: 'Cinematch - Watch Movies & Parties with Friends',
-      text: `Join me on Cinematch! Match movies, share live screens, and watch together:`,
+      title: 'MovieRecommendation - Watch Movies & Parties with Friends',
+      text: `Join me on MovieRecommendation! Match movies, share live screens, and watch together:`,
       url: shareUrl,
     };
 
@@ -103,7 +103,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
       await navigator.clipboard.writeText(shareUrl);
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2500);
-      if (onShowToast) onShowToast({ message: 'Cinematch link copied to clipboard' });
+      if (onShowToast) onShowToast({ message: 'MovieRecommendation link copied to clipboard' });
     } catch (_) {
       if (onShowToast) onShowToast({ message: `Link: ${shareUrl}` });
     }
@@ -204,7 +204,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
                 className="flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700/80 text-white font-semibold text-xs transition-all active:scale-95"
               >
                 {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4 text-rose-400" />}
-                <span>{copiedLink ? 'Link Copied!' : 'Share Cinematch'}</span>
+                <span>{copiedLink ? 'Link Copied!' : 'Share MovieRecommendation'}</span>
               </button>
 
               {/* Join / Add Friend Room Form */}
@@ -244,7 +244,7 @@ export default function Footer({ onShowToast, onStartWatchParty, onOpenMovieNigh
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-zinc-900 text-center sm:text-left">
           <div className="space-y-1">
             <p className="text-white font-semibold text-xs flex items-center justify-center sm:justify-start gap-1.5">
-              <span>Cinematch</span>
+              <span>MovieRecommendation</span>
               <span className="text-zinc-600">•</span>
               <span className="text-zinc-400 font-normal">AI Recommendation & Live Watch Parties</span>
             </p>

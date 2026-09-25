@@ -113,10 +113,10 @@ export default function Navbar({
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-sm sm:hidden tracking-tight text-white leading-tight">
-                  Cinematch
+                  MovieRecommendation
                 </span>
                 <span className="hidden sm:inline text-sm sm:text-base font-bold tracking-tight text-white leading-tight">
-                  Movie Recommendation Engine
+                  MovieRecommendation
                 </span>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   <span className={`w-1.5 h-1.5 rounded-full ${user ? 'bg-emerald-400 animate-pulse' : 'bg-zinc-500'}`} />
