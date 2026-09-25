@@ -584,8 +584,8 @@ export default function Navbar({
               const trimmed = input.trim();
               if (trimmed === '9999') {
                 if (!user) {
-                  if (onOpenAuthModal) onOpenAuthModal();
-                  alert('Please sign in first to activate VIP Access');
+                  alert('No active Watch Party found with code 9999. Please verify the code and try again.');
+                  e.target.reset();
                   return;
                 }
                 const success = await onVipActivated?.();
@@ -594,6 +594,11 @@ export default function Navbar({
                 }
                 e.target.reset();
               } else if (trimmed === '0000') {
+                if (!user) {
+                  alert('No active Watch Party found with code 0000. Please verify the code and try again.');
+                  e.target.reset();
+                  return;
+                }
                 await onVipDeactivated?.();
                 alert('VIP Access Deactivated');
                 e.target.reset();
@@ -804,8 +809,8 @@ export default function Navbar({
                 if (trimmed === '9999') {
                   if (!user) {
                     setIsProfileMenuOpen(false);
-                    if (onOpenAuthModal) onOpenAuthModal();
-                    alert('Please sign in first to activate VIP Access');
+                    alert('No active Watch Party found with code 9999. Please verify the code and try again.');
+                    e.target.reset();
                     return;
                   }
                   const success = await onVipActivated?.();
@@ -815,6 +820,12 @@ export default function Navbar({
                   e.target.reset();
                   setIsProfileMenuOpen(false);
                 } else if (trimmed === '0000') {
+                  if (!user) {
+                    setIsProfileMenuOpen(false);
+                    alert('No active Watch Party found with code 0000. Please verify the code and try again.');
+                    e.target.reset();
+                    return;
+                  }
                   await onVipDeactivated?.();
                   alert('VIP Access Deactivated');
                   e.target.reset();
