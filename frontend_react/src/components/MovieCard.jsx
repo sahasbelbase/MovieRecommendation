@@ -38,7 +38,6 @@ export default function MovieCard({ movie, onSelect, onShowToast, isVip = false 
    try {
     await navigator.share({
      title: movie.title,
-     text: `Check out "${movie.title}" on CineMatch!`,
      url: shareUrl
     });
     return;

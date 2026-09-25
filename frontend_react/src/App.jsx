@@ -55,6 +55,12 @@ export default function App() {
  const [slowNotice, setSlowNotice] = useState(false);
  const [selectedMovie, setSelectedMovie] = useState(null);
  const [autoPlayStream, setAutoPlayStream] = useState(false);
+ const [fullPageMovie, setFullPageMovie] = useState(null);
+ const [fullPageLoading, setFullPageLoading] = useState(() => {
+  if (typeof window === 'undefined') return false;
+  const p = new URLSearchParams(window.location.search);
+  return Boolean(p.get('item') || p.get('movie') || p.get('id'));
+ });
  const [selectedActor, setSelectedActor] = useState(null);
  const [isWatchedOpen, setIsWatchedOpen] = useState(false);
  const [libraryTab, setLibraryTab] = useState('watched');
@@ -305,30 +311,36 @@ export default function App() {
   }
  }, [user?.uid, pendingPartyCode, watchPartyData.isOpen, isMovieNightOpen]);
 
- // Handle direct share link: ?room=CODE or ?party=CODE or ?item=ID&type=TYPE
+ // Handle direct deep link: ?item=ID&type=TYPE or ?room=CODE or ?party=CODE
  useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
   const partyParam = params.get('party') || params.get('theater');
-  const itemParam = params.get('item');
-  const typeParam = params.get('type') || 'movie';
+  const rawItem = params.get('item') || params.get('movie') || params.get('id');
 
-  if (itemParam) {
-   api.get(`/movies/${itemParam}/details?media_type=${typeParam}`)
+  if (rawItem) {
+   const cleanItem = rawItem.trim().split(/[\s%]/)[0].replace(/[^0-9a-zA-Z_-]/g, '');
+   const rawType = params.get('type') || params.get('media_type') || 'movie';
+   let cleanType = rawType.trim().split(/[\s%]/)[0].toLowerCase();
+   if (!['movie', 'tv', 'anime', 'kdrama'].includes(cleanType)) {
+    cleanType = 'movie';
+   }
+
+   api.get(`/movies/${cleanItem}/details?media_type=${cleanType}`)
     .then((res) => {
      if (res.data) {
-      setSelectedMovie(res.data);
+      setFullPageMovie(res.data);
      }
     })
     .catch((err) => {
-     console.warn("Failed fetching deep-linked movie from URL params:", err);
-     if (typeParam === 'anime') {
-      api.get(`/movies/anime/anikoto/${itemParam}`)
+     console.warn("Failed fetching full-page movie from URL params:", err);
+     if (cleanType === 'anime') {
+      api.get(`/movies/anime/anikoto/${cleanItem}`)
        .then((res) => {
         const series = res.data?.data;
         if (series) {
-         setSelectedMovie({
-          id: itemParam,
+         setFullPageMovie({
+          id: cleanItem,
           title: series.title,
           name: series.title,
           poster: series.poster,
@@ -341,12 +353,17 @@ export default function App() {
         }
        })
        .catch(() => {
-        setSelectedMovie({ id: itemParam, media_type: typeParam, title: "Media Item #" + itemParam });
+        setFullPageMovie({ id: cleanItem, media_type: cleanType, title: "Title #" + cleanItem });
        });
      } else {
-      setSelectedMovie({ id: itemParam, media_type: typeParam, title: "Media Item #" + itemParam });
+      setFullPageMovie({ id: cleanItem, media_type: cleanType, title: "Title #" + cleanItem });
      }
+    })
+    .finally(() => {
+     setFullPageLoading(false);
     });
+  } else {
+   setFullPageLoading(false);
   }
 
   if (partyParam) {
@@ -362,31 +379,14 @@ export default function App() {
   }
  }, []);
 
- const handleOpenMovie = (m, autoPlay = false) => {
-  if (!m) return;
+ const handleSelectMovie = (m, autoPlay = false) => {
   setSelectedMovie(m);
   setAutoPlayStream(Boolean(autoPlay));
-  if (typeof window !== 'undefined' && m?.id) {
-   try {
-    const url = new URL(window.location.href);
-    url.searchParams.set('item', m.id);
-    url.searchParams.set('type', m.media_type || (m.first_air_date ? 'tv' : 'movie'));
-    window.history.replaceState(null, '', url.pathname + url.search);
-   } catch {}
-  }
  };
 
- const handleCloseMovie = () => {
+ const handleCloseModal = () => {
   setSelectedMovie(null);
   setAutoPlayStream(false);
-  if (typeof window !== 'undefined') {
-   try {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('item');
-    url.searchParams.delete('type');
-    window.history.replaceState(null, '', url.pathname + (url.search ? url.search : ''));
-   } catch {}
-  }
  };
 
  // Toast helper
@@ -404,6 +404,90 @@ export default function App() {
   return <StandaloneChatCompanion roomCode={companionRoom.toUpperCase()} />;
  }
 
+ if (fullPageLoading) {
+  return (
+   <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center text-white space-y-4 font-sans">
+    <div className="w-10 h-10 rounded-full border-4 border-purple-500/20 border-t-purple-500 animate-spin" />
+    <p className="text-zinc-400 text-sm font-medium animate-pulse">Loading movie details...</p>
+   </div>
+  );
+ }
+
+ if (fullPageMovie) {
+  return (
+   <div className="min-h-screen bg-canvas text-zinc-100 font-sans">
+    <MovieModal
+     isVip={isVip}
+     onActivateVip={handleActivateVip}
+     onDeactivateVip={handleDeactivateVip}
+     movie={fullPageMovie}
+     autoPlayStream={false}
+     isFullPage={true}
+     onClose={() => {
+      setFullPageMovie(null);
+      const url = new URL(window.location);
+      url.searchParams.delete('item');
+      url.searchParams.delete('movie');
+      url.searchParams.delete('id');
+      url.searchParams.delete('type');
+      url.searchParams.delete('media_type');
+      window.history.pushState({}, '', url.pathname + (url.search ? url.search : ''));
+     }}
+     onSelectMovie={(m) => setFullPageMovie(m)}
+     onSelectActor={(a) => setSelectedActor(a)}
+     onShowToast={showToast}
+     onStartWatchParty={(m) => handleStartWatchParty(m)}
+     onRequireAuth={() => setIsAuthOpen(true)}
+    />
+
+    {selectedActor && (
+     <ActorModal
+      person={selectedActor}
+      onClose={() => setSelectedActor(null)}
+      onSelectMovie={(m) => setFullPageMovie(m)}
+      onShowToast={showToast}
+     />
+    )}
+
+    <AuthModal
+     isOpen={isAuthOpen}
+     onClose={() => setIsAuthOpen(false)}
+    />
+
+    <WatchPartyModal
+     isVip={isVip}
+     onActivateVip={handleActivateVip}
+     onDeactivateVip={handleDeactivateVip}
+     isOpen={watchPartyData.isOpen}
+     onClose={() => {
+      setWatchPartyData((prev) => ({ ...prev, isOpen: false }));
+      setPendingPartyCode(null);
+     }}
+     roomCode={watchPartyData.roomCode}
+     movie={watchPartyData.movie}
+     initialVideoSource={watchPartyData.videoSource}
+     onShowToast={showToast}
+     onRequireAuth={() => setIsAuthOpen(true)}
+    />
+
+    <Toast
+     toast={toast}
+     onUndo={() => {
+      if (toast?.movie) {
+       if (toast.message?.includes('Watchlist')) {
+        toggleWatchlist(toast.movie);
+       } else {
+        toggleWatched(toast.movie);
+       }
+       setToast(null);
+      }
+     }}
+     onClose={() => setToast(null)}
+    />
+   </div>
+  );
+ }
+
  return (
   <div className="min-h-screen bg-canvas text-zinc-100 flex flex-col md:flex-row font-sans">
    {/* Navigation */}
@@ -413,7 +497,7 @@ export default function App() {
     onVipDeactivated={handleDeactivateVip}
     selectedCategory={selectedMediaCategory}
     onSelectCategory={(cat) => setSelectedMediaCategory(cat)}
-    onSelectMovie={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
+    onSelectMovie={(m, autoPlay = false) => handleSelectMovie(m, autoPlay)}
     onSelectActor={(a) => setSelectedActor(a)}
     onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
     onOpenDataModal={() => setIsDataOpen(true)}
@@ -429,7 +513,7 @@ export default function App() {
    <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden">
      {/* Continue Watching Shelf (Active watch progress rail with progress bars & 1-click resume) */}
      <ContinueWatchingShelf
-      onSelectMovie={handleOpenMovie}
+      onSelectMovie={handleSelectMovie}
       onShowToast={showToast}
       user={user}
       isVip={isVip}
@@ -440,7 +524,7 @@ export default function App() {
       <WatchlistShelf
        isExpanded={isWatchlistShelfOpen}
        onToggleExpand={() => setIsWatchlistShelfOpen(prev => !prev)}
-       onSelectMovie={handleOpenMovie}
+       onSelectMovie={handleSelectMovie}
        onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
        onShowToast={showToast}
       />
@@ -575,7 +659,7 @@ export default function App() {
           <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
            <MovieCard
             movie={movie}
-            onSelect={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
+            onSelect={(m, autoPlay = false) => handleSelectMovie(m, autoPlay)}
             onShowToast={showToast}
             isVip={isVip}
            />
@@ -742,7 +826,7 @@ export default function App() {
            onClick={(e) => {
             if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
             e.preventDefault();
-            handleOpenMovie(animeMovieObj, false);
+            handleSelectMovie(animeMovieObj, false);
            }}
            className="group relative block w-36 sm:w-44 shrink-0 snap-start cursor-pointer rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-indigo-500/60 overflow-hidden shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-indigo-950/40 no-underline text-inherit"
           >
@@ -892,7 +976,7 @@ export default function App() {
            <MovieCard
             key={`${movie.media_type || 'movie'}_${movie.id}`}
             movie={movie}
-            onSelect={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
+            onSelect={(m, autoPlay = false) => handleSelectMovie(m, autoPlay)}
             onShowToast={showToast}
             isVip={isVip}
            />
@@ -919,8 +1003,9 @@ export default function App() {
      onDeactivateVip={handleDeactivateVip}
      movie={selectedMovie}
      autoPlayStream={autoPlayStream}
-     onClose={handleCloseMovie}
-     onSelectMovie={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
+     isFullPage={false}
+     onClose={handleCloseModal}
+     onSelectMovie={(m, autoPlay = false) => handleSelectMovie(m, autoPlay)}
      onSelectActor={(a) => setSelectedActor(a)}
      onShowToast={showToast}
      onStartWatchParty={(m) => handleStartWatchParty(m)}
@@ -932,7 +1017,7 @@ export default function App() {
     <ActorModal
      person={selectedActor}
      onClose={() => setSelectedActor(null)}
-     onSelectMovie={(m) => handleOpenMovie(m)}
+     onSelectMovie={(m) => handleSelectMovie(m)}
      onShowToast={showToast}
     />
    )}
@@ -940,7 +1025,7 @@ export default function App() {
    <WatchedDrawer
     isOpen={isWatchedOpen}
     onClose={() => setIsWatchedOpen(false)}
-    onSelectMovie={(m) => handleOpenMovie(m)}
+    onSelectMovie={(m) => handleSelectMovie(m)}
     onOpenDataModal={() => setIsDataOpen(true)}
     initialTab={libraryTab}
    />
@@ -966,7 +1051,7 @@ export default function App() {
    <Top250Modal
     isOpen={isTop250Open}
     onClose={() => setIsTop250Open(false)}
-    onSelectMovie={(m) => handleOpenMovie(m)}
+    onSelectMovie={(m) => handleSelectMovie(m)}
     onShowToast={showToast}
    />
 
@@ -975,7 +1060,7 @@ export default function App() {
     onClose={() => setIsMovieNightOpen(false)}
     initialRoomCode={initialRoomCode}
     onShowToast={showToast}
-    onSelectMovie={(m) => handleOpenMovie(m)}
+    onSelectMovie={(m) => handleSelectMovie(m)}
     onStartWatchParty={(m, code) => {
      setIsMovieNightOpen(false);
      handleStartWatchParty(m, code);

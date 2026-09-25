@@ -107,7 +107,7 @@ const EMBED_SERVERS = [
   },
 ];
 
-export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth, autoPlayStream = false }) {
+export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth, autoPlayStream = false, isFullPage = false }) {
  const movieId = movie?.id || movie?.item_id || movie?.tmdb_id || movie?.movieId;
  if (!movie || !movieId) return null;
 
@@ -762,45 +762,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   return () => clearInterval(interval);
  }, [showWatchNextCountdown, autoPlayNext, isSeries, nextEpisodeObj, similarItems, onSelectMovie, onShowToast]);
 
- return (
-  <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-   {/* Backdrop Light-Dismiss Click Area */}
-   <div className="fixed inset-0" onClick={onClose} />
-
-   {/* Modal Card (Widescreen IMAX Layout) */}
-   <div className="relative w-full md:w-[90vw] max-w-[1600px] max-h-[92vh] bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto flex flex-col transition-all duration-300">
-    {/* Action Buttons: Share & Close */}
-    <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
-     <button
-      onClick={() => {
-       const shareUrl = `${window.location.origin}/?item=${movieId}&type=${mediaType}`;
-       if (navigator.clipboard?.writeText) {
-        navigator.clipboard.writeText(shareUrl).then(() => {
-         if (onShowToast) {
-          onShowToast({
-           message: '🎬 Link copied! Share with friends to open in any tab.',
-           movie
-          });
-         }
-        });
-       }
-      }}
-      className="rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
-      title="Copy link to share"
-     >
-      <Share2 className="w-5 h-5" />
-     </button>
-     <button
-      onClick={onClose}
-      className="rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
-      title="Close modal"
-     >
-      <X className="w-5 h-5" />
-     </button>
-    </div>
-
-    {/* Scrollable Content Container */}
-    <div className="overflow-y-auto flex-1">
+ const modalInnerContent = (
+  <div className={isFullPage ? "space-y-6" : "overflow-y-auto flex-1"}>
       {/* Backdrop Header / Video Player (Full Width 16:9 Aspect Ratio) */}
       <div className="relative aspect-video w-full bg-zinc-900 overflow-hidden shrink-0">
        {showStreamPlayer ? (
@@ -1310,13 +1273,13 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
          {details?.networks?.length > 0 && (
           <span className="text-zinc-300 font-sans">
-           Network: <strong className="text-white">{details.networks.join(", ")}</strong>
+           Network: <strong className="text-white">{(details.networks || []).map(n => typeof n === 'string' ? n : (n?.name || '')).filter(Boolean).join(", ")}</strong>
           </span>
          )}
 
          {credits?.directors?.length > 0 && (
           <span className="text-zinc-400 font-sans">
-           Creator: <strong className="text-zinc-200">{credits.directors.join(", ")}</strong>
+           Creator: <strong className="text-zinc-200">{(credits.directors || []).map(d => typeof d === 'string' ? d : (d?.name || '')).filter(Boolean).join(", ")}</strong>
           </span>
          )}
         </div>
@@ -1488,14 +1451,18 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
       {/* Genres */}
       <div className="flex flex-wrap gap-2">
-       {(details?.genres || movie.genres || []).map((genre) => (
-        <span
-         key={genre}
-         className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300"
-        >
-         {genre}
-        </span>
-       ))}
+       {(details?.genres || movie.genres || []).map((genre, idx) => {
+        const name = typeof genre === 'string' ? genre : (genre?.name || '');
+        if (!name) return null;
+        return (
+         <span
+          key={genre?.id || name || idx}
+          className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 text-xs font-medium text-zinc-300"
+         >
+          {name}
+         </span>
+        );
+       })}
       </div>
 
       {/* Synopsis / Overview */}
@@ -2003,7 +1970,97 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
       )}
      </div>
     </div>
+  );
+
+  if (isFullPage) {
+   return (
+    <div className="min-h-screen w-full bg-zinc-950 text-zinc-100 flex flex-col font-sans">
+     {/* Full-Page Navigation Header */}
+     <nav className="sticky top-0 z-40 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800/80 px-4 sm:px-8 py-3.5 flex items-center justify-between shadow-lg">
+      <div className="flex items-center gap-3 sm:gap-4">
+       <button
+        onClick={() => {
+         if (onClose) {
+          onClose();
+         } else {
+          window.location.href = '/';
+         }
+        }}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white text-xs font-semibold transition-all shadow-sm active:scale-95"
+       >
+        <span>← Back to Home</span>
+       </button>
+       <a href="/" className="flex items-center gap-2 text-white font-bold text-base hover:text-purple-400 transition-colors">
+        <Film className="w-5 h-5 text-purple-500" />
+        <span className="tracking-tight">CineMatch</span>
+       </a>
+      </div>
+      <div className="flex items-center gap-2">
+       <button
+        onClick={() => {
+         const shareUrl = `${window.location.origin}/?item=${movieId}&type=${mediaType}`;
+         if (navigator.clipboard?.writeText) {
+          navigator.clipboard.writeText(shareUrl).then(() => {
+           if (onShowToast) onShowToast({ message: '🎬 Link copied! Share with friends.', movie });
+          });
+         }
+        }}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-300 text-xs font-semibold transition-all active:scale-95"
+        title="Share this title"
+       >
+        <Share2 className="w-4 h-4" />
+        <span className="hidden sm:inline">Share</span>
+       </button>
+      </div>
+     </nav>
+
+     {/* Full-Page Content Layout */}
+     <main className="flex-1 w-full max-w-[1600px] mx-auto p-3 sm:p-6 lg:p-8 space-y-6">
+      {modalInnerContent}
+     </main>
+    </div>
+   );
+  }
+
+  return (
+   <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
+    {/* Backdrop Light-Dismiss Click Area */}
+    <div className="fixed inset-0" onClick={onClose} />
+
+    {/* Modal Card (Widescreen IMAX Layout) */}
+    <div className="relative w-full md:w-[90vw] max-w-[1600px] max-h-[92vh] bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto flex flex-col transition-all duration-300">
+     {/* Action Buttons: Share & Close */}
+     <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
+      <button
+       onClick={() => {
+        const shareUrl = `${window.location.origin}/?item=${movieId}&type=${mediaType}`;
+        if (navigator.clipboard?.writeText) {
+         navigator.clipboard.writeText(shareUrl).then(() => {
+          if (onShowToast) {
+           onShowToast({
+            message: '🎬 Link copied! Share with friends to open in any tab.',
+            movie
+           });
+          }
+         });
+        }
+       }}
+       className="rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
+       title="Copy link to share"
+      >
+       <Share2 className="w-5 h-5" />
+      </button>
+      <button
+       onClick={onClose}
+       className="rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
+       title="Close modal"
+      >
+       <X className="w-5 h-5" />
+      </button>
+     </div>
+
+     {modalInnerContent}
+    </div>
    </div>
-  </div>
- );
-}
+  );
+ }
