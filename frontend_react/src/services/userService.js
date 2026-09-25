@@ -39,7 +39,7 @@ export function formatActivityDate(date = new Date()) {
  */
 export async function syncUserProfileAndActivity(firebaseUser, { isVipLocal = false } = {}) {
   if (!firebaseUser?.uid || !db) {
-    return { isVip: false, isRevoked: false, doc: null };
+    return { isVip: Boolean(isVipLocal), isBlocked: false, doc: null };
   }
 
   try {
@@ -55,41 +55,17 @@ export async function syncUserProfileAndActivity(firebaseUser, { isVipLocal = fa
     const email = firebaseUser.email || '';
     const identifier = email || firebaseUser.phoneNumber || firebaseUser.displayName || firebaseUser.uid;
 
-    let isVip = false;
-    let isRevoked = false;
+    const isBlocked = Boolean(existing?.vip_blocked === true || existing?.vip_revoked === true || existing?.status === 'blocked');
 
-    const hasBeenSyncedKey = `cinematch_synced_${firebaseUser.uid}`;
-    const hasBeenSyncedBefore = typeof window !== 'undefined' && localStorage.getItem(hasBeenSyncedKey) === 'true';
-
-    if (existing) {
-      if (existing.is_vip === false || existing.vip_blocked === true || existing.status === 'blocked') {
-        // Explicitly denied or revoked by administrator in Firebase table
-        isVip = false;
-        isRevoked = true;
-      } else if (existing.is_vip === true) {
-        // Explicitly granted or preserved in Firebase table
-        isVip = true;
-      } else {
-        // Preserves user's local VIP status if not explicitly set
-        isVip = Boolean(isVipLocal);
-      }
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(hasBeenSyncedKey, 'true');
-      }
+    let isVip = Boolean(isVipLocal);
+    if (isBlocked) {
+      isVip = false;
+    } else if (existing?.is_vip === true) {
+      isVip = true;
+    } else if (existing && typeof existing.is_vip === 'boolean') {
+      isVip = Boolean(isVipLocal || existing.is_vip);
     } else {
-      // Document does NOT exist in Firestore:
-      if (hasBeenSyncedBefore) {
-        // User was previously synced, but document is now gone (admin explicitly deleted them from Firebase table!)
-        isVip = false;
-        isRevoked = true;
-      } else {
-        // First-time sync for an existing or newly signed-in user!
-        // Preserve their existing local VIP standing so existing users aren't locked out:
-        isVip = Boolean(isVipLocal);
-        if (typeof window !== 'undefined') {
-          localStorage.setItem(hasBeenSyncedKey, 'true');
-        }
-      }
+      isVip = Boolean(isVipLocal);
     }
 
     const payload = {
@@ -109,10 +85,10 @@ export async function syncUserProfileAndActivity(firebaseUser, { isVipLocal = fa
     await setDoc(userRef, payload, { merge: true });
     lastTouchedTimestamp = now.getTime();
 
-    return { isVip, isRevoked, doc: payload };
+    return { isVip, isBlocked, doc: payload };
   } catch (error) {
     console.warn("Firestore syncUserProfileAndActivity error:", error);
-    return { isVip: isVipLocal, isRevoked: false, doc: null };
+    return { isVip: Boolean(isVipLocal), isBlocked: false, doc: null };
   }
 }
 
@@ -153,13 +129,18 @@ export async function setUserVipInCloud(uid, isVip) {
     const userRef = doc(db, 'users', uid);
     const dateObj = new Date();
     const formattedDate = formatActivityDate(dateObj);
-    await setDoc(userRef, {
+    const updateData = {
       is_vip: Boolean(isVip),
       last_used_date: formattedDate,
       last_used_at: dateObj.toISOString(),
       last_used_timestamp: dateObj.getTime(),
       vip_updated_at: dateObj.toISOString()
-    }, { merge: true });
+    };
+    if (isVip) {
+      updateData.vip_blocked = false;
+      updateData.vip_revoked = false;
+    }
+    await setDoc(userRef, updateData, { merge: true });
     lastTouchedTimestamp = dateObj.getTime();
     return true;
   } catch (error) {
@@ -171,6 +152,7 @@ export async function setUserVipInCloud(uid, isVip) {
 /**
  * Checks whether the user is authorized for VIP access in the Firebase table.
  * Returns { exists, isVip, isBlocked }.
+ * A user is ONLY blocked if the admin explicitly set vip_blocked or vip_revoked to true.
  */
 export async function checkUserVipInCloud(uid) {
   if (!uid || !db) return { exists: false, isVip: false, isBlocked: false };
@@ -182,10 +164,10 @@ export async function checkUserVipInCloud(uid) {
       return { exists: false, isVip: false, isBlocked: false };
     }
     const data = snap.data();
-    const isBlocked = data.vip_blocked === true || data.is_vip === false || data.status === 'blocked';
+    const isBlocked = Boolean(data.vip_blocked === true || data.vip_revoked === true || data.status === 'blocked');
     return {
       exists: true,
-      isVip: data.is_vip === true,
+      isVip: data.is_vip === true && !isBlocked,
       isBlocked: isBlocked,
     };
   } catch (error) {

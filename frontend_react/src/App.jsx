@@ -70,7 +70,8 @@ export default function App() {
  const handleActivateVip = async () => {
   if (user?.uid) {
     const vipCheck = await checkUserVipInCloud(user.uid);
-    if (vipCheck.exists && (vipCheck.isBlocked || vipCheck.isVip === false)) {
+    // ONLY block if administrator specifically added vip_blocked: true or vip_revoked: true in Firestore
+    if (vipCheck.exists && vipCheck.isBlocked) {
       alert('VIP Access has been revoked for this account by administrator.');
       handleDeactivateVip();
       return false;
@@ -118,17 +119,13 @@ export default function App() {
     touchUserLastUsed(user.uid);
     const vipCheck = await checkUserVipInCloud(user.uid);
     if (vipCheck.exists) {
-      if (vipCheck.isBlocked || vipCheck.isVip === false) {
+      if (vipCheck.isBlocked) {
         setIsVip(false);
         localStorage.removeItem('vip_activated');
       } else if (vipCheck.isVip) {
         setIsVip(true);
         localStorage.setItem('vip_activated', 'true');
       }
-    } else if (localStorage.getItem('vip_activated') === 'true') {
-      // Document was deleted by administrator in Firebase table!
-      setIsVip(false);
-      localStorage.removeItem('vip_activated');
     }
   }, 2 * 60 * 1000); // Check every 2 minutes
 

@@ -377,7 +377,7 @@ export const AuthProvider = ({ children }) => {
           const isVipLocal = localStorage.getItem('vip_activated') === 'true';
           const vipResult = await syncUserProfileAndActivity(firebaseUser, { isVipLocal });
           if (vipResult) {
-            if (vipResult.isRevoked || vipResult.isVip === false) {
+            if (vipResult.isBlocked) {
               localStorage.removeItem('vip_activated');
               window.dispatchEvent(new CustomEvent('cinematch_vip_revoked'));
             } else if (vipResult.isVip) {
