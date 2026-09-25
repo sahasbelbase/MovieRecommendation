@@ -11,6 +11,7 @@ import AuthModal from './components/AuthModal';
 import Toast from './components/Toast';
 import SwipeDeckModal from './components/SwipeDeckModal';
 import WatchlistShelf from './components/WatchlistShelf';
+import ContinueWatchingShelf from './components/ContinueWatchingShelf';
 import Top250Modal from './components/Top250Modal';
 import MovieNightModal from './components/MovieNightModal';
 import WatchPartyModal, { StandaloneChatCompanion } from './components/WatchPartyModal';
@@ -304,11 +305,50 @@ export default function App() {
   }
  }, [user?.uid, pendingPartyCode, watchPartyData.isOpen, isMovieNightOpen]);
 
- // Handle direct share link: ?room=CODE or ?party=CODE
+ // Handle direct share link: ?room=CODE or ?party=CODE or ?item=ID&type=TYPE
  useEffect(() => {
   const params = new URLSearchParams(window.location.search);
   const roomParam = params.get('room');
   const partyParam = params.get('party') || params.get('theater');
+  const itemParam = params.get('item');
+  const typeParam = params.get('type') || 'movie';
+
+  if (itemParam) {
+   api.get(`/movies/${itemParam}/details?media_type=${typeParam}`)
+    .then((res) => {
+     if (res.data) {
+      setSelectedMovie(res.data);
+     }
+    })
+    .catch((err) => {
+     console.warn("Failed fetching deep-linked movie from URL params:", err);
+     if (typeParam === 'anime') {
+      api.get(`/movies/anime/anikoto/${itemParam}`)
+       .then((res) => {
+        const series = res.data?.data;
+        if (series) {
+         setSelectedMovie({
+          id: itemParam,
+          title: series.title,
+          name: series.title,
+          poster: series.poster,
+          poster_url: series.poster,
+          backdrop_url: series.background_image || series.poster,
+          overview: series.description,
+          media_type: 'anime',
+          is_series: true
+         });
+        }
+       })
+       .catch(() => {
+        setSelectedMovie({ id: itemParam, media_type: typeParam, title: "Media Item #" + itemParam });
+       });
+     } else {
+      setSelectedMovie({ id: itemParam, media_type: typeParam, title: "Media Item #" + itemParam });
+     }
+    });
+  }
+
   if (partyParam) {
    const code = partyParam.toUpperCase();
    setWatchPartyData((prev) => ({
@@ -321,6 +361,33 @@ export default function App() {
    setIsMovieNightOpen(true);
   }
  }, []);
+
+ const handleOpenMovie = (m, autoPlay = false) => {
+  if (!m) return;
+  setSelectedMovie(m);
+  setAutoPlayStream(Boolean(autoPlay));
+  if (typeof window !== 'undefined' && m?.id) {
+   try {
+    const url = new URL(window.location.href);
+    url.searchParams.set('item', m.id);
+    url.searchParams.set('type', m.media_type || (m.first_air_date ? 'tv' : 'movie'));
+    window.history.replaceState(null, '', url.pathname + url.search);
+   } catch {}
+  }
+ };
+
+ const handleCloseMovie = () => {
+  setSelectedMovie(null);
+  setAutoPlayStream(false);
+  if (typeof window !== 'undefined') {
+   try {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('item');
+    url.searchParams.delete('type');
+    window.history.replaceState(null, '', url.pathname + (url.search ? url.search : ''));
+   } catch {}
+  }
+ };
 
  // Toast helper
  const showToast = (toastObj) => {
@@ -346,10 +413,7 @@ export default function App() {
     onVipDeactivated={handleDeactivateVip}
     selectedCategory={selectedMediaCategory}
     onSelectCategory={(cat) => setSelectedMediaCategory(cat)}
-    onSelectMovie={(m, autoPlay = false) => {
-     setSelectedMovie(m);
-     setAutoPlayStream(Boolean(autoPlay));
-    }}
+    onSelectMovie={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
     onSelectActor={(a) => setSelectedActor(a)}
     onOpenWatched={(tab) => handleOpenLibrary(tab || 'watched')}
     onOpenDataModal={() => setIsDataOpen(true)}
@@ -363,12 +427,20 @@ export default function App() {
 
    {/* Content Area */}
    <div className="flex-1 flex flex-col min-w-0 h-screen overflow-y-auto overflow-x-hidden">
+     {/* Continue Watching Shelf (Active watch progress rail with progress bars & 1-click resume) */}
+     <ContinueWatchingShelf
+      onSelectMovie={handleOpenMovie}
+      onShowToast={showToast}
+      user={user}
+      isVip={isVip}
+     />
+
      {/* Watchlist Shelf (Hidden for signed-out users) */}
      {user && (
       <WatchlistShelf
        isExpanded={isWatchlistShelfOpen}
        onToggleExpand={() => setIsWatchlistShelfOpen(prev => !prev)}
-       onSelectMovie={(m) => setSelectedMovie(m)}
+       onSelectMovie={handleOpenMovie}
        onOpenDrawer={(tab) => handleOpenLibrary(tab || 'watchlist')}
        onShowToast={showToast}
       />
@@ -503,10 +575,7 @@ export default function App() {
           <div key={`watchlist_card_${movie.id}`} className="w-32 sm:w-44 shrink-0 snap-start">
            <MovieCard
             movie={movie}
-            onSelect={(m, autoPlay = false) => {
-             setSelectedMovie(m);
-             setAutoPlayStream(Boolean(autoPlay));
-            }}
+            onSelect={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
             onShowToast={showToast}
             isVip={isVip}
            />
@@ -667,13 +736,15 @@ export default function App() {
          };
 
          return (
-          <div
+          <a
            key={`recent_anime_${item.id}`}
-           onClick={() => {
-            setSelectedMovie(animeMovieObj);
-            setAutoPlayStream(false);
+           href={`/?item=${item.id}&type=anime`}
+           onClick={(e) => {
+            if (e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1) return;
+            e.preventDefault();
+            handleOpenMovie(animeMovieObj, false);
            }}
-           className="group relative w-36 sm:w-44 shrink-0 snap-start cursor-pointer rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-indigo-500/60 overflow-hidden shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-indigo-950/40"
+           className="group relative block w-36 sm:w-44 shrink-0 snap-start cursor-pointer rounded-xl bg-zinc-900/90 border border-zinc-800 hover:border-indigo-500/60 overflow-hidden shadow-lg transition-all duration-300 hover:scale-[1.03] hover:shadow-indigo-950/40 no-underline text-inherit"
           >
            {/* Poster Image */}
            <div className="aspect-[2/3] relative w-full overflow-hidden bg-zinc-950">
@@ -728,7 +799,7 @@ export default function App() {
              <span className="text-emerald-400 font-medium">{timeAgo || 'New'}</span>
             </div>
            </div>
-          </div>
+          </a>
          );
         })}
        </div>
@@ -821,10 +892,7 @@ export default function App() {
            <MovieCard
             key={`${movie.media_type || 'movie'}_${movie.id}`}
             movie={movie}
-            onSelect={(m, autoPlay = false) => {
-             setSelectedMovie(m);
-             setAutoPlayStream(Boolean(autoPlay));
-            }}
+            onSelect={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
             onShowToast={showToast}
             isVip={isVip}
            />
@@ -851,14 +919,8 @@ export default function App() {
      onDeactivateVip={handleDeactivateVip}
      movie={selectedMovie}
      autoPlayStream={autoPlayStream}
-     onClose={() => {
-      setSelectedMovie(null);
-      setAutoPlayStream(false);
-     }}
-     onSelectMovie={(m, autoPlay = false) => {
-      setSelectedMovie(m);
-      setAutoPlayStream(Boolean(autoPlay));
-     }}
+     onClose={handleCloseMovie}
+     onSelectMovie={(m, autoPlay = false) => handleOpenMovie(m, autoPlay)}
      onSelectActor={(a) => setSelectedActor(a)}
      onShowToast={showToast}
      onStartWatchParty={(m) => handleStartWatchParty(m)}
@@ -870,7 +932,7 @@ export default function App() {
     <ActorModal
      person={selectedActor}
      onClose={() => setSelectedActor(null)}
-     onSelectMovie={(m) => setSelectedMovie(m)}
+     onSelectMovie={(m) => handleOpenMovie(m)}
      onShowToast={showToast}
     />
    )}
@@ -878,7 +940,7 @@ export default function App() {
    <WatchedDrawer
     isOpen={isWatchedOpen}
     onClose={() => setIsWatchedOpen(false)}
-    onSelectMovie={(m) => setSelectedMovie(m)}
+    onSelectMovie={(m) => handleOpenMovie(m)}
     onOpenDataModal={() => setIsDataOpen(true)}
     initialTab={libraryTab}
    />
@@ -904,7 +966,7 @@ export default function App() {
    <Top250Modal
     isOpen={isTop250Open}
     onClose={() => setIsTop250Open(false)}
-    onSelectMovie={(m) => setSelectedMovie(m)}
+    onSelectMovie={(m) => handleOpenMovie(m)}
     onShowToast={showToast}
    />
 
@@ -913,7 +975,7 @@ export default function App() {
     onClose={() => setIsMovieNightOpen(false)}
     initialRoomCode={initialRoomCode}
     onShowToast={showToast}
-    onSelectMovie={(m) => setSelectedMovie(m)}
+    onSelectMovie={(m) => handleOpenMovie(m)}
     onStartWatchParty={(m, code) => {
      setIsMovieNightOpen(false);
      handleStartWatchParty(m, code);

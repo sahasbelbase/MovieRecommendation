@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap, Lock, SkipBack, SkipForward, Sparkles } from 'lucide-react';
+import { X, Play, Star, Check, Bookmark, Clock, Calendar, Tv, Layers, ExternalLink, Globe, EyeOff, Film, ChevronDown, Users, ArrowUpDown, Search, Zap, Lock, SkipBack, SkipForward, Sparkles, Share2 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../api/client';
 import MovieCard from './MovieCard';
 import TvVideoPlayer from './TvVideoPlayer';
+import { getItemProgress, saveContinueWatchingProgress } from '../services/continueWatching';
 
 const isTv = typeof window !== 'undefined' && (
   Boolean(window.Capacitor) ||
@@ -151,6 +152,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [seasonData, setSeasonData] = useState(null);
  const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
+ const [resumeProgress, setResumeProgress] = useState(() => getItemProgress(movieId));
 
  // Reset modal states on movie selection change to prevent stale render flashes
  useEffect(() => {
@@ -163,12 +165,41 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   setStreamServerIndex(0);
   setUserSelectedServer(false);
   setAnikotoData(null);
-  setSelectedEpisode(movie?.latest_episode || movie?.target_episode || 1);
+  const savedProgress = getItemProgress(movieId);
+  setResumeProgress(savedProgress);
+  if (savedProgress?.season) {
+   setSelectedSeason(savedProgress.season);
+  } else {
+   setSelectedSeason(1);
+  }
+  if (savedProgress?.episode) {
+   setSelectedEpisode(savedProgress.episode);
+  } else {
+   setSelectedEpisode(movie?.latest_episode || movie?.target_episode || 1);
+  }
   setShowWatchNextCountdown(false);
   setCountdownSeconds(10);
   setShowTrailerPlayer(false);
   setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
  }, [movieId, autoPlayStream, user, isVip, movie?.latest_episode, movie?.target_episode]);
+
+ // Synchronize playback status to Continue Watching store
+ useEffect(() => {
+  if (showStreamPlayer && movie && movieId) {
+   saveContinueWatchingProgress({
+    id: movieId,
+    title: movie.title || details?.title,
+    poster_url: movie.poster_url || details?.poster_url || movie.poster,
+    backdrop_url: movie.backdrop_url || details?.backdrop_url,
+    media_type: mediaType,
+    is_series: isSeries,
+    season: isSeries ? selectedSeason : null,
+    episode: isSeries ? selectedEpisode : null,
+    percent: resumeProgress?.percent || 50,
+    user_id: user?.uid,
+   });
+  }
+ }, [showStreamPlayer, selectedSeason, selectedEpisode, movieId, isSeries, mediaType, user?.uid]);
 
   const [tvVolumeInfo, setTvVolumeInfo] = useState(null);
 
@@ -738,13 +769,35 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
    {/* Modal Card (Widescreen IMAX Layout) */}
    <div className="relative w-full md:w-[90vw] max-w-[1600px] max-h-[92vh] bg-zinc-950 border border-zinc-800/90 rounded-2xl shadow-2xl overflow-hidden z-10 my-auto flex flex-col transition-all duration-300">
-    {/* Close Button */}
-    <button
-     onClick={onClose}
-     className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
-    >
-     <X className="w-5 h-5" />
-    </button>
+    {/* Action Buttons: Share & Close */}
+    <div className="absolute top-3.5 right-3.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
+     <button
+      onClick={() => {
+       const shareUrl = `${window.location.origin}/?item=${movieId}&type=${mediaType}`;
+       if (navigator.clipboard?.writeText) {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+         if (onShowToast) {
+          onShowToast({
+           message: '🎬 Link copied! Share with friends to open in any tab.',
+           movie
+          });
+         }
+        });
+       }
+      }}
+      className="rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
+      title="Copy link to share"
+     >
+      <Share2 className="w-5 h-5" />
+     </button>
+     <button
+      onClick={onClose}
+      className="rounded-full p-2 bg-black/70 border border-white/10 text-zinc-400 hover:text-white hover:bg-black transition-colors"
+      title="Close modal"
+     >
+      <X className="w-5 h-5" />
+     </button>
+    </div>
 
     {/* Scrollable Content Container */}
     <div className="overflow-y-auto flex-1">
@@ -1110,48 +1163,62 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
           className="w-full h-full object-cover opacity-60"
          />
          <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent" />
-         <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-wrap items-center gap-2.5 sm:gap-3">
-          {user && isVip && (
-           <button
-            onClick={() => {
-             setShowTrailerPlayer(false);
-             setShowStreamPlayer(true);
-            }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-purple-950/60 transition-all active:scale-95"
-           >
-            <Play className="w-4 h-4 fill-white" />
-            <span>
-             {isSeries
-               ? `Play S${selectedSeason} E${selectedEpisode}`
-               : isAnimeMovie
-                 ? 'Play Anime Movie'
-                 : 'Play Movie'}
+         <div className="absolute bottom-4 left-4 sm:bottom-6 sm:left-6 flex flex-col gap-2.5 z-10">
+          {resumeProgress && (
+           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900/90 border border-purple-500/50 text-purple-200 text-xs backdrop-blur-md shadow-lg w-fit">
+            <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+            <span className="font-medium">
+             Continue watching: {isSeries ? `Season ${resumeProgress.season || selectedSeason}, Episode ${resumeProgress.episode || selectedEpisode}` : `Movie (${resumeProgress.percent || 0}%)`}
             </span>
-           </button>
+           </div>
           )}
-          {activeTrailer && (
+          <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
+           {user && isVip && (
+            <button
+             onClick={() => {
+              setShowTrailerPlayer(false);
+              setShowStreamPlayer(true);
+             }}
+             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white text-xs sm:text-sm font-bold shadow-lg shadow-purple-950/60 transition-all active:scale-95"
+            >
+             <Play className="w-4 h-4 fill-white" />
+             <span>
+              {resumeProgress
+                ? (isSeries
+                    ? `Resume S${selectedSeason} E${selectedEpisode}`
+                    : `Resume Playback (${resumeProgress.percent || 0}%)`)
+                : (isSeries
+                    ? `Play S${selectedSeason} E${selectedEpisode}`
+                    : isAnimeMovie
+                      ? 'Play Anime Movie'
+                      : 'Play Movie')}
+             </span>
+            </button>
+           )}
+           {activeTrailer && (
+            <button
+             onClick={() => {
+              setShowStreamPlayer(false);
+              setShowTrailerPlayer(true);
+             }}
+             className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700 text-white text-xs sm:text-sm font-semibold shadow-lg transition-all active:scale-95"
+            >
+             <Film className="w-4 h-4 text-rose-400" />
+             <span>Trailer</span>
+            </button>
+           )}
            <button
             onClick={() => {
-             setShowStreamPlayer(false);
-             setShowTrailerPlayer(true);
+             if (onStartWatchParty) {
+              onStartWatchParty(movie);
+             }
             }}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-zinc-800/90 hover:bg-zinc-700 border border-zinc-700 text-white text-xs sm:text-sm font-semibold shadow-lg transition-all active:scale-95"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-amber-950/60 transition-all active:scale-95"
            >
-            <Film className="w-4 h-4 text-rose-400" />
-            <span>Trailer</span>
+            <Users className="w-4 h-4 text-amber-100" />
+            <span>Watch Party</span>
            </button>
-          )}
-          <button
-           onClick={() => {
-            if (onStartWatchParty) {
-             onStartWatchParty(movie);
-            }
-           }}
-           className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-rose-600 hover:from-amber-500 hover:to-rose-500 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-amber-950/60 transition-all active:scale-95"
-          >
-           <Users className="w-4 h-4 text-amber-100" />
-           <span>Watch Party</span>
-          </button>
+          </div>
          </div>
         </>
        )}
