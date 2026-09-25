@@ -58,6 +58,9 @@ export async function syncUserProfileAndActivity(firebaseUser, { isVipLocal = fa
     let isVip = false;
     let isRevoked = false;
 
+    const hasBeenSyncedKey = `cinematch_synced_${firebaseUser.uid}`;
+    const hasBeenSyncedBefore = typeof window !== 'undefined' && localStorage.getItem(hasBeenSyncedKey) === 'true';
+
     if (existing) {
       if (existing.is_vip === false || existing.vip_blocked === true || existing.status === 'blocked') {
         // Explicitly denied or revoked by administrator in Firebase table
@@ -67,16 +70,25 @@ export async function syncUserProfileAndActivity(firebaseUser, { isVipLocal = fa
         // Explicitly granted or preserved in Firebase table
         isVip = true;
       } else {
-        // Fallback to local state if field wasn't set yet
+        // Preserves user's local VIP status if not explicitly set
         isVip = Boolean(isVipLocal);
+      }
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(hasBeenSyncedKey, 'true');
       }
     } else {
       // Document does NOT exist in Firestore:
-      // If user had local VIP, but their document was deleted from Firebase table by admin,
-      // revoke VIP access!
-      isVip = false;
-      if (isVipLocal) {
+      if (hasBeenSyncedBefore) {
+        // User was previously synced, but document is now gone (admin explicitly deleted them from Firebase table!)
+        isVip = false;
         isRevoked = true;
+      } else {
+        // First-time sync for an existing or newly signed-in user!
+        // Preserve their existing local VIP standing so existing users aren't locked out:
+        isVip = Boolean(isVipLocal);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(hasBeenSyncedKey, 'true');
+        }
       }
     }
 
