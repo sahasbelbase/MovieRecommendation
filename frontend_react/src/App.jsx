@@ -4,6 +4,7 @@ import api from './api/client';
 import Navbar from './components/Navbar';
 import MovieCard from './components/MovieCard';
 import MovieModal from './components/MovieModal';
+import ErrorBoundary from './components/ErrorBoundary';
 import ActorModal from './components/ActorModal';
 import WatchedDrawer from './components/WatchedDrawer';
 import DataModal from './components/DataModal';
@@ -416,29 +417,34 @@ export default function App() {
  if (fullPageMovie) {
   return (
    <div className="min-h-screen bg-canvas text-zinc-100 font-sans">
-    <MovieModal
-     isVip={isVip}
-     onActivateVip={handleActivateVip}
-     onDeactivateVip={handleDeactivateVip}
-     movie={fullPageMovie}
-     autoPlayStream={false}
-     isFullPage={true}
-     onClose={() => {
+    <ErrorBoundary onReset={() => {
       setFullPageMovie(null);
-      const url = new URL(window.location);
-      url.searchParams.delete('item');
-      url.searchParams.delete('movie');
-      url.searchParams.delete('id');
-      url.searchParams.delete('type');
-      url.searchParams.delete('media_type');
-      window.history.pushState({}, '', url.pathname + (url.search ? url.search : ''));
-     }}
-     onSelectMovie={(m) => setFullPageMovie(m)}
-     onSelectActor={(a) => setSelectedActor(a)}
-     onShowToast={showToast}
-     onStartWatchParty={(m) => handleStartWatchParty(m)}
-     onRequireAuth={() => setIsAuthOpen(true)}
-    />
+      window.location.href = '/';
+     }}>
+      <MovieModal
+       isVip={isVip}
+       onActivateVip={handleActivateVip}
+       onDeactivateVip={handleDeactivateVip}
+       movie={fullPageMovie}
+       autoPlayStream={false}
+       isFullPage={true}
+       onClose={() => {
+        setFullPageMovie(null);
+        const url = new URL(window.location);
+        url.searchParams.delete('item');
+        url.searchParams.delete('movie');
+        url.searchParams.delete('id');
+        url.searchParams.delete('type');
+        url.searchParams.delete('media_type');
+        window.history.pushState({}, '', url.pathname + (url.search ? url.search : ''));
+       }}
+       onSelectMovie={(m) => setFullPageMovie(m)}
+       onSelectActor={(a) => setSelectedActor(a)}
+       onShowToast={showToast}
+       onStartWatchParty={(m) => handleStartWatchParty(m)}
+       onRequireAuth={() => setIsAuthOpen(true)}
+      />
+     </ErrorBoundary>
 
     {selectedActor && (
      <ActorModal
@@ -997,20 +1003,22 @@ export default function App() {
 
    {/* Modals and Overlays */}
    {selectedMovie && (
-    <MovieModal
-     isVip={isVip}
-     onActivateVip={handleActivateVip}
-     onDeactivateVip={handleDeactivateVip}
-     movie={selectedMovie}
-     autoPlayStream={autoPlayStream}
-     isFullPage={false}
-     onClose={handleCloseModal}
-     onSelectMovie={(m, autoPlay = false) => handleSelectMovie(m, autoPlay)}
-     onSelectActor={(a) => setSelectedActor(a)}
-     onShowToast={showToast}
-     onStartWatchParty={(m) => handleStartWatchParty(m)}
-     onRequireAuth={() => setIsAuthOpen(true)}
-    />
+    <ErrorBoundary onReset={handleCloseModal}>
+     <MovieModal
+      isVip={isVip}
+      onActivateVip={handleActivateVip}
+      onDeactivateVip={handleDeactivateVip}
+      movie={selectedMovie}
+      autoPlayStream={autoPlayStream}
+      isFullPage={false}
+      onClose={handleCloseModal}
+      onSelectMovie={(m, autoPlay = false) => handleSelectMovie(m, autoPlay)}
+      onSelectActor={(a) => setSelectedActor(a)}
+      onShowToast={showToast}
+      onStartWatchParty={(m) => handleStartWatchParty(m)}
+      onRequireAuth={() => setIsAuthOpen(true)}
+     />
+    </ErrorBoundary>
    )}
 
    {selectedActor && (

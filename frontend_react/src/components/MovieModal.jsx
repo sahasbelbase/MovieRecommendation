@@ -109,7 +109,6 @@ const EMBED_SERVERS = [
 
 export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movie, onClose, onSelectMovie, onShowToast, onSelectActor, onStartWatchParty, onRequireAuth, autoPlayStream = false, isFullPage = false }) {
  const movieId = movie?.id || movie?.item_id || movie?.tmdb_id || movie?.movieId;
- if (!movie || !movieId) return null;
 
  const {
   user,
@@ -153,53 +152,6 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
  const [episodesLoading, setEpisodesLoading] = useState(false);
  const [loading, setLoading] = useState(true);
  const [resumeProgress, setResumeProgress] = useState(() => getItemProgress(movieId));
-
- // Reset modal states on movie selection change to prevent stale render flashes
- useEffect(() => {
-  setDetails(null);
-  setCredits(null);
-  setTrailers([]);
-  setProviders(null);
-  setSeasonData(null);
-  setStreamStatusData(null);
-  setStreamServerIndex(0);
-  setUserSelectedServer(false);
-  setAnikotoData(null);
-  const savedProgress = getItemProgress(movieId);
-  setResumeProgress(savedProgress);
-  if (savedProgress?.season) {
-   setSelectedSeason(savedProgress.season);
-  } else {
-   setSelectedSeason(1);
-  }
-  if (savedProgress?.episode) {
-   setSelectedEpisode(savedProgress.episode);
-  } else {
-   setSelectedEpisode(movie?.latest_episode || movie?.target_episode || 1);
-  }
-  setShowWatchNextCountdown(false);
-  setCountdownSeconds(10);
-  setShowTrailerPlayer(false);
-  setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
- }, [movieId, autoPlayStream, user, isVip, movie?.latest_episode, movie?.target_episode]);
-
- // Synchronize playback status to Continue Watching store
- useEffect(() => {
-  if (showStreamPlayer && movie && movieId) {
-   saveContinueWatchingProgress({
-    id: movieId,
-    title: movie.title || details?.title,
-    poster_url: movie.poster_url || details?.poster_url || movie.poster,
-    backdrop_url: movie.backdrop_url || details?.backdrop_url,
-    media_type: mediaType,
-    is_series: isSeries,
-    season: isSeries ? selectedSeason : null,
-    episode: isSeries ? selectedEpisode : null,
-    percent: resumeProgress?.percent || 50,
-    user_id: user?.uid,
-   });
-  }
- }, [showStreamPlayer, selectedSeason, selectedEpisode, movieId, isSeries, mediaType, user?.uid]);
 
   const [tvVolumeInfo, setTvVolumeInfo] = useState(null);
 
@@ -253,6 +205,54 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
 
  const streamType = isSeries ? 'tv' : 'movie';
  const isAnimeMovie = (effectiveMediaType === 'anime' || movie?.genres?.some(g => (typeof g === 'string' ? g : g?.name)?.toLowerCase() === 'animation')) && !isSeries;
+
+ // Reset modal states on movie selection change to prevent stale render flashes
+ useEffect(() => {
+  setDetails(null);
+  setCredits(null);
+  setTrailers([]);
+  setProviders(null);
+  setSeasonData(null);
+  setStreamStatusData(null);
+  setStreamServerIndex(0);
+  setUserSelectedServer(false);
+  setAnikotoData(null);
+  const savedProgress = getItemProgress(movieId);
+  setResumeProgress(savedProgress);
+  if (savedProgress?.season) {
+   setSelectedSeason(savedProgress.season);
+  } else {
+   setSelectedSeason(1);
+  }
+  if (savedProgress?.episode) {
+   setSelectedEpisode(savedProgress.episode);
+  } else {
+   setSelectedEpisode(movie?.latest_episode || movie?.target_episode || 1);
+  }
+  setShowWatchNextCountdown(false);
+  setCountdownSeconds(10);
+  setShowTrailerPlayer(false);
+  setShowStreamPlayer(Boolean(autoPlayStream && user && isVip));
+ }, [movieId, autoPlayStream, user, isVip, movie?.latest_episode, movie?.target_episode]);
+
+ // Synchronize playback status to Continue Watching store
+ useEffect(() => {
+  if (showStreamPlayer && movie && movieId) {
+   saveContinueWatchingProgress({
+    id: movieId,
+    title: movie.title || details?.title,
+    poster_url: movie.poster_url || details?.poster_url || movie.poster,
+    backdrop_url: movie.backdrop_url || details?.backdrop_url,
+    media_type: mediaType,
+    is_series: isSeries,
+    season: isSeries ? selectedSeason : null,
+    episode: isSeries ? selectedEpisode : null,
+    percent: resumeProgress?.percent || 50,
+    user_id: user?.uid,
+   });
+  }
+ }, [showStreamPlayer, selectedSeason, selectedEpisode, movieId, isSeries, mediaType, user?.uid]);
+
 
  const anikotoEmbedUrl = anikotoData?.sources?.find(s => s.id === 'anikoto')?.url || null;
 
@@ -762,6 +762,8 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
   return () => clearInterval(interval);
  }, [showWatchNextCountdown, autoPlayNext, isSeries, nextEpisodeObj, similarItems, onSelectMovie, onShowToast]);
 
+ if (!movie || !movieId) return null;
+
  const modalInnerContent = (
   <div className={isFullPage ? "space-y-6" : "overflow-y-auto flex-1"}>
       {/* Backdrop Header / Video Player (Full Width 16:9 Aspect Ratio) */}
@@ -1267,7 +1269,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
          {(details?.imdb_rating || movie.imdb_rating || movie.vote_average > 0) && (
           <span className="flex items-center gap-1 text-amber-400 font-semibold bg-amber-950/40 px-2 py-0.5 rounded border border-amber-800/40">
            <Star className="w-3.5 h-3.5 fill-amber-400 stroke-none" />
-           IMDb {details?.imdb_rating || movie.imdb_rating || movie.vote_average.toFixed(1)} / 10
+           IMDb {details?.imdb_rating || movie.imdb_rating || (movie.vote_average ? Number(movie.vote_average).toFixed(1) : '8.0')} / 10
           </span>
          )}
 
@@ -1697,7 +1699,7 @@ export default function MovieModal({ isVip, onActivateVip, onDeactivateVip, movi
                 {ep.vote_average > 0 && (
                  <span className="flex items-center gap-1 text-[11px] font-mono font-semibold text-amber-400 bg-amber-950/50 px-2 py-0.5 rounded border border-amber-800/40">
                   <Star className="w-3 h-3 fill-amber-400 stroke-none" />
-                  {ep.vote_average.toFixed(1)}
+                  {Number(ep.vote_average || 0).toFixed(1)}
                  </span>
                 )}
                 {ep.runtime > 0 && (
